@@ -1,4 +1,3 @@
-using System.Reflection;
 using Medreserve.Features.User;
 using Medreserve.Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +12,6 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
-var assembly = Assembly.GetExecutingAssembly();
 var allowedOrigins =
     builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
     ?? ["http://localhost:5000", "http://localhost:8000"];
