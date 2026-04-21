@@ -6,6 +6,8 @@ RUN dotnet restore Medreserve.csproj
 COPY . .
 
 FROM base AS dev
+RUN dotnet tool restore
+ENV PATH="${PATH}:/root/.dotnet/tools"
 EXPOSE 8080
 CMD ["dotnet", "watch", "--project", "Medreserve.csproj", "run", "--urls", "http://0.0.0.0:8080"]
 
