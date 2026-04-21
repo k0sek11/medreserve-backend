@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS base
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS base
 WORKDIR /src
 
 COPY Medreserve.csproj ./
@@ -12,7 +12,7 @@ CMD ["dotnet", "watch", "--project", "Medreserve.csproj", "run", "--urls", "http
 FROM base AS build
 RUN dotnet publish Medreserve.csproj -c Release -o /app/publish /p:UseAppHost=false
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS prod
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS prod
 WORKDIR /app
 COPY --from=build /app/publish .
 EXPOSE 8080
