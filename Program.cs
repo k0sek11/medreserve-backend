@@ -1,3 +1,4 @@
+using Medreserve.Features.Specialization;
 using Medreserve.Features.User;
 using Medreserve.Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -30,6 +31,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<ISpecializationService, SpecializationService>();
 
 builder
     .Services.AddIdentity<User, IdentityRole>(options =>
