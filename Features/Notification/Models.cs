@@ -1,5 +1,5 @@
 using Medreserve.Features.Appointment;
-using Medreserve.Features.User;
+using Medreserve.Features.Users;
 
 namespace Medreserve.Features.Notification;
 
@@ -16,6 +16,6 @@ public class Notification
     public DateTime? SentAt { get; set; }
     public string? FailureReason { get; set; }
 
-    public Medreserve.Features.User.User User { get; set; } = null!;
+    public Medreserve.Features.Users.User User { get; set; } = null!;
     public Appointment.Appointment? Appointment { get; set; }
 }
