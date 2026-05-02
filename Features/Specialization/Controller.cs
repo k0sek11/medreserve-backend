@@ -5,110 +5,44 @@ using Microsoft.EntityFrameworkCore;
 namespace Medreserve.Features.Specialization;
 
 [ApiController]
-[Route("api/specializations")]
-public class SpecializationsController(DatabaseContext dbContext) : ControllerBase
+[Route("api/specializations[controller]")]
+public class SpecializationController(ISpecializationService _service) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<SpecializationDto>>> GetAll(CancellationToken cancellationToken)
+    public async Task<ActionResult<SpecializationDto[]>> GetAllSpecializations()
     {
-        var specializations = await dbContext
-            .Specializations
-            .AsNoTracking()
-            .OrderBy(x => x.SpecializationId)
-            .Select(x => new SpecializationDto(x.SpecializationId, x.Name, x.Description))
-            .ToListAsync(cancellationToken);
-
-        return Ok(specializations);
+        var result = await _service.GetAllAsync();
+        return Ok(result);
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<SpecializationDto>> GetById(int id, CancellationToken cancellationToken)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<SpecializationDto>> GetSpecializationById(int id)
     {
-        var specialization = await dbContext
-            .Specializations
-            .AsNoTracking()
-            .Where(x => x.SpecializationId == id)
-            .Select(x => new SpecializationDto(x.SpecializationId, x.Name, x.Description))
-            .FirstOrDefaultAsync(cancellationToken);
-
-        return specialization is null ? NotFound() : Ok(specialization);
+        var result = await _service.GetByIdAsync(id);
+        if (result == null) return NotFound("Nie znalezniono Specializacji o tym ID w Bazie");
+        return Ok(result);
     }
 
     [HttpPost]
-    public async Task<ActionResult<SpecializationDto>> Create(
-        CreateSpecializationRequest request,
-        CancellationToken cancellationToken
-    )
+    public async Task<ActionResult<SpecializationDto>> CreateSpecialization(CreateOrUpdateSpecializationDto dto)
     {
-        var specialization = new Specialization
-        {
-            Name = request.Name,
-            Description = request.Description
-        };
-
-        dbContext.Specializations.Add(specialization);
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        var result = new SpecializationDto(
-            specialization.SpecializationId,
-            specialization.Name,
-            specialization.Description
-        );
-
-        return CreatedAtAction(nameof(GetById), new { id = specialization.SpecializationId }, result);
+        var result = _service.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetSpecializationById),new{Id = result.Id}, result);
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult<SpecializationDto>> Update(
-        int id,
-        UpdateSpecializationRequest request,
-        CancellationToken cancellationToken
-    )
+    [HttpPut("{id}")]
+    public async Task<ActionResult<SpecializationDto>> Update(int id, CreateOrUpdateSpecializationDto dto)
     {
-        var specialization = await dbContext.Specializations.FirstOrDefaultAsync(
-            x => x.SpecializationId == id,
-            cancellationToken
-        );
-        if (specialization is null)
-        {
-            return NotFound();
-        }
-
-        specialization.Name = request.Name;
-        specialization.Description = request.Description;
-
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        return Ok(
-            new SpecializationDto(
-                specialization.SpecializationId,
-                specialization.Name,
-                specialization.Description
-            )
-        );
+        var success = await _service.UpdateAsync(id, dto);
+        if (!success) return NotFound();
+        return Ok();
     }
 
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<SpecializationDto>> Delete(int id)
     {
-        var specialization = await dbContext.Specializations.FirstOrDefaultAsync(
-            x => x.SpecializationId == id,
-            cancellationToken
-        );
-        if (specialization is null)
-        {
-            return NotFound();
-        }
-
-        dbContext.Specializations.Remove(specialization);
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        return NoContent();
+        var success = await _service.DeleteAsync(id);
+        if (!success) return NotFound();
+        return Ok("Nie znalezniono Specializacji o tym ID w Bazie");
     }
 }
-
-public sealed record SpecializationDto(int SpecializationId, string Name, string? Description);
-
-public sealed record CreateSpecializationRequest(string Name, string? Description);
-
-public sealed record UpdateSpecializationRequest(string Name, string? Description);
