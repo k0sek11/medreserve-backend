@@ -6,7 +6,7 @@ using Medreserve.Features.Notification;
 using Medreserve.Features.Patient;
 using Medreserve.Features.Payment;
 using Medreserve.Features.Specialization;
-using Medreserve.Features.User;
+using Medreserve.Features.Users;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

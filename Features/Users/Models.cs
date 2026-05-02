@@ -4,13 +4,13 @@ using Medreserve.Features.Notification;
 using Medreserve.Features.Patient;
 using Medreserve.Features.Payment;
 
-namespace Medreserve.Features.User;
+namespace Medreserve.Features.Users;
 
 public class User : IdentityUser
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
-    public bool IsActive { get; set; } = true;
+    public bool IsActive { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 

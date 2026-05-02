@@ -1,5 +1,5 @@
 using Medreserve.Features.Appointment;
-using Medreserve.Features.User;
+using Medreserve.Features.Users;
 
 namespace Medreserve.Features.Payment;
 
@@ -32,5 +32,5 @@ public class OfflinePaymentApproval
     public string? Comment { get; set; }
 
     public Payment Payment { get; set; } = null!;
-    public Medreserve.Features.User.User ApprovedByUser { get; set; } = null!;
+    public Medreserve.Features.Users.User ApprovedByUser { get; set; } = null!;
 }

@@ -2,7 +2,7 @@ using Medreserve.Features.Appointment;
 using Medreserve.Features.AppointmentType;
 using Medreserve.Features.Clinic;
 using Medreserve.Features.Specialization;
-using Medreserve.Features.User;
+using Medreserve.Features.Users;
 
 namespace Medreserve.Features.Doctor;
 
@@ -13,7 +13,7 @@ public class Doctor
     public string LicenseNumber { get; set; } = string.Empty;
     public string? Bio { get; set; }
 
-    public Medreserve.Features.User.User User { get; set; } = null!;
+    public Medreserve.Features.Users.User User { get; set; } = null!;
     public ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
     public ICollection<DoctorSpecialization> DoctorSpecializations { get; set; } = new List<DoctorSpecialization>();
     public ICollection<ClinicDoctor> ClinicDoctors { get; set; } = new List<ClinicDoctor>();
