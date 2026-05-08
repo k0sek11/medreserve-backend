@@ -1,0 +1,62 @@
+[
+  {
+    "specializationId": 1,
+    "name": "Kardiolog",
+    "description": "Diagnostyka i leczenie chorób serca"
+  },
+  {
+    "specializationId": 2,
+    "name": "Dermatolog",
+    "description": "Problemy skórne"
+  },
+  {
+    "specializationId": 3,
+    "name": "Internista",
+    "description": "Choroby wewnętrzne"
+  },
+  {
+    "specializationId": 4,
+    "name": "Pediatra",
+    "description": "Pediatra - specjalista od dzieci"
+  },
+  {
+    "specializationId": 5,
+    "name": "Chirurg",
+    "description": "Zabiegi chirurgiczne"
+  },
+  {
+    "specializationId": 6,
+    "name": "Ortopeda",
+    "description": "Choroby kości i stawów"
+  },
+  {
+    "specializationId": 7,
+    "name": "Neurolog",
+    "description": "Choroby układu nerwowego"
+  },
+  {
+    "specializationId": 8,
+    "name": "Psychiatra",
+    "description": "Zaburzenia psychiatryczne"
+  },
+  {
+    "specializationId": 9,
+    "name": "Oftalmolog",
+    "description": "Choroby oczu"
+  },
+  {
+    "specializationId": 10,
+    "name": "Otolaryngolog",
+    "description": "Choroby ucha, nosa i gardła"
+  },
+  {
+    "specializationId": 11,
+    "name": "Urolog",
+    "description": "Choroby moczowo-płciowe"
+  },
+  {
+    "specializationId": 12,
+    "name": "Gastroenterolog",
+    "description": "Choroby przewodu pokarmowego"
+  }
+]

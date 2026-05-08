@@ -1,0 +1,287 @@
+[
+  {
+    "clinicId": 4,
+    "doctorId": 1,
+    "isOwner": true
+  },
+  {
+    "clinicId": 1,
+    "doctorId": 1,
+    "isOwner": false
+  },
+  {
+    "clinicId": 2,
+    "doctorId": 2,
+    "isOwner": true
+  },
+  {
+    "clinicId": 4,
+    "doctorId": 2,
+    "isOwner": false
+  },
+  {
+    "clinicId": 7,
+    "doctorId": 3,
+    "isOwner": true
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 4,
+    "isOwner": true
+  },
+  {
+    "clinicId": 6,
+    "doctorId": 4,
+    "isOwner": false
+  },
+  {
+    "clinicId": 8,
+    "doctorId": 4,
+    "isOwner": false
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 5,
+    "isOwner": true
+  },
+  {
+    "clinicId": 7,
+    "doctorId": 5,
+    "isOwner": false
+  },
+  {
+    "clinicId": 4,
+    "doctorId": 5,
+    "isOwner": false
+  },
+  {
+    "clinicId": 8,
+    "doctorId": 6,
+    "isOwner": true
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 6,
+    "isOwner": false
+  },
+  {
+    "clinicId": 7,
+    "doctorId": 6,
+    "isOwner": false
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 7,
+    "isOwner": true
+  },
+  {
+    "clinicId": 5,
+    "doctorId": 7,
+    "isOwner": false
+  },
+  {
+    "clinicId": 7,
+    "doctorId": 7,
+    "isOwner": false
+  },
+  {
+    "clinicId": 2,
+    "doctorId": 8,
+    "isOwner": true
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 9,
+    "isOwner": true
+  },
+  {
+    "clinicId": 8,
+    "doctorId": 9,
+    "isOwner": false
+  },
+  {
+    "clinicId": 1,
+    "doctorId": 9,
+    "isOwner": false
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 10,
+    "isOwner": true
+  },
+  {
+    "clinicId": 7,
+    "doctorId": 10,
+    "isOwner": false
+  },
+  {
+    "clinicId": 6,
+    "doctorId": 11,
+    "isOwner": true
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 11,
+    "isOwner": false
+  },
+  {
+    "clinicId": 8,
+    "doctorId": 12,
+    "isOwner": true
+  },
+  {
+    "clinicId": 5,
+    "doctorId": 12,
+    "isOwner": false
+  },
+  {
+    "clinicId": 2,
+    "doctorId": 12,
+    "isOwner": false
+  },
+  {
+    "clinicId": 8,
+    "doctorId": 13,
+    "isOwner": true
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 13,
+    "isOwner": false
+  },
+  {
+    "clinicId": 4,
+    "doctorId": 13,
+    "isOwner": false
+  },
+  {
+    "clinicId": 4,
+    "doctorId": 14,
+    "isOwner": true
+  },
+  {
+    "clinicId": 1,
+    "doctorId": 15,
+    "isOwner": true
+  },
+  {
+    "clinicId": 2,
+    "doctorId": 16,
+    "isOwner": true
+  },
+  {
+    "clinicId": 4,
+    "doctorId": 16,
+    "isOwner": false
+  },
+  {
+    "clinicId": 6,
+    "doctorId": 17,
+    "isOwner": true
+  },
+  {
+    "clinicId": 8,
+    "doctorId": 17,
+    "isOwner": false
+  },
+  {
+    "clinicId": 5,
+    "doctorId": 17,
+    "isOwner": false
+  },
+  {
+    "clinicId": 6,
+    "doctorId": 18,
+    "isOwner": true
+  },
+  {
+    "clinicId": 5,
+    "doctorId": 18,
+    "isOwner": false
+  },
+  {
+    "clinicId": 4,
+    "doctorId": 18,
+    "isOwner": false
+  },
+  {
+    "clinicId": 2,
+    "doctorId": 19,
+    "isOwner": true
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 19,
+    "isOwner": false
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 20,
+    "isOwner": true
+  },
+  {
+    "clinicId": 8,
+    "doctorId": 20,
+    "isOwner": false
+  },
+  {
+    "clinicId": 6,
+    "doctorId": 21,
+    "isOwner": true
+  },
+  {
+    "clinicId": 3,
+    "doctorId": 21,
+    "isOwner": false
+  },
+  {
+    "clinicId": 5,
+    "doctorId": 21,
+    "isOwner": false
+  },
+  {
+    "clinicId": 4,
+    "doctorId": 22,
+    "isOwner": true
+  },
+  {
+    "clinicId": 1,
+    "doctorId": 22,
+    "isOwner": false
+  },
+  {
+    "clinicId": 8,
+    "doctorId": 22,
+    "isOwner": false
+  },
+  {
+    "clinicId": 6,
+    "doctorId": 23,
+    "isOwner": true
+  },
+  {
+    "clinicId": 2,
+    "doctorId": 23,
+    "isOwner": false
+  },
+  {
+    "clinicId": 5,
+    "doctorId": 23,
+    "isOwner": false
+  },
+  {
+    "clinicId": 4,
+    "doctorId": 24,
+    "isOwner": true
+  },
+  {
+    "clinicId": 6,
+    "doctorId": 25,
+    "isOwner": true
+  },
+  {
+    "clinicId": 2,
+    "doctorId": 25,
+    "isOwner": false
+  }
+]

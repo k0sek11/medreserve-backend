@@ -1,0 +1,378 @@
+[
+  {
+    "doctorId": 1,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 1,
+    "appointmentTypeId": 2
+  },
+  {
+    "doctorId": 1,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 1,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 2,
+    "appointmentTypeId": 2
+  },
+  {
+    "doctorId": 2,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 2,
+    "appointmentTypeId": 5
+  },
+  {
+    "doctorId": 2,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 3,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 3,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 3,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 3,
+    "appointmentTypeId": 6
+  },
+  {
+    "doctorId": 4,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 4,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 5,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 5,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 5,
+    "appointmentTypeId": 5
+  },
+  {
+    "doctorId": 5,
+    "appointmentTypeId": 2
+  },
+  {
+    "doctorId": 6,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 6,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 7,
+    "appointmentTypeId": 5
+  },
+  {
+    "doctorId": 7,
+    "appointmentTypeId": 6
+  },
+  {
+    "doctorId": 7,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 7,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 8,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 8,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 8,
+    "appointmentTypeId": 2
+  },
+  {
+    "doctorId": 8,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 8,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 9,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 9,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 9,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 9,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 10,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 10,
+    "appointmentTypeId": 5
+  },
+  {
+    "doctorId": 10,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 10,
+    "appointmentTypeId": 6
+  },
+  {
+    "doctorId": 11,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 11,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 11,
+    "appointmentTypeId": 5
+  },
+  {
+    "doctorId": 11,
+    "appointmentTypeId": 6
+  },
+  {
+    "doctorId": 12,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 12,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 12,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 12,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 12,
+    "appointmentTypeId": 2
+  },
+  {
+    "doctorId": 13,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 13,
+    "appointmentTypeId": 2
+  },
+  {
+    "doctorId": 13,
+    "appointmentTypeId": 6
+  },
+  {
+    "doctorId": 14,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 14,
+    "appointmentTypeId": 5
+  },
+  {
+    "doctorId": 14,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 14,
+    "appointmentTypeId": 6
+  },
+  {
+    "doctorId": 14,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 15,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 15,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 15,
+    "appointmentTypeId": 5
+  },
+  {
+    "doctorId": 15,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 15,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 16,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 16,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 16,
+    "appointmentTypeId": 2
+  },
+  {
+    "doctorId": 16,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 16,
+    "appointmentTypeId": 6
+  },
+  {
+    "doctorId": 17,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 17,
+    "appointmentTypeId": 6
+  },
+  {
+    "doctorId": 18,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 18,
+    "appointmentTypeId": 6
+  },
+  {
+    "doctorId": 19,
+    "appointmentTypeId": 6
+  },
+  {
+    "doctorId": 19,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 19,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 19,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 19,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 20,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 20,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 20,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 20,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 21,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 21,
+    "appointmentTypeId": 2
+  },
+  {
+    "doctorId": 21,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 22,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 22,
+    "appointmentTypeId": 5
+  },
+  {
+    "doctorId": 23,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 23,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 23,
+    "appointmentTypeId": 1
+  },
+  {
+    "doctorId": 23,
+    "appointmentTypeId": 5
+  },
+  {
+    "doctorId": 23,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 24,
+    "appointmentTypeId": 3
+  },
+  {
+    "doctorId": 24,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 24,
+    "appointmentTypeId": 7
+  },
+  {
+    "doctorId": 25,
+    "appointmentTypeId": 4
+  },
+  {
+    "doctorId": 25,
+    "appointmentTypeId": 8
+  },
+  {
+    "doctorId": 25,
+    "appointmentTypeId": 2
+  },
+  {
+    "doctorId": 25,
+    "appointmentTypeId": 5
+  }
+]
