@@ -1,0 +1,1112 @@
+[
+  {
+    "scheduleId": 1,
+    "doctorId": 1,
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 2,
+    "doctorId": 1,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 3,
+    "doctorId": 1,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 4,
+    "doctorId": 1,
+    "dayOfWeek": 4,
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 5,
+    "doctorId": 1,
+    "dayOfWeek": 5,
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 6,
+    "doctorId": 2,
+    "dayOfWeek": 1,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 7,
+    "doctorId": 2,
+    "dayOfWeek": 2,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 8,
+    "doctorId": 2,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 9,
+    "doctorId": 2,
+    "dayOfWeek": 5,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 10,
+    "doctorId": 3,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 11,
+    "doctorId": 3,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 12,
+    "doctorId": 3,
+    "dayOfWeek": 4,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 13,
+    "doctorId": 3,
+    "dayOfWeek": 5,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 14,
+    "doctorId": 4,
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "14:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 15,
+    "doctorId": 4,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 16,
+    "doctorId": 4,
+    "dayOfWeek": 3,
+    "startTime": "09:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 17,
+    "doctorId": 4,
+    "dayOfWeek": 4,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 18,
+    "doctorId": 4,
+    "dayOfWeek": 5,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 19,
+    "doctorId": 5,
+    "dayOfWeek": 1,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 20,
+    "doctorId": 5,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 21,
+    "doctorId": 5,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 22,
+    "doctorId": 5,
+    "dayOfWeek": 5,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 23,
+    "doctorId": 6,
+    "dayOfWeek": 1,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 24,
+    "doctorId": 6,
+    "dayOfWeek": 2,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 25,
+    "doctorId": 6,
+    "dayOfWeek": 3,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 26,
+    "doctorId": 6,
+    "dayOfWeek": 4,
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 27,
+    "doctorId": 7,
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "14:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 28,
+    "doctorId": 7,
+    "dayOfWeek": 2,
+    "startTime": "08:00",
+    "endTime": "14:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 29,
+    "doctorId": 7,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 30,
+    "doctorId": 7,
+    "dayOfWeek": 4,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 31,
+    "doctorId": 7,
+    "dayOfWeek": 5,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 32,
+    "doctorId": 8,
+    "dayOfWeek": 1,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 33,
+    "doctorId": 8,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 34,
+    "doctorId": 8,
+    "dayOfWeek": 3,
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 35,
+    "doctorId": 8,
+    "dayOfWeek": 4,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 36,
+    "doctorId": 8,
+    "dayOfWeek": 5,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 37,
+    "doctorId": 9,
+    "dayOfWeek": 1,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 38,
+    "doctorId": 9,
+    "dayOfWeek": 2,
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 39,
+    "doctorId": 9,
+    "dayOfWeek": 3,
+    "startTime": "09:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 40,
+    "doctorId": 9,
+    "dayOfWeek": 4,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 41,
+    "doctorId": 10,
+    "dayOfWeek": 1,
+    "startTime": "09:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 42,
+    "doctorId": 10,
+    "dayOfWeek": 2,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 43,
+    "doctorId": 10,
+    "dayOfWeek": 4,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 44,
+    "doctorId": 10,
+    "dayOfWeek": 5,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 45,
+    "doctorId": 11,
+    "dayOfWeek": 1,
+    "startTime": "09:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 46,
+    "doctorId": 11,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 47,
+    "doctorId": 11,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 48,
+    "doctorId": 11,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 49,
+    "doctorId": 11,
+    "dayOfWeek": 5,
+    "startTime": "09:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 50,
+    "doctorId": 12,
+    "dayOfWeek": 2,
+    "startTime": "09:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 51,
+    "doctorId": 12,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 52,
+    "doctorId": 12,
+    "dayOfWeek": 4,
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 53,
+    "doctorId": 12,
+    "dayOfWeek": 5,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 54,
+    "doctorId": 13,
+    "dayOfWeek": 1,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 55,
+    "doctorId": 13,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 56,
+    "doctorId": 13,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 57,
+    "doctorId": 13,
+    "dayOfWeek": 5,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 58,
+    "doctorId": 14,
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 59,
+    "doctorId": 14,
+    "dayOfWeek": 2,
+    "startTime": "08:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 60,
+    "doctorId": 14,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 61,
+    "doctorId": 14,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 62,
+    "doctorId": 14,
+    "dayOfWeek": 5,
+    "startTime": "08:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 63,
+    "doctorId": 15,
+    "dayOfWeek": 1,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 64,
+    "doctorId": 15,
+    "dayOfWeek": 2,
+    "startTime": "08:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 65,
+    "doctorId": 15,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 66,
+    "doctorId": 15,
+    "dayOfWeek": 4,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 67,
+    "doctorId": 15,
+    "dayOfWeek": 5,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 68,
+    "doctorId": 16,
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "14:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 69,
+    "doctorId": 16,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 70,
+    "doctorId": 16,
+    "dayOfWeek": 3,
+    "startTime": "08:00",
+    "endTime": "14:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 71,
+    "doctorId": 16,
+    "dayOfWeek": 4,
+    "startTime": "08:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 72,
+    "doctorId": 16,
+    "dayOfWeek": 5,
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 73,
+    "doctorId": 17,
+    "dayOfWeek": 1,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 74,
+    "doctorId": 17,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 75,
+    "doctorId": 17,
+    "dayOfWeek": 4,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 76,
+    "doctorId": 17,
+    "dayOfWeek": 5,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 77,
+    "doctorId": 18,
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "14:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 78,
+    "doctorId": 18,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 79,
+    "doctorId": 18,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 80,
+    "doctorId": 18,
+    "dayOfWeek": 5,
+    "startTime": "08:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 81,
+    "doctorId": 19,
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "14:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 82,
+    "doctorId": 19,
+    "dayOfWeek": 2,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 83,
+    "doctorId": 19,
+    "dayOfWeek": 3,
+    "startTime": "08:00",
+    "endTime": "14:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 84,
+    "doctorId": 19,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 85,
+    "doctorId": 20,
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 86,
+    "doctorId": 20,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 87,
+    "doctorId": 20,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 88,
+    "doctorId": 20,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 89,
+    "doctorId": 20,
+    "dayOfWeek": 5,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 90,
+    "doctorId": 21,
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 91,
+    "doctorId": 21,
+    "dayOfWeek": 2,
+    "startTime": "08:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 92,
+    "doctorId": 21,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 93,
+    "doctorId": 21,
+    "dayOfWeek": 4,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 94,
+    "doctorId": 21,
+    "dayOfWeek": 5,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 95,
+    "doctorId": 22,
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "14:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 96,
+    "doctorId": 22,
+    "dayOfWeek": 2,
+    "startTime": "08:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 97,
+    "doctorId": 22,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 98,
+    "doctorId": 22,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 99,
+    "doctorId": 23,
+    "dayOfWeek": 1,
+    "startTime": "09:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 100,
+    "doctorId": 23,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 101,
+    "doctorId": 23,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 102,
+    "doctorId": 23,
+    "dayOfWeek": 4,
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 103,
+    "doctorId": 24,
+    "dayOfWeek": 1,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 104,
+    "doctorId": 24,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 105,
+    "doctorId": 24,
+    "dayOfWeek": 3,
+    "startTime": "08:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 106,
+    "doctorId": 24,
+    "dayOfWeek": 4,
+    "startTime": "08:00",
+    "endTime": "14:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 107,
+    "doctorId": 24,
+    "dayOfWeek": 5,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 108,
+    "doctorId": 25,
+    "dayOfWeek": 2,
+    "startTime": "10:00",
+    "endTime": "18:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 109,
+    "doctorId": 25,
+    "dayOfWeek": 3,
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 110,
+    "doctorId": 25,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  },
+  {
+    "scheduleId": 111,
+    "doctorId": 25,
+    "dayOfWeek": 5,
+    "startTime": "09:00",
+    "endTime": "16:00",
+    "validFrom": "2026-01-01T00:00:00Z",
+    "validTo": null,
+    "isActive": true
+  }
+]

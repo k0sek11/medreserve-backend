@@ -18,7 +18,7 @@ public class ClinicsController(DatabaseContext dbContext) : ControllerBase
             .Select(x => new ClinicDto(
                 x.ClinicId,
                 x.Name,
-                x.Address,
+                x.StreetAddress,
                 x.PhoneNumber,
                 x.Email,
                 x.IsActive
@@ -38,7 +38,7 @@ public class ClinicsController(DatabaseContext dbContext) : ControllerBase
             .Select(x => new ClinicDto(
                 x.ClinicId,
                 x.Name,
-                x.Address,
+                x.StreetAddress,
                 x.PhoneNumber,
                 x.Email,
                 x.IsActive
@@ -54,7 +54,8 @@ public class ClinicsController(DatabaseContext dbContext) : ControllerBase
         var clinic = new Clinic
         {
             Name = request.Name,
-            Address = request.Address,
+            StreetAddress = request.StreetAddress,
+            CityId = request.CityId,
             PhoneNumber = request.PhoneNumber,
             Email = request.Email,
             IsActive = request.IsActive
@@ -66,7 +67,7 @@ public class ClinicsController(DatabaseContext dbContext) : ControllerBase
         var result = new ClinicDto(
             clinic.ClinicId,
             clinic.Name,
-            clinic.Address,
+            clinic.StreetAddress,
             clinic.PhoneNumber,
             clinic.Email,
             clinic.IsActive
@@ -88,8 +89,8 @@ public class ClinicsController(DatabaseContext dbContext) : ControllerBase
             return NotFound();
         }
 
-        clinic.Name = request.Name;
-        clinic.Address = request.Address;
+        clinic.StreetAddress = request.StreetAddress;
+        clinic.CityId = request.CityId;
         clinic.PhoneNumber = request.PhoneNumber;
         clinic.Email = request.Email;
         clinic.IsActive = request.IsActive;
@@ -100,7 +101,7 @@ public class ClinicsController(DatabaseContext dbContext) : ControllerBase
             new ClinicDto(
                 clinic.ClinicId,
                 clinic.Name,
-                clinic.Address,
+                clinic.StreetAddress,
                 clinic.PhoneNumber,
                 clinic.Email,
                 clinic.IsActive
@@ -122,12 +123,126 @@ public class ClinicsController(DatabaseContext dbContext) : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("cities")]
+    public async Task<ActionResult<IReadOnlyList<CityDto>>> GetCities(CancellationToken cancellationToken)
+    {
+        var cities = await dbContext
+            .Cities
+            .AsNoTracking()
+            .OrderBy(x => x.Voivodeship)
+            .ThenBy(x => x.District)
+            .ThenBy(x => x.Name)
+            .Select(x => new CityDto(x.CityId, x.Name, x.District, x.Voivodeship))
+            .ToListAsync(cancellationToken);
+
+        return Ok(cities);
+    }
+
+    [HttpGet("specializations")]
+    public async Task<ActionResult<IReadOnlyList<SpecializationDto>>> GetSpecializations(CancellationToken cancellationToken)
+    {
+        var specializations = await dbContext
+            .Specializations
+            .AsNoTracking()
+            .OrderBy(x => x.Name)
+            .Select(x => new SpecializationDto(x.SpecializationId, x.Name, x.Description))
+            .ToListAsync(cancellationToken);
+
+        return Ok(specializations);
+    }
+
+    [HttpGet("cities/{cityId:int}/specializations")]
+    public async Task<ActionResult<IReadOnlyList<SpecializationDto>>> GetSpecializationsByCity(
+        int cityId,
+        CancellationToken cancellationToken
+    )
+    {
+        var cityExists = await dbContext
+            .Cities
+            .AsNoTracking()
+            .AnyAsync(x => x.CityId == cityId, cancellationToken);
+
+        if (!cityExists)
+        {
+            return NotFound("City not found");
+        }
+
+        var specializations = await dbContext.Doctors
+            .AsNoTracking()
+            .Where(d => d.ClinicDoctors.Any(cd => cd.Clinic.CityId == cityId))
+            .SelectMany(d => d.DoctorSpecializations)
+            .Select(x => x.Specialization)
+            .Distinct()
+            .OrderBy(x => x.Name)
+            .ToListAsync(cancellationToken);
+
+        return Ok(specializations.Select(x => new SpecializationDto(
+            x.SpecializationId,
+            x.Name,
+            x.Description
+        )));
+    }
+
+    [HttpGet("cities/by-specialization/{specializationId:int}")]
+    public async Task<ActionResult<IReadOnlyList<CityDto>>> GetCitiesBySpecialization(
+        int specializationId,
+        CancellationToken cancellationToken
+    )
+    {
+        var specializationExists = await dbContext
+            .Specializations
+            .AsNoTracking()
+            .AnyAsync(x => x.SpecializationId == specializationId, cancellationToken);
+
+        if (!specializationExists)
+        {
+            return NotFound("Specialization not found");
+        }
+
+        var cities = await dbContext.Doctors
+            .AsNoTracking()
+            .Where(d => d.DoctorSpecializations.Any(ds => ds.SpecializationId == specializationId))
+            .SelectMany(d => d.ClinicDoctors.Select(cd => cd.Clinic.City))
+            .Distinct()
+            .OrderBy(x => x.Voivodeship)
+            .ThenBy(x => x.District)
+            .ThenBy(x => x.Name)
+            .Select(x => new CityDto(x.CityId, x.Name, x.District, x.Voivodeship))
+            .ToListAsync(cancellationToken);
+
+        return Ok(cities);
+    }
+
+    [HttpGet("by-city/{cityId:int}")]
+    public async Task<ActionResult<IReadOnlyList<ClinicDto>>> GetClinicsByCity(
+        int cityId,
+        CancellationToken cancellationToken
+    )
+    {
+        var clinics = await dbContext
+            .Clinics
+            .AsNoTracking()
+            .Where(x => x.CityId == cityId && x.IsActive)
+            .OrderBy(x => x.Name)
+            .Select(x => new ClinicDto(
+                x.ClinicId,
+                x.Name,
+                x.StreetAddress,
+                x.PhoneNumber,
+                x.Email,
+                x.IsActive
+            ))
+            .ToListAsync(cancellationToken);
+
+        return Ok(clinics);
+    }
 }
 
 public sealed record ClinicDto(
     int ClinicId,
     string Name,
-    string Address,
+    string StreetAddress,
     string? PhoneNumber,
     string? Email,
     bool IsActive
@@ -135,7 +250,8 @@ public sealed record ClinicDto(
 
 public sealed record CreateClinicRequest(
     string Name,
-    string Address,
+    string StreetAddress,
+    int CityId,
     string? PhoneNumber,
     string? Email,
     bool IsActive
@@ -143,8 +259,22 @@ public sealed record CreateClinicRequest(
 
 public sealed record UpdateClinicRequest(
     string Name,
-    string Address,
+    string StreetAddress,
+    int CityId,
     string? PhoneNumber,
     string? Email,
     bool IsActive
+);
+
+public sealed record CityDto(
+    int CityId,
+    string Name,
+    string District,
+    string Voivodeship
+);
+
+public sealed record SpecializationDto(
+    int SpecializationId,
+    string Name,
+    string? Description
 );

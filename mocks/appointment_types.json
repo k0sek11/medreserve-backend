@@ -1,0 +1,58 @@
+[
+  {
+    "appointmentTypeId": 1,
+    "name": "Konsultacja pierwszorazowa",
+    "description": "Pierwsza wizyta u specjalisty",
+    "basePrice": 220.0,
+    "durationMinutes": 30
+  },
+  {
+    "appointmentTypeId": 2,
+    "name": "Wizyta kontrolna",
+    "description": "Wizyta kontrolna",
+    "basePrice": 170.0,
+    "durationMinutes": 20
+  },
+  {
+    "appointmentTypeId": 3,
+    "name": "Teleporada",
+    "description": "Konsultacja online",
+    "basePrice": 140.0,
+    "durationMinutes": 20
+  },
+  {
+    "appointmentTypeId": 4,
+    "name": "Badanie ultrasonograficzne",
+    "description": "Badanie USG",
+    "basePrice": 300.0,
+    "durationMinutes": 40
+  },
+  {
+    "appointmentTypeId": 5,
+    "name": "Zabieg diagnostyczny",
+    "description": "Zabiegi diagnostyczne",
+    "basePrice": 400.0,
+    "durationMinutes": 60
+  },
+  {
+    "appointmentTypeId": 6,
+    "name": "Wizyta krótka",
+    "description": "Krótka konsultacja",
+    "basePrice": 100.0,
+    "durationMinutes": 15
+  },
+  {
+    "appointmentTypeId": 7,
+    "name": "Badania laboratoryjne",
+    "description": "Pobranie materiału do badań",
+    "basePrice": 150.0,
+    "durationMinutes": 10
+  },
+  {
+    "appointmentTypeId": 8,
+    "name": "Konsultacja długa",
+    "description": "Rozszerzona konsultacja",
+    "basePrice": 350.0,
+    "durationMinutes": 45
+  }
+]

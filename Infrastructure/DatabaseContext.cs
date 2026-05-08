@@ -2,6 +2,7 @@ using Medreserve.Features.Appointment;
 using Medreserve.Features.AppointmentType;
 using Medreserve.Features.Clinic;
 using Medreserve.Features.Doctor;
+using Medreserve.Features.Geography;
 using Medreserve.Features.Notification;
 using Medreserve.Features.Patient;
 using Medreserve.Features.Payment;
@@ -18,6 +19,7 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
     public DbSet<Doctor> Doctors => Set<Doctor>();
     public DbSet<Clinic> Clinics => Set<Clinic>();
     public DbSet<ClinicDoctor> ClinicDoctors => Set<ClinicDoctor>();
+    public DbSet<City> Cities => Set<City>();
     public DbSet<Specialization> Specializations => Set<Specialization>();
     public DbSet<DoctorSpecialization> DoctorSpecializations => Set<DoctorSpecialization>();
     public DbSet<DoctorSchedule> DoctorSchedules => Set<DoctorSchedule>();
@@ -81,8 +83,15 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
         {
             entity.HasKey(x => x.ClinicId);
             entity.Property(x => x.Name).IsRequired();
-            entity.Property(x => x.Address).IsRequired();
+            entity.Property(x => x.StreetAddress).IsRequired();
             entity.Property(x => x.IsActive).IsRequired();
+            entity.Property(x => x.CityId).IsRequired();
+
+            entity
+                .HasOne(x => x.City)
+                .WithMany(x => x.Clinics)
+                .HasForeignKey(x => x.CityId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<ClinicDoctor>(entity =>
@@ -253,6 +262,15 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
                 .WithMany(x => x.Notifications)
                 .HasForeignKey(x => x.AppointmentId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<City>(entity =>
+        {
+            entity.HasKey(x => x.CityId);
+            entity.Property(x => x.Name).IsRequired();
+            entity.Property(x => x.District).IsRequired();
+            entity.Property(x => x.Voivodeship).IsRequired();
+            entity.HasIndex(x => new { x.Name, x.District, x.Voivodeship }).IsUnique();
         });
     }
 }
