@@ -7,7 +7,10 @@ public class Clinic
 {
     public int ClinicId { get; set; }
     public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
     public string StreetAddress { get; set; } = string.Empty;
+    public string? OpeningHours { get; set; }
+    public string? MapLocation { get; set; }
     public string? PhoneNumber { get; set; }
     public string? Email { get; set; }
     public bool IsActive { get; set; }

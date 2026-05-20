@@ -148,6 +148,10 @@ namespace Medreserve.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("city_id");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
                     b.Property<string>("Email")
                         .HasColumnType("text")
                         .HasColumnName("email");
@@ -161,9 +165,17 @@ namespace Medreserve.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<string>("OpeningHours")
+                        .HasColumnType("text")
+                        .HasColumnName("opening_hours");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text")
                         .HasColumnName("phone_number");
+
+                    b.Property<string>("MapLocation")
+                        .HasColumnType("text")
+                        .HasColumnName("map_location");
 
                     b.Property<string>("StreetAddress")
                         .IsRequired()

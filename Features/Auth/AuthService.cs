@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Medreserve.Features.Users; 
+using Microsoft.EntityFrameworkCore;
+using Medreserve.Features.Users;
 
 namespace Medreserve.Features.Auth;
 
@@ -18,20 +19,20 @@ public class AuthService : IAuthService
     {
         var user = new User
         {
-            UserName = request.Email, 
+            UserName = request.Email,
             Email = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
-            
-            IsActive = false 
+
+            IsActive = false
         };
-        
+
         var result = await _userManager.CreateAsync(user, request.Password);
-        
-        
+
+
         if (!result.Succeeded)
         {
-            return false; 
+            return false;
         }
 
         return true;
@@ -40,9 +41,9 @@ public class AuthService : IAuthService
     public async Task<bool> LoginAsync(LoginDto request)
     {
         var result = await _signInManager.PasswordSignInAsync(
-            request.Email, 
-            request.Password, 
-            isPersistent: true, 
+            request.Email,
+            request.Password,
+            isPersistent: true,
             lockoutOnFailure: false);
 
         return result.Succeeded;
@@ -52,12 +53,14 @@ public class AuthService : IAuthService
     {
         await _signInManager.SignOutAsync();
     }
-    
+
     public async Task<UserSessionDto?> GetCurrentUserAsync(string userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.Users
+            .Include(x => x.DoctorProfile)
+            .FirstOrDefaultAsync(x => x.Id == userId);
         if (user == null) return null;
-        
+
         var roles = await _userManager.GetRolesAsync(user);
 
         return new UserSessionDto(
@@ -66,7 +69,8 @@ public class AuthService : IAuthService
             user.FirstName,
             user.LastName,
             user.IsActive,
-            roles
+            roles,
+            user.DoctorProfile?.DoctorId
         );
     }
 }
