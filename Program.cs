@@ -1,4 +1,5 @@
 using Medreserve.Features.Auth;
+using Medreserve.Features.Clinic;
 using Medreserve.Features.Patient;
 using Medreserve.Features.Specialization;
 using Medreserve.Features.Doctor;
@@ -41,6 +42,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<ISpecializationService, SpecializationService>();
+builder.Services.AddScoped<IClinicService, ClinicService>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
