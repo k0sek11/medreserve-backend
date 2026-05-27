@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Medreserve.Features.Users;
 
@@ -73,4 +74,55 @@ public class AuthService : IAuthService
             user.DoctorProfile?.DoctorId
         );
     }
+
+    public async Task<bool> LoginWithGoogleAsync(string googleToken)
+{
+    try
+    {
+        var settings = new GoogleJsonWebSignature.ValidationSettings()
+        {
+            Audience = new List<string>() { "140484954108-teas0lbcuvqb9a83upfejs6qad1t51e3.apps.googleusercontent.com" } 
+        };
+
+        var payload = await GoogleJsonWebSignature.ValidateAsync(googleToken, settings);
+
+        var info = new UserLoginInfo("Google", payload.Subject, "Google");
+        var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+        if (user == null)
+        {
+            user = await _userManager.FindByEmailAsync(payload.Email);
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    UserName = payload.Email,
+                    Email = payload.Email,
+                    FirstName = payload.GivenName,
+                    LastName = payload.FamilyName,
+                    IsActive = true 
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded) return false;
+            }
+
+            var addLoginResult = await _userManager.AddLoginAsync(user, info);
+            if (!addLoginResult.Succeeded) return false;
+        }
+
+        await _signInManager.SignInAsync(user, isPersistent: true);
+        
+        return true;
+    }
+    catch (InvalidJwtException)
+    {
+        return false;
+    }
+    catch (Exception)
+    {
+        return false;
+    }
+}
 }

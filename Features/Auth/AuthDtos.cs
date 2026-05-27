@@ -3,6 +3,11 @@
 public record RegisterDto(string Email, string Password, string FirstName, string LastName);
 public record LoginDto(string Email, string Password);
 
+public class GoogleLoginDto
+{
+    public string Token { get; set; } = string.Empty;
+}
+
 public record UserSessionDto(
     string Id,
     string Email,
