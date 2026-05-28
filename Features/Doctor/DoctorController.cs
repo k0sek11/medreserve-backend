@@ -20,6 +20,118 @@ public class DoctorsController : ControllerBase
         _dbContext = dbContext;
     }
 
+    [HttpGet("me/profile")]
+    public async Task<ActionResult<DoctorProfileDto>> GetMyProfile(CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var profile = await _doctorService.GetMyProfileAsync(currentUserId, cancellationToken);
+        return profile is null ? NotFound() : Ok(profile);
+    }
+
+    [HttpPut("me/profile")]
+    public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateDoctorProfileDto request, CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var success = await _doctorService.UpdateMyProfileAsync(currentUserId, request, cancellationToken);
+        return success ? Ok(new { message = "Doctor profile updated successfully." }) : NotFound();
+    }
+
+    [HttpGet("me/schedules")]
+    public async Task<ActionResult<IReadOnlyList<DoctorScheduleDto>>> GetMySchedules(CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var schedules = await _doctorService.GetMySchedulesAsync(currentUserId, cancellationToken);
+        return schedules is null ? NotFound() : Ok(schedules);
+    }
+
+    [HttpPost("me/schedules")]
+    public async Task<ActionResult<DoctorScheduleDto>> UpsertMySchedule(
+        [FromBody] UpsertDoctorScheduleDto request,
+        CancellationToken cancellationToken
+    )
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            var schedule = await _doctorService.UpsertMyScheduleAsync(currentUserId, request, cancellationToken);
+            return schedule is null ? NotFound() : Ok(schedule);
+        }
+        catch (ArgumentException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
+        catch (InvalidOperationException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
+    }
+
+    [HttpPut("me/schedules/{scheduleId:int}")]
+    public async Task<ActionResult<DoctorScheduleDto>> UpdateMySchedule(
+        int scheduleId,
+        [FromBody] UpsertDoctorScheduleDto request,
+        CancellationToken cancellationToken
+    )
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            var schedule = await _doctorService.UpsertMyScheduleAsync(
+                currentUserId,
+                request with { ScheduleId = scheduleId },
+                cancellationToken
+            );
+
+            return schedule is null ? NotFound() : Ok(schedule);
+        }
+        catch (ArgumentException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
+        catch (InvalidOperationException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
+    }
+
+    [HttpDelete("me/schedules/{scheduleId:int}")]
+    public async Task<IActionResult> DeleteMySchedule(int scheduleId, CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var success = await _doctorService.DeleteMyScheduleAsync(currentUserId, scheduleId, cancellationToken);
+        return success ? NoContent() : NotFound();
+    }
+
     [HttpPost("profile")]
     public async Task<IActionResult> CreateProfile([FromBody] CreateDoctorProfileDto request)
     {
@@ -57,6 +169,58 @@ public class DoctorsController : ControllerBase
             .FirstOrDefaultAsync(cancellationToken);
 
         return doctor is null ? NotFound() : Ok(doctor);
+    }
+
+    [HttpGet("{id:int}/profile")]
+    [AllowAnonymous]
+    public async Task<ActionResult<DoctorPublicProfileDto>> GetPublicProfile(int id, CancellationToken cancellationToken)
+    {
+        var profile = await _doctorService.GetPublicProfileAsync(id, cancellationToken);
+        return profile is null ? NotFound() : Ok(profile);
+    }
+
+    [HttpGet("{id:int}/availability")]
+    [AllowAnonymous]
+    public async Task<ActionResult<DoctorAvailabilityDto>> GetAvailability(
+        int id,
+        [FromQuery] DateOnly date,
+        [FromQuery] int appointmentTypeId,
+        [FromQuery] int? clinicId,
+        CancellationToken cancellationToken
+    )
+    {
+        var availability = await _doctorService.GetAvailabilityAsync(id, date, appointmentTypeId, clinicId, cancellationToken);
+        return availability is null ? NotFound() : Ok(availability);
+    }
+
+    [HttpGet("{id:int}/availability/calendar")]
+    [AllowAnonymous]
+    public async Task<ActionResult<DoctorAvailabilityCalendarDto>> GetAvailabilityCalendar(
+        int id,
+        [FromQuery] int year,
+        [FromQuery] int month,
+        [FromQuery] int appointmentTypeId,
+        [FromQuery] int? clinicId,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            var availability = await _doctorService.GetAvailabilityCalendarAsync(
+                id,
+                year,
+                month,
+                appointmentTypeId,
+                clinicId,
+                cancellationToken
+            );
+
+            return availability is null ? NotFound() : Ok(availability);
+        }
+        catch (ArgumentOutOfRangeException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
     }
 
     [HttpGet("search")]

@@ -3,6 +3,7 @@ using System;
 using Medreserve.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Medreserve.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260527205358_addGender")]
+    partial class addGender
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -288,10 +291,6 @@ namespace Medreserve.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("doctor_id");
 
-                    b.Property<int?>("ClinicId")
-                        .HasColumnType("integer")
-                        .HasColumnName("clinic_id");
-
                     b.Property<string>("EndTime")
                         .IsRequired()
                         .HasColumnType("text")
@@ -319,9 +318,6 @@ namespace Medreserve.Migrations
 
                     b.HasIndex("DoctorId")
                         .HasDatabaseName("ix_doctor_schedules_doctor_id");
-
-                    b.HasIndex("ClinicId")
-                        .HasDatabaseName("ix_doctor_schedules_clinic_id");
 
                     b.ToTable("doctor_schedules", (string)null);
                 });
@@ -950,20 +946,12 @@ namespace Medreserve.Migrations
 
             modelBuilder.Entity("Medreserve.Features.Doctor.DoctorSchedule", b =>
                 {
-                    b.HasOne("Medreserve.Features.Clinic.Clinic", "Clinic")
-                        .WithMany()
-                        .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_doctor_schedules_clinics_clinic_id");
-
                     b.HasOne("Medreserve.Features.Doctor.Doctor", "Doctor")
                         .WithMany("DoctorSchedules")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_doctor_schedules_doctors_doctor_id");
-
-                    b.Navigation("Clinic");
 
                     b.Navigation("Doctor");
                 });

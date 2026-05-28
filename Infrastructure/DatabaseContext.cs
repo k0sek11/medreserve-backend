@@ -4,7 +4,6 @@ using Medreserve.Features.Clinic;
 using Medreserve.Features.Doctor;
 using Medreserve.Features.Geography;
 using Medreserve.Features.Notification;
-using Medreserve.Features.Patient;
 using Medreserve.Features.Payment;
 using Medreserve.Features.Specialization;
 using Medreserve.Features.Users;
@@ -15,7 +14,6 @@ namespace Medreserve.Infrastructure;
 
 public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<User>
 {
-    public DbSet<Patient> Patients => Set<Patient>();
     public DbSet<Doctor> Doctors => Set<Doctor>();
     public DbSet<Clinic> Clinics => Set<Clinic>();
     public DbSet<ClinicDoctor> ClinicDoctors => Set<ClinicDoctor>();
@@ -47,22 +45,11 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
         {
             entity.Property(x => x.FirstName).IsRequired();
             entity.Property(x => x.LastName).IsRequired();
+            entity.Property(x => x.BirthDate).HasColumnType("date");
+            entity.Property(x => x.Gender);
             entity.Property(x => x.IsActive).IsRequired();
             entity.Property(x => x.CreatedAt).IsRequired();
             entity.Property(x => x.UpdatedAt).IsRequired();
-        });
-
-        modelBuilder.Entity<Patient>(entity =>
-        {
-            entity.HasKey(x => x.PatientId);
-            entity.HasIndex(x => x.UserId).IsUnique();
-            entity.HasIndex(x => x.Pesel).IsUnique();
-
-            entity
-                .HasOne(x => x.User)
-                .WithOne(x => x.PatientProfile)
-                .HasForeignKey<Patient>(x => x.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Doctor>(entity =>
@@ -139,6 +126,7 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
         modelBuilder.Entity<DoctorSchedule>(entity =>
         {
             entity.HasKey(x => x.ScheduleId);
+            entity.Property(x => x.ClinicId);
             entity.Property(x => x.DayOfWeek).IsRequired();
             entity.Property(x => x.StartTime).IsRequired();
             entity.Property(x => x.EndTime).IsRequired();
@@ -150,6 +138,14 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
                 .WithMany(x => x.DoctorSchedules)
                 .HasForeignKey(x => x.DoctorId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(x => x.ClinicId);
+
+            entity
+                .HasOne(x => x.Clinic)
+                .WithMany()
+                .HasForeignKey(x => x.ClinicId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<AppointmentType>(entity =>
@@ -187,9 +183,9 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
             entity.HasIndex(x => x.TimeSlotId).IsUnique();
 
             entity
-                .HasOne(x => x.Patient)
+                .HasOne(x => x.User)
                 .WithMany(x => x.Appointments)
-                .HasForeignKey(x => x.PatientId)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity

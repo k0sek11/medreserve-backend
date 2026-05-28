@@ -44,6 +44,7 @@ public class DoctorSchedule
 {
     public int ScheduleId { get; set; }
     public int DoctorId { get; set; }
+    public int? ClinicId { get; set; }
     public int DayOfWeek { get; set; }
     public string StartTime { get; set; } = string.Empty;
     public string EndTime { get; set; } = string.Empty;
@@ -52,6 +53,7 @@ public class DoctorSchedule
     public bool IsActive { get; set; }
 
     public Doctor Doctor { get; set; } = null!;
+    public Clinic.Clinic? Clinic { get; set; }
 }
 
 public class DoctorAppointmentType

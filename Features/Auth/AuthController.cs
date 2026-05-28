@@ -52,6 +52,27 @@ public class AuthController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPost("complete-profile")]
+    [Authorize]
+    public async Task<IActionResult> CompleteProfile([FromBody] CompleteProfileDto request)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var success = await _authService.CompleteProfileAsync(userId, request);
+
+        if (!success)
+        {
+            return BadRequest(new { message = "Nie udało się zapisać profilu." });
+        }
+
+        return Ok(new { message = "Profile completed successfully." });
+    }
     
     [HttpGet("me")]
     [Authorize]

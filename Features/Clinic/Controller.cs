@@ -17,8 +17,8 @@ public class ClinicsController(IClinicService service) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<Dto.ClinicDto>>> GetAll(CancellationToken cancellationToken)
     {
-       var clinic = await service.GetAllClinicsAsync(cancellationToken);
-       return Ok(clinic);
+        var clinic = await service.GetAllClinicsAsync(cancellationToken);
+        return Ok(clinic);
     }
 
     [HttpGet("{id:int}")]
@@ -33,8 +33,28 @@ public class ClinicsController(IClinicService service) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Dto.ClinicDto>> Create(Dto.CreateClinicRequest request, CancellationToken cancellationToken)
     {
-       var result = await service.CreateClinicAsync(request, cancellationToken);
-       return CreatedAtAction(nameof(GetById), new { id = result.ClinicId }, result);
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(currentUserId))
+        {
+            return Unauthorized();
+        }
+
+        var dbContext = HttpContext.RequestServices.GetRequiredService<DatabaseContext>();
+        var hasDoctorProfile = await dbContext.Doctors.AnyAsync(x => x.UserId == currentUserId, cancellationToken);
+        if (!hasDoctorProfile)
+        {
+            return Forbid();
+        }
+
+        try
+        {
+            var result = await service.CreateClinicAsync(request, currentUserId, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = result.ClinicId }, result);
+        }
+        catch (Exception ex)
+        {
+            return Problem(detail: $"Wystąpił błąd podczas tworzenia kliniki: {ex.Message}", statusCode: 500);
+        }
     }
 
     [HttpPut("{id:int}")]
@@ -56,7 +76,7 @@ public class ClinicsController(IClinicService service) : ControllerBase
         {
             return NotFound();
         }
-        
+
         return Ok("Poprawnie usunieto klinike");
     }
 
@@ -79,10 +99,10 @@ public class ClinicsController(IClinicService service) : ControllerBase
     [HttpGet("cities/{cityId:int}/specializations")]
     public async Task<ActionResult<IReadOnlyList<Dto.ClinicSpecializationDto>>> GetSpecializationsByCity(int cityId, CancellationToken cancellationToken)
     {
-       var result = await service.GetSpecializationByCityAsync(cityId, cancellationToken);
-       if(result is null)
-           return NotFound();
-       return Ok(result);
+        var result = await service.GetSpecializationByCityAsync(cityId, cancellationToken);
+        if (result is null)
+            return NotFound();
+        return Ok(result);
     }
 
     [HttpGet("cities/by-specialization/{specializationId:int}")]
@@ -97,10 +117,10 @@ public class ClinicsController(IClinicService service) : ControllerBase
     [HttpGet("by-city/{cityId:int}")]
     public async Task<ActionResult<IReadOnlyList<Dto.ClinicDto>>> GetClinicsByCity(int cityId, CancellationToken cancellationToken)
     {
-      var result = await service.GetClinicsByCityAsync(cityId, cancellationToken);
-      if (result is null)
-          return NotFound();
-      return Ok(result);
+        var result = await service.GetClinicsByCityAsync(cityId, cancellationToken);
+        if (result is null)
+            return NotFound();
+        return Ok(result);
     }
 
     [HttpGet("search")]
@@ -115,11 +135,15 @@ public class ClinicsController(IClinicService service) : ControllerBase
     [HttpGet("mine")]
     public async Task<ActionResult<IReadOnlyList<Dto.ClinicListItemDto>>> GetMyClinics(CancellationToken cancellationToken)
     {
-       var result = await service.GetMyClinicsAsync(currentUserId: User.FindFirstValue(ClaimTypes.NameIdentifier),cancellationToken);
-       if (result is null)
-           return NotFound();
-       return Ok(result);
-       
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrWhiteSpace(currentUserId))
+        {
+            return Unauthorized();
+        }
+
+        var result = await service.GetMyClinicsAsync(currentUserId, cancellationToken);
+        return Ok(result);
+
     }
 
     [HttpGet("{id:int}/details")]
@@ -147,7 +171,7 @@ public class ClinicsController(IClinicService service) : ControllerBase
         }
 
         var errorMessage = await service.ReqestJoinAsync(id, request, currentUserId, cancellationToken);
-    
+
         if (errorMessage is null)
         {
             return Ok(new { message = "Prośba została wysłana." });

@@ -1,6 +1,7 @@
 ﻿using Medreserve.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using Medreserve.Features.Doctor;
 using Medreserve.Features.Notification;
 using Medreserve.Features.Specialization;
 using NotificationEntity = Medreserve.Features.Notification.Notification;
@@ -32,7 +33,7 @@ public class ClinicService (DatabaseContext _context) : IClinicService
         
     }
 
-    public async Task<Dto.ClinicDto> GetClinicByIdAsync(int id, CancellationToken cancellationToken)
+    public async Task<Dto.ClinicDto?> GetClinicByIdAsync(int id, CancellationToken cancellationToken)
     {
         var clinic = await _context
             .Clinics
@@ -53,23 +54,44 @@ public class ClinicService (DatabaseContext _context) : IClinicService
         return clinic;
     }
 
-    public async Task<Dto.ClinicDto> CreateClinicAsync(Dto.CreateClinicRequest request, CancellationToken cancellationToken)
+    public async Task<Dto.ClinicDto> CreateClinicAsync(Dto.CreateClinicRequest request, string currentUserId, CancellationToken cancellationToken)
     {
+        var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == currentUserId, cancellationToken);
+        if (doctor is null)
+        {
+            throw new InvalidOperationException("Tylko lekarz może zarejestrować przychodnię.");
+        }
+
+        var cityExists = await _context.Cities.AnyAsync(x => x.CityId == request.CityId, cancellationToken);
+        if (!cityExists)
+        {
+            throw new InvalidOperationException("Nie znaleziono miasta.");
+        }
+
+        var openingHours = string.IsNullOrWhiteSpace(request.OpeningHours) ? null : request.OpeningHours.Trim();
+
         var clinic = new Clinic
         {
-            Name = request.Name,
-            Description = request.Description,
-            StreetAddress = request.StreetAddress,
-            OpeningHours = request.OpeningHours,
-            MapLocation = request.MapLocation,
+            Name = request.Name.Trim(),
+            Description = string.IsNullOrWhiteSpace(request.Description) ? null : request.Description.Trim(),
+            StreetAddress = request.StreetAddress.Trim(),
+            OpeningHours = openingHours,
+            MapLocation = string.IsNullOrWhiteSpace(request.MapLocation) ? null : request.MapLocation.Trim(),
             CityId = request.CityId,
-            PhoneNumber = request.PhoneNumber,
-            Email = request.Email,
-            IsActive = request.IsActive
+            PhoneNumber = string.IsNullOrWhiteSpace(request.PhoneNumber) ? null : request.PhoneNumber.Trim(),
+            Email = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email.Trim(),
+            IsActive = true
         };
+
+        clinic.ClinicDoctors.Add(new ClinicDoctor
+        {
+            DoctorId = doctor.DoctorId,
+            IsOwner = true
+        });
 
         _context.Clinics.Add(clinic);
         await _context.SaveChangesAsync(cancellationToken);
+
 
         var result = new Dto.ClinicDto(
             clinic.ClinicId,
@@ -190,7 +212,7 @@ public class ClinicService (DatabaseContext _context) : IClinicService
             .ToList();
     }
 
-    public async Task<IReadOnlyList<Dto.CityDto>> GetCitiesBySpecializationAsync(int specializationId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Dto.CityDto>?> GetCitiesBySpecializationAsync(int specializationId, CancellationToken cancellationToken)
     {
        
         var specializationExists = await _context
@@ -357,11 +379,11 @@ public class ClinicService (DatabaseContext _context) : IClinicService
    
     }
 
-    public async Task<IReadOnlyList<Dto.ClinicListItemDto>?> GetMyClinicsAsync(string currentUserId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Dto.ClinicListItemDto>> GetMyClinicsAsync(string currentUserId, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(currentUserId))
         {
-            return null;
+            return [];
         }
         var doctorId = await _context
             .Doctors
@@ -372,7 +394,7 @@ public class ClinicService (DatabaseContext _context) : IClinicService
 
         if (doctorId is null)
         {
-            return null;
+            return [];
         }
 
         var clinicRows = await _context

@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Medreserve.Features.Doctor;
 using Medreserve.Features.Users;
 
 namespace Medreserve.Features.Auth;
@@ -9,11 +10,16 @@ public class AuthService : IAuthService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly IDoctorService _doctorService;
 
-    public AuthService(UserManager<User> userManager, SignInManager<User> signInManager)
+    public AuthService(
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
+        IDoctorService doctorService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _doctorService = doctorService;
     }
 
     public async Task<bool> RegisterAsync(RegisterDto request)
@@ -22,9 +28,6 @@ public class AuthService : IAuthService
         {
             UserName = request.Email,
             Email = request.Email,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-
             IsActive = false
         };
 
@@ -101,7 +104,7 @@ public class AuthService : IAuthService
                     Email = payload.Email,
                     FirstName = payload.GivenName,
                     LastName = payload.FamilyName,
-                    IsActive = true 
+                    IsActive = false 
                 };
 
                 var createResult = await _userManager.CreateAsync(user);
@@ -125,4 +128,67 @@ public class AuthService : IAuthService
         return false;
     }
 }
+
+    public async Task<bool> CompleteProfileAsync(string userId, CompleteProfileDto request)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        if (!string.Equals(request.ProfileType, "Doctor", StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(request.ProfileType, "Patient", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        user.FirstName = request.FirstName.Trim();
+        user.LastName = request.LastName.Trim();
+        user.PhoneNumber = request.PhoneNumber.Trim();
+        user.BirthDate = request.BirthDate;
+        user.Gender = request.Gender.Trim();
+        user.UpdatedAt = DateTime.UtcNow;
+
+        if (!string.Equals(request.ProfileType, "Doctor", StringComparison.OrdinalIgnoreCase))
+        {
+            user.IsActive = true;
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                return false;
+            }
+
+            if (!await _userManager.IsInRoleAsync(user, "Patient"))
+            {
+                var roleResult = await _userManager.AddToRoleAsync(user, "Patient");
+                if (!roleResult.Succeeded)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(request.LicenseNumber))
+        {
+            return false;
+        }
+
+        var profileResult = await _doctorService.CreateProfileAsync(
+            userId,
+            new CreateDoctorProfileDto(request.LicenseNumber.Trim(), null, null)
+        );
+
+        if (!profileResult)
+        {
+            return false;
+        }
+
+        user.IsActive = true;
+        var finalResult = await _userManager.UpdateAsync(user);
+        return finalResult.Succeeded;
+    }
 }

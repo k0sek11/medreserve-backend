@@ -1,7 +1,17 @@
 ﻿namespace Medreserve.Features.Auth;
 
-public record RegisterDto(string Email, string Password, string FirstName, string LastName);
+public record RegisterDto(string Email, string Password);
 public record LoginDto(string Email, string Password);
+
+public sealed record CompleteProfileDto(
+    string ProfileType,
+    string FirstName,
+    string LastName,
+    string PhoneNumber,
+    DateOnly BirthDate,
+    string Gender,
+    string? LicenseNumber
+);
 
 public class GoogleLoginDto
 {

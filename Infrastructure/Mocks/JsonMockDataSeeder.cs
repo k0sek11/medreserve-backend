@@ -122,6 +122,12 @@ public sealed class JsonMockDataSeeder(
         }));
 
         await dbContext.SaveChangesAsync(cancellationToken);
+        await SyncIdentitySequenceAsync("cities", "city_id", cancellationToken);
+        await SyncIdentitySequenceAsync("specializations", "specialization_id", cancellationToken);
+        await SyncIdentitySequenceAsync("appointment_types", "appointment_type_id", cancellationToken);
+        await SyncIdentitySequenceAsync("clinics", "clinic_id", cancellationToken);
+        await SyncIdentitySequenceAsync("doctors", "doctor_id", cancellationToken);
+        await SyncIdentitySequenceAsync("doctor_schedules", "schedule_id", cancellationToken);
 
         logger.LogInformation(
             "Mock seeding complete. cities={Cities}, clinics={Clinics}, specs={Specs}, doctors={Doctors}, users={Users}",
@@ -205,6 +211,12 @@ public sealed class JsonMockDataSeeder(
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
             await userManager.ResetPasswordAsync(user, token, DefaultPassword);
         }
+    }
+
+    private async Task SyncIdentitySequenceAsync(string tableName, string columnName, CancellationToken cancellationToken)
+    {
+        var sql = $"SELECT setval(pg_get_serial_sequence('{tableName}', '{columnName}'), COALESCE((SELECT MAX({columnName}) FROM {tableName}), 0) + 1, false);";
+        await dbContext.Database.ExecuteSqlRawAsync(sql, cancellationToken);
     }
 
     private static string ResolveMocksDirectory()

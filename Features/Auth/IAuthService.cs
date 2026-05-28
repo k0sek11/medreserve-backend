@@ -7,4 +7,5 @@ public interface IAuthService
     Task LogoutAsync();
     Task<bool> LoginWithGoogleAsync(string googleToken);
     Task<UserSessionDto?> GetCurrentUserAsync(string userId);
+    Task<bool> CompleteProfileAsync(string userId, CompleteProfileDto request);
 }
