@@ -120,6 +120,16 @@ public class AppointmentTypesController(DatabaseContext dbContext) : ControllerB
             return NotFound();
         }
 
+        var appointments = await dbContext.Appointments
+            .Where(x => x.AppointmentTypeId == id)
+            .ToListAsync(cancellationToken);
+
+        foreach (var appointment in appointments)
+        {
+            appointment.AppointmentTypeId = null;
+            appointment.AppointmentType = null;
+        }
+
         dbContext.AppointmentTypes.Remove(appointmentType);
         await dbContext.SaveChangesAsync(cancellationToken);
 

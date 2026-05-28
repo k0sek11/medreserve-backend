@@ -76,6 +76,109 @@ public class DoctorService : IDoctorService
         return true;
     }
 
+    public async Task<DoctorAppointmentTypeDto?> CreateMyAppointmentTypeAsync(
+        string userId,
+        CreateDoctorAppointmentTypeDto request,
+        CancellationToken cancellationToken
+    )
+    {
+        var doctor = await _dbContext.Doctors
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+
+        if (doctor is null)
+        {
+            return null;
+        }
+
+        var name = request.Name.Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("Appointment type name is required.");
+        }
+
+        if (request.BasePrice < 0)
+        {
+            throw new ArgumentException("Appointment type price must be zero or greater.");
+        }
+
+        if (request.DurationMinutes <= 0)
+        {
+            throw new ArgumentException("Appointment type duration must be greater than zero.");
+        }
+
+        var duplicateExists = await _dbContext.DoctorAppointmentTypes
+            .AsNoTracking()
+            .AnyAsync(
+                x => x.DoctorId == doctor.DoctorId && x.AppointmentType.Name == name,
+                cancellationToken
+            );
+
+        if (duplicateExists)
+        {
+            throw new InvalidOperationException("Masz już typ wizyty o takiej nazwie.");
+        }
+
+        var appointmentType = new AppointmentTypeEntity
+        {
+            Name = name,
+            Description = null,
+            BasePrice = request.BasePrice,
+            DurationMinutes = request.DurationMinutes,
+        };
+
+        _dbContext.AppointmentTypes.Add(appointmentType);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        _dbContext.DoctorAppointmentTypes.Add(new DoctorAppointmentType
+        {
+            DoctorId = doctor.DoctorId,
+            AppointmentTypeId = appointmentType.AppointmentTypeId,
+        });
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return MapAppointmentType(appointmentType);
+    }
+
+    public async Task<bool> DeleteMyAppointmentTypeAsync(string userId, int appointmentTypeId, CancellationToken cancellationToken)
+    {
+        var doctor = await _dbContext.Doctors
+            .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+
+        if (doctor is null)
+        {
+            return false;
+        }
+
+        var doctorAppointmentType = await _dbContext.DoctorAppointmentTypes
+            .Include(x => x.AppointmentType)
+            .FirstOrDefaultAsync(
+                x => x.DoctorId == doctor.DoctorId && x.AppointmentTypeId == appointmentTypeId,
+                cancellationToken
+            );
+
+        if (doctorAppointmentType is null || doctorAppointmentType.AppointmentType is null)
+        {
+            return false;
+        }
+
+        var affectedAppointments = await _dbContext.Appointments
+            .Where(x => x.AppointmentTypeId == appointmentTypeId)
+            .ToListAsync(cancellationToken);
+
+        foreach (var appointment in affectedAppointments)
+        {
+            appointment.AppointmentTypeId = null;
+        }
+
+        _dbContext.DoctorAppointmentTypes.Remove(doctorAppointmentType);
+        _dbContext.AppointmentTypes.Remove(doctorAppointmentType.AppointmentType);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
     public async Task<IReadOnlyList<DoctorScheduleDto>?> GetMySchedulesAsync(string userId, CancellationToken cancellationToken)
     {
         var doctor = await LoadDoctorDetailsAsync(userId: userId, doctorId: null, cancellationToken);
@@ -518,7 +621,7 @@ public class DoctorService : IDoctorService
         {
             var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
             var start = AppointmentSchedulingHelper.ToDateTime(date, startTime);
-            var end = start.AddMinutes(appointment.AppointmentType.DurationMinutes);
+            var end = start.AddMinutes(appointment.AppointmentTypeDurationMinutes);
             return (date, start, end);
         }
         catch

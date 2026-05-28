@@ -78,7 +78,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-//To do zerkniecia role musza zawsze byc juz w bazie danych + migracje nie wiem czy dobre rozwiazanie
 await app.ApplyDatabaseSetupAsync();
 
 var isSeedMocksCommand = args.Any(x => x.Equals("seed-mocks", StringComparison.OrdinalIgnoreCase));

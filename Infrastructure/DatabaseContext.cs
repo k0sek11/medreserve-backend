@@ -7,6 +7,7 @@ using Medreserve.Features.Notification;
 using Medreserve.Features.Payment;
 using Medreserve.Features.Specialization;
 using Medreserve.Features.Users;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,11 +31,14 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
+
         if (!options.IsConfigured)
         {
             var connectionString = configuration.GetConnectionString("Default");
             options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
         }
+        options.EnableSensitiveDataLogging();
+        options.EnableDetailedErrors();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -154,7 +158,6 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
             entity.Property(x => x.Name).IsRequired();
             entity.Property(x => x.BasePrice).IsRequired();
             entity.Property(x => x.DurationMinutes).IsRequired();
-            entity.HasIndex(x => x.Name).IsUnique();
         });
 
         modelBuilder.Entity<DoctorAppointmentType>(entity =>
@@ -180,6 +183,7 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
             entity.Property(x => x.Status).IsRequired();
             entity.Property(x => x.CreatedAt).IsRequired();
             entity.Property(x => x.UpdatedAt).IsRequired();
+            entity.Property(x => x.AppointmentTypeDurationMinutes).IsRequired();
             entity.HasIndex(x => x.TimeSlotId).IsUnique();
 
             entity
@@ -198,7 +202,7 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
                 .HasOne(x => x.AppointmentType)
                 .WithMany(x => x.Appointments)
                 .HasForeignKey(x => x.AppointmentTypeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Payment>(entity =>
@@ -258,6 +262,18 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
                 .WithMany(x => x.Notifications)
                 .HasForeignKey(x => x.AppointmentId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<IdentityRole>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Name).IsRequired();
+            entity.HasIndex(x => x.Name).IsUnique();
+            entity.HasData(
+                new IdentityRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = "sdfsdfsdfdfg" },
+                new IdentityRole { Id = "2", Name = "Doctor", NormalizedName = "DOCTOR", ConcurrencyStamp = "sdfsdfsfdfg" },
+                new IdentityRole { Id = "3", Name = "Patient", NormalizedName = "PATIENT", ConcurrencyStamp = "sdanjkdfsfdfg" }
+             );
         });
 
         modelBuilder.Entity<City>(entity =>

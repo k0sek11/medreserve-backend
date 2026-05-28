@@ -46,6 +46,46 @@ public class DoctorsController : ControllerBase
         return success ? Ok(new { message = "Doctor profile updated successfully." }) : NotFound();
     }
 
+    [HttpPost("me/appointment-types")]
+    public async Task<ActionResult<DoctorAppointmentTypeDto>> CreateMyAppointmentType(
+        [FromBody] CreateDoctorAppointmentTypeDto request,
+        CancellationToken cancellationToken
+    )
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            var appointmentType = await _doctorService.CreateMyAppointmentTypeAsync(currentUserId, request, cancellationToken);
+            return appointmentType is null ? NotFound() : Ok(appointmentType);
+        }
+        catch (ArgumentException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Conflict(new { message = exception.Message });
+        }
+    }
+
+    [HttpDelete("me/appointment-types/{appointmentTypeId:int}")]
+    public async Task<IActionResult> DeleteMyAppointmentType(int appointmentTypeId, CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var success = await _doctorService.DeleteMyAppointmentTypeAsync(currentUserId, appointmentTypeId, cancellationToken);
+        return success ? NoContent() : NotFound();
+    }
+
     [HttpGet("me/schedules")]
     public async Task<ActionResult<IReadOnlyList<DoctorScheduleDto>>> GetMySchedules(CancellationToken cancellationToken)
     {

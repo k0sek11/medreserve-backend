@@ -3,6 +3,7 @@ using System;
 using Medreserve.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Medreserve.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260528162324_UpdateRoles")]
+    partial class UpdateRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,11 +34,7 @@ namespace Medreserve.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AppointmentId"));
 
-                    b.Property<int>("AppointmentTypeDurationMinutes")
-                        .HasColumnType("integer")
-                        .HasColumnName("appointment_type_duration_minutes");
-
-                    b.Property<int?>("AppointmentTypeId")
+                    b.Property<int>("AppointmentTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("appointment_type_id");
 
@@ -885,7 +884,8 @@ namespace Medreserve.Migrations
                     b.HasOne("Medreserve.Features.AppointmentType.AppointmentType", "AppointmentType")
                         .WithMany("Appointments")
                         .HasForeignKey("AppointmentTypeId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
                         .HasConstraintName("fk_appointments_appointment_types_appointment_type_id");
 
                     b.HasOne("Medreserve.Features.Doctor.Doctor", "Doctor")

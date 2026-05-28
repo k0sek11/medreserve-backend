@@ -15,6 +15,12 @@ public sealed record DoctorAppointmentTypeDto(
     int DurationMinutes
 );
 
+public sealed record CreateDoctorAppointmentTypeDto(
+    string Name,
+    decimal BasePrice,
+    int DurationMinutes
+);
+
 public sealed record DoctorClinicDto(
     int ClinicId,
     string Name,

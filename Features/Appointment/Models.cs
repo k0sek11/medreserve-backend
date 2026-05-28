@@ -12,7 +12,8 @@ public class Appointment
     public string UserId { get; set; } = string.Empty;
     public int DoctorId { get; set; }
     public int TimeSlotId { get; set; }
-    public int AppointmentTypeId { get; set; }
+    public int? AppointmentTypeId { get; set; }
+    public int AppointmentTypeDurationMinutes { get; set; }
     public string Status { get; set; } = string.Empty;
     public string? DoctorNotes { get; set; }
     public string? CancellationReason { get; set; }
@@ -24,7 +25,7 @@ public class Appointment
 
     public User User { get; set; } = null!;
     public Doctor.Doctor Doctor { get; set; } = null!;
-    public AppointmentType.AppointmentType AppointmentType { get; set; } = null!;
+    public AppointmentType.AppointmentType? AppointmentType { get; set; }
     public ICollection<Payment.Payment> Payments { get; set; } = new List<Payment.Payment>();
     public ICollection<Notification.Notification> Notifications { get; set; } = new List<Notification.Notification>();
 }
@@ -34,7 +35,7 @@ public sealed record AppointmentSummaryDto(
     int DoctorId,
     string DoctorName,
     string DoctorSpecialization,
-    string AppointmentType,
+    string? AppointmentType,
     DateOnly Date,
     string StartTime,
     string EndTime,
@@ -46,7 +47,7 @@ public sealed record AppointmentDetailDto(
     int DoctorId,
     string DoctorName,
     string DoctorSpecialization,
-    string AppointmentType,
+    string? AppointmentType,
     DateOnly Date,
     string StartTime,
     string EndTime,

@@ -232,7 +232,7 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
                 notification.Appointment.AppointmentId,
                 notification.Appointment.DoctorId,
                 DoctorName = $"{notification.Appointment.Doctor.User.FirstName} {notification.Appointment.Doctor.User.LastName}",
-                notification.Appointment.AppointmentType.Name,
+                AppointmentType = notification.Appointment.AppointmentType?.Name ?? "Nieznane",
                 notification.Appointment.Status,
             }),
             Status = "Sent",
@@ -268,7 +268,7 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
     {
         var appointment = notification.Appointment!;
         var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
-        var endTime = startTime.AddMinutes(appointment.AppointmentType.DurationMinutes);
+        var endTime = startTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
 
         return new AppointmentNotificationDto(
             notification.NotificationId,
@@ -276,7 +276,7 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
             appointment.DoctorId,
             $"{appointment.Doctor.User.FirstName} {appointment.Doctor.User.LastName}",
             $"{appointment.User.FirstName} {appointment.User.LastName}",
-            appointment.AppointmentType.Name,
+            appointment.AppointmentType?.Name,
             date,
             startTime.ToString("HH:mm"),
             endTime.ToString("HH:mm"),

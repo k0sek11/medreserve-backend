@@ -163,6 +163,7 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
                 UserId = currentUserId,
                 DoctorId = request.DoctorId,
                 AppointmentTypeId = request.AppointmentTypeId,
+                AppointmentTypeDurationMinutes = appointmentType.DurationMinutes,
                 TimeSlotId = timeSlotId,
                 Status = "Pending",
                 CreatedAt = DateTime.UtcNow,
@@ -257,7 +258,7 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
         {
             var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
             var start = AppointmentSchedulingHelper.ToDateTime(date, startTime);
-            var end = start.AddMinutes(appointment.AppointmentType.DurationMinutes);
+            var end = start.AddMinutes(appointment.AppointmentTypeDurationMinutes);
             return (date, start, end);
         }
         catch
@@ -269,14 +270,14 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
     private static AppointmentSummaryDto MapSummary(Appointment appointment)
     {
         var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
-        var endTime = startTime.AddMinutes(appointment.AppointmentType.DurationMinutes);
+        var endTime = startTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
 
         return new AppointmentSummaryDto(
             appointment.AppointmentId,
             appointment.DoctorId,
             $"{appointment.Doctor.User.FirstName} {appointment.Doctor.User.LastName}",
             appointment.Doctor.DoctorSpecializations.Select(x => x.Specialization.Name).FirstOrDefault() ?? string.Empty,
-            appointment.AppointmentType.Name,
+            appointment.AppointmentType?.Name,
             date,
             startTime.ToString("HH:mm"),
             endTime.ToString("HH:mm"),
@@ -287,14 +288,14 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
     private static AppointmentDetailDto MapDetail(Appointment appointment)
     {
         var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
-        var endTime = startTime.AddMinutes(appointment.AppointmentType.DurationMinutes);
+        var endTime = startTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
 
         return new AppointmentDetailDto(
             appointment.AppointmentId,
             appointment.DoctorId,
             $"{appointment.Doctor.User.FirstName} {appointment.Doctor.User.LastName}",
             appointment.Doctor.DoctorSpecializations.Select(x => x.Specialization.Name).FirstOrDefault() ?? string.Empty,
-            appointment.AppointmentType.Name,
+            appointment.AppointmentType?.Name,
             date,
             startTime.ToString("HH:mm"),
             endTime.ToString("HH:mm"),

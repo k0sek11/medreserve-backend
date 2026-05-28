@@ -34,7 +34,7 @@ public sealed record AppointmentNotificationDto(
     int DoctorId,
     string DoctorName,
     string PatientName,
-    string AppointmentType,
+    string? AppointmentType,
     DateOnly Date,
     string StartTime,
     string EndTime,
