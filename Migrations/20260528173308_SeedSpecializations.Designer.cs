@@ -3,6 +3,7 @@ using System;
 using Medreserve.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Medreserve.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260528173308_SeedSpecializations")]
+    partial class SeedSpecializations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -377,43 +380,6 @@ namespace Medreserve.Migrations
                         .HasDatabaseName("ix_cities_name_district_voivodeship");
 
                     b.ToTable("cities", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            CityId = 1,
-                            District = "Śródmieście",
-                            Name = "Warszawa",
-                            Voivodeship = "Mazowieckie"
-                        },
-                        new
-                        {
-                            CityId = 2,
-                            District = "Stare Miasto",
-                            Name = "Kraków",
-                            Voivodeship = "Małopolskie"
-                        },
-                        new
-                        {
-                            CityId = 3,
-                            District = "Śródmieście",
-                            Name = "Łódź",
-                            Voivodeship = "Łódzkie"
-                        },
-                        new
-                        {
-                            CityId = 4,
-                            District = "Stare Miasto",
-                            Name = "Wrocław",
-                            Voivodeship = "Dolnośląskie"
-                        },
-                        new
-                        {
-                            CityId = 5,
-                            District = "Stare Miasto",
-                            Name = "Poznań",
-                            Voivodeship = "Wielkopolskie"
-                        });
                 });
 
             modelBuilder.Entity("Medreserve.Features.Notification.Notification", b =>

@@ -45,6 +45,17 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<City>(entity =>
+        {
+            entity.HasData(
+                new City { CityId = 1, Name = "Warszawa", District = "Śródmieście", Voivodeship = "Mazowieckie" },
+                new City { CityId = 2, Name = "Kraków", District = "Stare Miasto", Voivodeship = "Małopolskie" },
+                new City { CityId = 3, Name = "Łódź", District = "Śródmieście", Voivodeship = "Łódzkie" },
+                new City { CityId = 4, Name = "Wrocław", District = "Stare Miasto", Voivodeship = "Dolnośląskie" },
+                new City { CityId = 5, Name = "Poznań", District = "Stare Miasto", Voivodeship = "Wielkopolskie" }
+             );
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.Property(x => x.FirstName).IsRequired();
@@ -108,6 +119,28 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
             entity.HasKey(x => x.SpecializationId);
             entity.Property(x => x.Name).IsRequired();
             entity.HasIndex(x => x.Name).IsUnique();
+            entity.HasData(
+                new Specialization { SpecializationId = 1, Name = "Alergolog", Description = null },
+                new Specialization { SpecializationId = 2, Name = "Anestezjolog", Description = null },
+                new Specialization { SpecializationId = 3, Name = "Chirurg ogólny", Description = null },
+                new Specialization { SpecializationId = 4, Name = "Internista", Description = null },
+                new Specialization { SpecializationId = 5, Name = "Dermatolog", Description = null },
+                new Specialization { SpecializationId = 6, Name = "Diabetolog", Description = null },
+                new Specialization { SpecializationId = 7, Name = "Endokrynolog", Description = null },
+                new Specialization { SpecializationId = 8, Name = "Gastroenterolog", Description = null },
+                new Specialization { SpecializationId = 9, Name = "Ginekolog", Description = null },
+                new Specialization { SpecializationId = 10, Name = "Kardiolog", Description = null },
+                new Specialization { SpecializationId = 11, Name = "Lekarz medycyny pracy", Description = null },
+                new Specialization { SpecializationId = 12, Name = "Lekarz medycyny rodzinnej", Description = null },
+                new Specialization { SpecializationId = 13, Name = "Neurolog", Description = null },
+                new Specialization { SpecializationId = 14, Name = "Okulista", Description = null },
+                new Specialization { SpecializationId = 15, Name = "Onkolog", Description = null },
+                new Specialization { SpecializationId = 16, Name = "Ortopeda", Description = null },
+                new Specialization { SpecializationId = 17, Name = "Pediatra", Description = null },
+                new Specialization { SpecializationId = 18, Name = "Psychiatra", Description = null },
+                new Specialization { SpecializationId = 19, Name = "Pulmonolog", Description = null },
+                new Specialization { SpecializationId = 20, Name = "Urolog", Description = null }
+            );
         });
 
         modelBuilder.Entity<DoctorSpecialization>(entity =>

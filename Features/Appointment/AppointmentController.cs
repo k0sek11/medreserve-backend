@@ -90,6 +90,8 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
                 .ThenInclude(x => x.AppointmentType)
             .Include(x => x.Appointments)
                 .ThenInclude(x => x.AppointmentType)
+            .Include(x => x.DoctorSpecializations)
+                .ThenInclude(x => x.Specialization)
             .FirstOrDefaultAsync(x => x.DoctorId == request.DoctorId, cancellationToken);
 
         if (doctor is null)
@@ -222,6 +224,8 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
 
             await dbContext.SaveChangesAsync(cancellationToken);
 
+            var doctorSpecialization = doctor.DoctorSpecializations.Select(x => x.Specialization.Name).FirstOrDefault() ?? string.Empty;
+
             return Ok(
                 new BookAppointmentResultDto(
                     appointment.AppointmentId,
@@ -230,10 +234,11 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
                     request.Date,
                     startTime.ToString("HH:mm"),
                     TimeOnly.FromDateTime(requestedEnd).ToString("HH:mm"),
-                    appointment.Status
+                    appointment.Status,
+                    doctorName,
+                    doctorSpecialization
                 )
-            )
-            ;
+            );
         }
         catch (ArgumentException exception)
         {
@@ -320,5 +325,7 @@ public sealed record BookAppointmentResultDto(
     DateOnly Date,
     string StartTime,
     string EndTime,
-    string Status
+    string Status,
+    string DoctorName,
+    string DoctorSpecialization
 );

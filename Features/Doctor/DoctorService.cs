@@ -37,7 +37,18 @@ public class DoctorService : IDoctorService
 
         if (request.SpecializationIds != null && request.SpecializationIds.Any())
         {
-            foreach (var specId in request.SpecializationIds)
+            var specializationIds = request.SpecializationIds.Distinct().ToArray();
+            var validSpecializationIds = await _dbContext.Specializations
+                .Where(x => specializationIds.Contains(x.SpecializationId))
+                .Select(x => x.SpecializationId)
+                .ToListAsync();
+
+            if (validSpecializationIds.Count != specializationIds.Length)
+            {
+                throw new ArgumentException("Jedna lub więcej specjalizacji nie istnieje.");
+            }
+
+            foreach (var specId in specializationIds)
             {
                 doctor.DoctorSpecializations.Add(new DoctorSpecialization
                 {
@@ -65,13 +76,41 @@ public class DoctorService : IDoctorService
 
     public async Task<bool> UpdateMyProfileAsync(string userId, UpdateDoctorProfileDto request, CancellationToken cancellationToken)
     {
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+        var doctor = await _dbContext.Doctors
+            .Include(x => x.DoctorSpecializations)
+            .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
         if (doctor is null)
         {
             return false;
         }
 
         doctor.Bio = request.Bio;
+
+        if (request.SpecializationIds is not null)
+        {
+            var specializationIds = request.SpecializationIds.Distinct().ToArray();
+            var validSpecializationIds = await _dbContext.Specializations
+                .Where(x => specializationIds.Contains(x.SpecializationId))
+                .Select(x => x.SpecializationId)
+                .ToListAsync(cancellationToken);
+
+            if (validSpecializationIds.Count != specializationIds.Length)
+            {
+                throw new ArgumentException("Jedna lub więcej specjalizacji nie istnieje.");
+            }
+
+            doctor.DoctorSpecializations.Clear();
+
+            foreach (var specializationId in specializationIds)
+            {
+                doctor.DoctorSpecializations.Add(new DoctorSpecialization
+                {
+                    DoctorId = doctor.DoctorId,
+                    SpecializationId = specializationId
+                });
+            }
+        }
+
         await _dbContext.SaveChangesAsync(cancellationToken);
         return true;
     }

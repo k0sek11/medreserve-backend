@@ -27,7 +27,7 @@ public class SpecializationController(ISpecializationService _service) : Control
     public async Task<ActionResult<SpecializationDto>> CreateSpecialization(CreateOrUpdateSpecializationDto dto)
     {
         var result = _service.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetSpecializationById),new{Id = result.Id}, result);
+        return CreatedAtAction(nameof(GetSpecializationById), new { Id = result.Id }, result);
     }
 
     [HttpPut("{id}")]
@@ -41,8 +41,15 @@ public class SpecializationController(ISpecializationService _service) : Control
     [HttpDelete("{id}")]
     public async Task<ActionResult<SpecializationDto>> Delete(int id)
     {
-        var success = await _service.DeleteAsync(id);
-        if (!success) return NotFound();
-        return Ok("Nie znalezniono Specializacji o tym ID w Bazie");
+        try
+        {
+            var success = await _service.DeleteAsync(id);
+            if (!success) return NotFound();
+            return Ok("Nie znalezniono Specializacji o tym ID w Bazie");
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Conflict(new { message = exception.Message });
+        }
     }
 }

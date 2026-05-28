@@ -51,7 +51,7 @@ public sealed record UpsertDoctorScheduleDto(
     bool IsActive
 );
 
-public sealed record UpdateDoctorProfileDto(string? Bio);
+public sealed record UpdateDoctorProfileDto(string? Bio, List<int>? SpecializationIds);
 
 public sealed record DoctorPublicProfileDto(
     int DoctorId,
