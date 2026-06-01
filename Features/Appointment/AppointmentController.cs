@@ -23,18 +23,15 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
             return Unauthorized();
         }
 
-        var appointments = await dbContext.Appointments
-            .AsNoTracking()
-            .Where(x => x.UserId == currentUserId)
-            .Include(x => x.Doctor)
-                .ThenInclude(x => x.User)
-            .Include(x => x.Doctor)
-                .ThenInclude(x => x.DoctorSpecializations)
-                    .ThenInclude(x => x.Specialization)
-            .Include(x => x.AppointmentType)
-            .OrderByDescending(x => x.CreatedAt)
-            .ToListAsync(cancellationToken);
-
+var appointments = await dbContext.Appointments
+    .AsNoTracking()
+    .Where(x => x.UserId == currentUserId)
+    .Include(x => x.Doctor).ThenInclude(x => x.User)
+    .Include(x => x.Doctor).ThenInclude(x => x.DoctorSpecializations).ThenInclude(x => x.Specialization)
+    .Include(x => x.AppointmentType)
+    .Include(x => x.Payments)
+    .OrderByDescending(x => x.CreatedAt)
+    .ToListAsync(cancellationToken);
         var result = appointments.Select(MapSummary).ToList();
         return Ok(result);
     }
@@ -57,6 +54,7 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
                 .ThenInclude(x => x.DoctorSpecializations)
                     .ThenInclude(x => x.Specialization)
             .Include(x => x.AppointmentType)
+            .Include(x => x.Payments)
             .FirstOrDefaultAsync(cancellationToken);
 
         return appointment is null ? NotFound() : Ok(MapDetail(appointment));
@@ -277,6 +275,8 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
         var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
         var endTime = startTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
 
+        var latestPayment = appointment.Payments.OrderByDescending(p => p.CreatedAt).FirstOrDefault();
+
         return new AppointmentSummaryDto(
             appointment.AppointmentId,
             appointment.DoctorId,
@@ -286,7 +286,12 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
             date,
             startTime.ToString("HH:mm"),
             endTime.ToString("HH:mm"),
-            appointment.Status
+            appointment.Status,
+        
+            latestPayment?.PaymentId,
+            latestPayment?.Status,
+            latestPayment?.Method,
+        appointment.AppointmentType?.BasePrice ?? 0
         );
     }
 
@@ -294,6 +299,7 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
     {
         var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
         var endTime = startTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
+        var latestPayment = appointment.Payments.OrderByDescending(p => p.CreatedAt).FirstOrDefault();
 
         return new AppointmentDetailDto(
             appointment.AppointmentId,
@@ -305,7 +311,10 @@ public class AppointmentsController(DatabaseContext dbContext) : ControllerBase
             startTime.ToString("HH:mm"),
             endTime.ToString("HH:mm"),
             appointment.Status,
-            appointment.CreatedAt
+            appointment.CreatedAt,
+            latestPayment?.PaymentId,
+                    latestPayment?.Status,
+                    latestPayment?.Method
         );
     }
 }

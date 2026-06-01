@@ -7,6 +7,9 @@ using Medreserve.Infrastructure;
 using Medreserve.Infrastructure.Mocks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi;
+using Medreserve.Features.Payment;
+using Medreserve.Features.Payment.PayU;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,13 +42,19 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthorization();
+builder.Services.Configure<PayUOptions>(builder.Configuration.GetSection("PayU"));
 
 builder.Services.AddScoped<ISpecializationService, SpecializationService>();
 builder.Services.AddScoped<IClinicService, ClinicService>();
-
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IMockDataSeeder, JsonMockDataSeeder>();
+builder.Services.AddHttpClient<IPayUService, PayUService>()
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        AllowAutoRedirect = false // <-- KAŻEMY MU SIĘ ZATRZYMAĆ NA PRZEKIEROWANIU
+    });
 
 builder
     .Services.AddIdentity<User, IdentityRole>(options =>

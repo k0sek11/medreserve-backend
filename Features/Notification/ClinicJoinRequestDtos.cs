@@ -41,7 +41,10 @@ public sealed record AppointmentNotificationDto(
     string Status,
     string NotificationStatus,
     DateTime CreatedAt,
-    string? Message
+    string? Message,
+    int? PaymentId = null,
+    string? PaymentStatus = null,
+    string? PaymentMethod = null
 );
 
 public sealed record AppointmentBookingPayload(

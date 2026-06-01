@@ -39,7 +39,12 @@ public sealed record AppointmentSummaryDto(
     DateOnly Date,
     string StartTime,
     string EndTime,
-    string Status
+    string Status,
+    
+    int? PaymentId = null,
+    string? PaymentStatus = null,
+    string? PaymentMethod = null,
+        decimal Price = 0
 );
 
 public sealed record AppointmentDetailDto(
@@ -52,5 +57,9 @@ public sealed record AppointmentDetailDto(
     string StartTime,
     string EndTime,
     string Status,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+
+    int? PaymentId = null,
+    string? PaymentStatus = null,
+    string? PaymentMethod = null
 );

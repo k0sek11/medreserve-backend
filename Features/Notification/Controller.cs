@@ -38,6 +38,7 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
                     .ThenInclude(x => x.User)
             .Include(x => x.Appointment)
                 .ThenInclude(x => x!.AppointmentType)
+            .Include(x => x.Appointment).ThenInclude(x => x!.Payments)
             .OrderByDescending(x => x.CreatedAt)
             .ToListAsync(cancellationToken);
 
@@ -270,6 +271,9 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
         var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
         var endTime = startTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
 
+        
+        var latestPayment = appointment.Payments?.OrderByDescending(p => p.CreatedAt).FirstOrDefault();
+        
         return new AppointmentNotificationDto(
             notification.NotificationId,
             appointment.AppointmentId,
@@ -283,7 +287,10 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
             appointment.Status,
             notification.Status,
             notification.CreatedAt,
-            notification.Subject
+            notification.Subject,
+            latestPayment?.PaymentId,
+                    latestPayment?.Status,
+                    latestPayment?.Method
         );
     }
 
