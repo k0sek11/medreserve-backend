@@ -1,0 +1,12 @@
+﻿[
+  { "paymentId": 1, "appointmentId": 1, "amount": 220.0, "currency": "PLN", "method": "PayU", "status": "Paid", "createdAt": "2026-06-01T08:05:00Z", "updatedAt": "2026-06-01T08:10:00Z", "paidAt": "2026-06-01T08:10:00Z" },
+  { "paymentId": 2, "appointmentId": 2, "amount": 170.0, "currency": "PLN", "method": "PayU", "status": "Paid", "createdAt": "2026-06-01T09:05:00Z", "updatedAt": "2026-06-01T09:12:00Z", "paidAt": "2026-06-01T09:12:00Z" },
+  { "paymentId": 3, "appointmentId": 3, "amount": 220.0, "currency": "PLN", "method": "Offline", "status": "Paid", "createdAt": "2026-06-02T10:05:00Z", "updatedAt": "2026-06-02T10:30:00Z", "paidAt": "2026-06-02T10:30:00Z" },
+  { "paymentId": 4, "appointmentId": 4, "amount": 140.0, "currency": "PLN", "method": "Offline", "status": "Pending", "createdAt": "2026-06-02T11:05:00Z", "updatedAt": "2026-06-02T11:05:00Z", "paidAt": null },
+  { "paymentId": 5, "appointmentId": 5, "amount": 220.0, "currency": "PLN", "method": "PayU", "status": "Pending", "createdAt": "2026-06-03T08:05:00Z", "updatedAt": "2026-06-03T08:05:00Z", "paidAt": null },
+  { "paymentId": 6, "appointmentId": 6, "amount": 170.0, "currency": "PLN", "method": "PayU", "status": "Failed", "createdAt": "2026-06-03T09:05:00Z", "updatedAt": "2026-06-03T09:10:00Z", "paidAt": null },
+  { "paymentId": 7, "appointmentId": 7, "amount": 140.0, "currency": "PLN", "method": "PayU", "status": "Failed", "createdAt": "2026-06-04T12:05:00Z", "updatedAt": "2026-06-04T12:08:00Z", "paidAt": null },
+  { "paymentId": 8, "appointmentId": 8, "amount": 220.0, "currency": "PLN", "method": "Offline", "status": "Pending", "createdAt": "2026-06-04T13:05:00Z", "updatedAt": "2026-06-04T13:05:00Z", "paidAt": null },
+  { "paymentId": 9, "appointmentId": 9, "amount": 170.0, "currency": "PLN", "method": "PayU", "status": "Pending", "createdAt": "2026-06-05T14:05:00Z", "updatedAt": "2026-06-05T14:05:00Z", "paidAt": null },
+  { "paymentId": 10, "appointmentId": 10, "amount": 220.0, "currency": "PLN", "method": "PayU", "status": "Pending", "createdAt": "2026-06-05T15:05:00Z", "updatedAt": "2026-06-05T15:05:00Z", "paidAt": null }
+]

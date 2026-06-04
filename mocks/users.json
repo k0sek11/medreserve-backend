@@ -1,602 +1,79 @@
 [
   {
-    "id": "b56d7db4-44ed-4de4-8ff8-c8defcf19805",
-    "email": "bogumila.duszynski@medreserve.local",
-    "firstName": "Bogumiła",
-    "lastName": "Duszynski",
-    "isActive": true,
-    "phoneNumber": "+48443714618"
-  },
-  {
-    "id": "2de81544-9650-4735-99d2-98d240d62029",
-    "email": "beata.lewandowski@medreserve.local",
-    "firstName": "Beata",
-    "lastName": "Lewandowski",
-    "isActive": true,
-    "phoneNumber": "+48418634134"
-  },
-  {
-    "id": "151b8c0d-26dc-4f07-ae00-be01835870c4",
-    "email": "barbora.duszynski@medreserve.local",
-    "firstName": "Barbora",
-    "lastName": "Duszynski",
-    "isActive": true,
-    "phoneNumber": "+48803223500"
-  },
-  {
-    "id": "beeeaf0d-bcb6-4299-be35-a8b0e21f60fc",
-    "email": "franciszek.wisniewski@medreserve.local",
-    "firstName": "Franciszek",
-    "lastName": "Wisniewski",
-    "isActive": true,
-    "phoneNumber": "+48456820991"
-  },
-  {
-    "id": "80c7d441-b3c2-437e-b2d5-55497d7af29c",
-    "email": "barbara.zajac@medreserve.local",
-    "firstName": "Barbara",
-    "lastName": "Zajac",
-    "isActive": true,
-    "phoneNumber": "+48741678410"
-  },
-  {
-    "id": "b150267e-825b-439a-85a2-07fcaf165813",
-    "email": "kornel.kowalski@medreserve.local",
-    "firstName": "Kornel",
+    "id": "doc-1",
+    "firstName": "Jan",
     "lastName": "Kowalski",
+    "email": "jan.kowalski@medreserve.pl",
+    "userName": "jan.kowalski@medreserve.pl",
     "isActive": true,
-    "phoneNumber": "+48621819778"
+    "gender": "Male",
+    "createdAt": "2026-05-01T10:00:00Z",
+    "updatedAt": "2026-05-01T10:00:00Z"
   },
   {
-    "id": "230ece96-9047-47ed-9a34-9ab3e768dd4a",
-    "email": "izydor.grabowski@medreserve.local",
-    "firstName": "Izydor",
-    "lastName": "Grabowski",
-    "isActive": true,
-    "phoneNumber": "+48448048552"
-  },
-  {
-    "id": "d8f0a38d-0003-4f15-8259-fa4854711f1f",
-    "email": "igor.nowak@medreserve.local",
-    "firstName": "Igor",
-    "lastName": "Nowak",
-    "isActive": true,
-    "phoneNumber": "+48713069774"
-  },
-  {
-    "id": "2524980e-4e11-46be-b3ce-c163ba7efc7c",
-    "email": "eryk.nowak@medreserve.local",
-    "firstName": "Eryk",
-    "lastName": "Nowak",
-    "isActive": true,
-    "phoneNumber": "+48544037244"
-  },
-  {
-    "id": "c46ca513-5392-40eb-805b-47dfcc675abd",
-    "email": "bernadetta.walczak@medreserve.local",
-    "firstName": "Bernadetta",
-    "lastName": "Walczak",
-    "isActive": true,
-    "phoneNumber": "+48710294424"
-  },
-  {
-    "id": "86a29bc1-c0c8-4edf-a26c-1c706df61653",
-    "email": "bora.dudek@medreserve.local",
-    "firstName": "Bora",
-    "lastName": "Dudek",
-    "isActive": true,
-    "phoneNumber": "+48572777958"
-  },
-  {
-    "id": "6ba898f1-859e-4c0f-afa4-fdb8a0793c7c",
-    "email": "anita.wilk@medreserve.local",
-    "firstName": "Anita",
-    "lastName": "Wilk",
-    "isActive": true,
-    "phoneNumber": "+48508759345"
-  },
-  {
-    "id": "45a1a50e-72fe-4482-87e7-9de0819d1378",
-    "email": "aniela.gabryel@medreserve.local",
-    "firstName": "Aniela",
-    "lastName": "Gabryel",
-    "isActive": true,
-    "phoneNumber": "+48464884620"
-  },
-  {
-    "id": "60b0ceea-f97e-42be-aaaa-875a7d6ca4e7",
-    "email": "klemens.wilk@medreserve.local",
-    "firstName": "Klemens",
-    "lastName": "Wilk",
-    "isActive": true,
-    "phoneNumber": "+48536729368"
-  },
-  {
-    "id": "8b20de50-9a94-41cc-b1b1-38dd9a3d899e",
-    "email": "emil.krawczyk@medreserve.local",
-    "firstName": "Emil",
-    "lastName": "Krawczyk",
-    "isActive": true,
-    "phoneNumber": "+48809906009"
-  },
-  {
-    "id": "822e87f1-3cd7-4c33-a0c9-85461ed24599",
-    "email": "dominik.galat@medreserve.local",
-    "firstName": "Dominik",
-    "lastName": "Galat",
-    "isActive": true,
-    "phoneNumber": "+48664482414"
-  },
-  {
-    "id": "d0a226a9-c319-4737-aabd-02e53e4b1e3c",
-    "email": "barbora.galezowski@medreserve.local",
-    "firstName": "Barbora",
-    "lastName": "Galezowski",
-    "isActive": true,
-    "phoneNumber": "+48554538399"
-  },
-  {
-    "id": "bc5ea95e-53df-4cb7-9406-cb7f7a27b70e",
-    "email": "bora.kaminski@medreserve.local",
-    "firstName": "Bora",
-    "lastName": "Kamiński",
-    "isActive": true,
-    "phoneNumber": "+48746486636"
-  },
-  {
-    "id": "6d32be96-db87-405a-9905-5ee8f467ac1a",
-    "email": "borka.walczak@medreserve.local",
-    "firstName": "Borka",
-    "lastName": "Walczak",
-    "isActive": true,
-    "phoneNumber": "+48414565660"
-  },
-  {
-    "id": "0f0be75c-05f4-4525-95dc-4b8d06c271e7",
-    "email": "henryk.gajewski@medreserve.local",
-    "firstName": "Henryk",
-    "lastName": "Gajewski",
-    "isActive": true,
-    "phoneNumber": "+48862496522"
-  },
-  {
-    "id": "6b13e771-8fa2-4ef4-8e7c-0a4f66a1ac35",
-    "email": "konstanty.chmiel@medreserve.local",
-    "firstName": "Konstanty",
-    "lastName": "Chmiel",
-    "isActive": true,
-    "phoneNumber": "+48670805770"
-  },
-  {
-    "id": "2dcafd19-727c-4344-a5d4-e7f10b830b33",
-    "email": "ariadna.urbanski@medreserve.local",
-    "firstName": "Ariadna",
-    "lastName": "Urbanski",
-    "isActive": true,
-    "phoneNumber": "+48822730229"
-  },
-  {
-    "id": "ce0fb2da-68a4-400f-adf0-3af57ccfe803",
-    "email": "ariadna.galezowski@medreserve.local",
-    "firstName": "Ariadna",
-    "lastName": "Galezowski",
-    "isActive": true,
-    "phoneNumber": "+48656445929"
-  },
-  {
-    "id": "1303bf8f-531e-4629-aafa-759996a0836d",
-    "email": "bartosz.zalewski@medreserve.local",
-    "firstName": "Bartosz",
-    "lastName": "Zalewski",
-    "isActive": true,
-    "phoneNumber": "+48573089989"
-  },
-  {
-    "id": "de737343-eb7b-46b4-8281-ce9069db652c",
-    "email": "jaroslaw.zajac@medreserve.local",
-    "firstName": "Jarosław",
-    "lastName": "Zajac",
-    "isActive": true,
-    "phoneNumber": "+48784578619"
-  },
-  {
-    "id": "0da44691-99ad-4f3d-a901-16dc8b5f4962",
-    "email": "berwina.wilk@medreserve.local",
-    "firstName": "Berwina",
-    "lastName": "Wilk",
-    "isActive": true,
-    "phoneNumber": "+48451239989"
-  },
-  {
-    "id": "b141c5af-e593-4f4d-9208-db13c5182994",
-    "email": "bojenna.walczak@medreserve.local",
-    "firstName": "Bojenna",
-    "lastName": "Walczak",
-    "isActive": true,
-    "phoneNumber": "+48580030538"
-  },
-  {
-    "id": "eca5154b-9c05-4a58-81db-9aa413dec3d0",
-    "email": "izydor.zajac@medreserve.local",
-    "firstName": "Izydor",
-    "lastName": "Zajac",
-    "isActive": true,
-    "phoneNumber": "+48681271525"
-  },
-  {
-    "id": "5ecf5aef-bb9d-45f4-9aae-80cfe021880c",
-    "email": "aleksandra.zalewski@medreserve.local",
-    "firstName": "Aleksandra",
-    "lastName": "Zalewski",
-    "isActive": true,
-    "phoneNumber": "+48792184136"
-  },
-  {
-    "id": "3c27f931-00a4-4c19-a658-c149f0a61196",
-    "email": "bolonia.szymczyk@medreserve.local",
-    "firstName": "Bolonia",
-    "lastName": "Szymczyk",
-    "isActive": true,
-    "phoneNumber": "+48778944394"
-  },
-  {
-    "id": "b54317c2-3774-4881-a20f-0c23a53c174f",
-    "email": "kamil.nowak@medreserve.local",
-    "firstName": "Kamil",
-    "lastName": "Nowak",
-    "isActive": true,
-    "phoneNumber": "+48683035263"
-  },
-  {
-    "id": "06a8594f-90f3-412e-8883-dd4a808f19b5",
-    "email": "bartosz.gajda@medreserve.local",
-    "firstName": "Bartosz",
-    "lastName": "Gajda",
-    "isActive": true,
-    "phoneNumber": "+48685318429"
-  },
-  {
-    "id": "7a6605cd-4a2a-4009-8305-9e280b5345f1",
-    "email": "justyn.sokolowski@medreserve.local",
-    "firstName": "Justyn",
-    "lastName": "Sokolowski",
-    "isActive": true,
-    "phoneNumber": "+48424055729"
-  },
-  {
-    "id": "30a9ee01-252a-40e3-a913-62d20367c891",
-    "email": "betrissa.galat@medreserve.local",
-    "firstName": "Betrissa",
-    "lastName": "Galat",
-    "isActive": true,
-    "phoneNumber": "+48707205816"
-  },
-  {
-    "id": "48321f25-0517-4d3c-8425-2f3f8a8667c6",
-    "email": "aleksandra.kaminski@medreserve.local",
-    "firstName": "Aleksandra",
-    "lastName": "Kamiński",
-    "isActive": true,
-    "phoneNumber": "+48626549109"
-  },
-  {
-    "id": "c71654f5-35ce-4ea4-8bb5-806f4a10465b",
-    "email": "jozef.zalewski@medreserve.local",
-    "firstName": "Józef",
-    "lastName": "Zalewski",
-    "isActive": true,
-    "phoneNumber": "+48581447392"
-  },
-  {
-    "id": "a0c88890-12a6-47d2-a52d-5286ce39d59e",
-    "email": "jaroslaw.chmiel@medreserve.local",
-    "firstName": "Jarosław",
-    "lastName": "Chmiel",
-    "isActive": true,
-    "phoneNumber": "+48540461293"
-  },
-  {
-    "id": "cfcd5bae-c797-44ce-ac75-03f846c4470d",
-    "email": "edward.fiedler@medreserve.local",
-    "firstName": "Edward",
-    "lastName": "Fiedler",
-    "isActive": true,
-    "phoneNumber": "+48712446756"
-  },
-  {
-    "id": "57cb7238-d24a-40da-bf94-ea01633a0e54",
-    "email": "berwina.krol@medreserve.local",
-    "firstName": "Berwina",
-    "lastName": "Krol",
-    "isActive": true,
-    "phoneNumber": "+48569698190"
-  },
-  {
-    "id": "4919da2e-6803-4eb7-aedd-d8bdcc4968d1",
-    "email": "krzysztof.sokolowski@medreserve.local",
-    "firstName": "Krzysztof",
-    "lastName": "Sokolowski",
-    "isActive": true,
-    "phoneNumber": "+48528158826"
-  },
-  {
-    "id": "dc6b71c0-6be6-49f6-82b8-5560717ea536",
-    "email": "beata.kaminski@medreserve.local",
-    "firstName": "Beata",
-    "lastName": "Kamiński",
-    "isActive": true,
-    "phoneNumber": "+48740857641"
-  },
-  {
-    "id": "dfe46855-e092-4657-a210-59c240b0b172",
-    "email": "julien.wisniewski@medreserve.local",
-    "firstName": "Julien",
-    "lastName": "Wisniewski",
-    "isActive": true,
-    "phoneNumber": "+48503935777"
-  },
-  {
-    "id": "a62246b3-035b-4daa-8300-def55448ed54",
-    "email": "aleksandra.zielinski@medreserve.local",
-    "firstName": "Aleksandra",
-    "lastName": "Zielinski",
-    "isActive": true,
-    "phoneNumber": "+48582504226"
-  },
-  {
-    "id": "645405e2-d084-4622-8797-6c8f679d7657",
-    "email": "anna.sokolowski@medreserve.local",
+    "id": "doc-2",
     "firstName": "Anna",
-    "lastName": "Sokolowski",
+    "lastName": "Nowak",
+    "email": "anna.nowak@medreserve.pl",
+    "userName": "anna.nowak@medreserve.pl",
     "isActive": true,
-    "phoneNumber": "+48850661594"
+    "gender": "Female",
+    "createdAt": "2026-05-01T10:00:00Z",
+    "updatedAt": "2026-05-01T10:00:00Z"
   },
   {
-    "id": "9c1133d5-002d-4c4b-a517-ab8487e229b4",
-    "email": "anna.gorski@medreserve.local",
-    "firstName": "Anna",
-    "lastName": "Gorski",
+    "id": "pat-1",
+    "firstName": "Michał",
+    "lastName": "Zieliński",
+    "email": "michal@example.com",
+    "userName": "michal@example.com",
     "isActive": true,
-    "phoneNumber": "+48524807951"
+    "gender": "Male",
+    "createdAt": "2026-05-10T10:00:00Z",
+    "updatedAt": "2026-05-10T10:00:00Z"
   },
   {
-    "id": "1bc48c3c-4f81-4a18-94b1-516837cdb9e0",
-    "email": "blanka.kaminski@medreserve.local",
-    "firstName": "Blanka",
+    "id": "pat-2",
+    "firstName": "Katarzyna",
+    "lastName": "Wiśniewska",
+    "email": "kasia@example.com",
+    "userName": "kasia@example.com",
+    "isActive": true,
+    "gender": "Female",
+    "createdAt": "2026-05-11T10:00:00Z",
+    "updatedAt": "2026-05-11T10:00:00Z"
+  },
+  {
+    "id": "pat-3",
+    "firstName": "Piotr",
     "lastName": "Kamiński",
+    "email": "piotr@example.com",
+    "userName": "piotr@example.com",
     "isActive": true,
-    "phoneNumber": "+48747765594"
+    "gender": "Male",
+    "createdAt": "2026-05-12T10:00:00Z",
+    "updatedAt": "2026-05-12T10:00:00Z"
   },
   {
-    "id": "d21b776f-dd28-4dc2-89d0-dfa6a9a02790",
-    "email": "barbara.gabryel@medreserve.local",
-    "firstName": "Barbara",
-    "lastName": "Gabryel",
+    "id": "pat-4",
+    "firstName": "Magdalena",
+    "lastName": "Lewandowska",
+    "email": "magda@example.com",
+    "userName": "magda@example.com",
     "isActive": true,
-    "phoneNumber": "+48464757923"
+    "gender": "Female",
+    "createdAt": "2026-05-13T10:00:00Z",
+    "updatedAt": "2026-05-13T10:00:00Z"
   },
   {
-    "id": "6eaf6377-eeb7-4bf7-8169-ace1bd6c2e84",
-    "email": "kazimierz.zamorski@medreserve.local",
-    "firstName": "Kazimierz",
-    "lastName": "Zamorski",
+    "id": "pat-5",
+    "firstName": "Tomasz",
+    "lastName": "Dąbrowski",
+    "email": "tomek@example.com",
+    "userName": "tomek@example.com",
     "isActive": true,
-    "phoneNumber": "+48505770212"
-  },
-  {
-    "id": "84f7da0d-291a-43a0-9cce-cf1ddaee64db",
-    "email": "julien.chmiel@medreserve.local",
-    "firstName": "Julien",
-    "lastName": "Chmiel",
-    "isActive": true,
-    "phoneNumber": "+48854003002"
-  },
-  {
-    "id": "ef4f2b29-15a9-40ac-ac8a-7648c429c945",
-    "email": "betina.krawczyk@medreserve.local",
-    "firstName": "Betina",
-    "lastName": "Krawczyk",
-    "isActive": true,
-    "phoneNumber": "+48753228173"
-  },
-  {
-    "id": "3498418d-b486-4cd2-aa28-24d21d7c3858",
-    "email": "kamil.zalewski@medreserve.local",
-    "firstName": "Kamil",
-    "lastName": "Zalewski",
-    "isActive": true,
-    "phoneNumber": "+48576847051"
-  },
-  {
-    "id": "0c21714e-3936-4494-a9b1-98b3ddd8db6d",
-    "email": "kamil.galewska@medreserve.local",
-    "firstName": "Kamil",
-    "lastName": "Galewska",
-    "isActive": true,
-    "phoneNumber": "+48552830457"
-  },
-  {
-    "id": "566d1000-1aaa-417c-8a41-5fb42fed8d9e",
-    "email": "izydor.fiedler@medreserve.local",
-    "firstName": "Izydor",
-    "lastName": "Fiedler",
-    "isActive": true,
-    "phoneNumber": "+48541125665"
-  },
-  {
-    "id": "00ea4620-bfca-4720-b925-fd34af6c4ec4",
-    "email": "jacek.michalski@medreserve.local",
-    "firstName": "Jacek",
-    "lastName": "Michalski",
-    "isActive": true,
-    "phoneNumber": "+48666105158"
-  },
-  {
-    "id": "23a61d94-b3b4-462f-b4a6-351dbdae05f9",
-    "email": "bartosz.galeziewski@medreserve.local",
-    "firstName": "Bartosz",
-    "lastName": "Galeziewski",
-    "isActive": true,
-    "phoneNumber": "+48859415330"
-  },
-  {
-    "id": "afed0e02-0d45-498d-9393-ff38d6afdf92",
-    "email": "judyta.galat@medreserve.local",
-    "firstName": "Judyta",
-    "lastName": "Galat",
-    "isActive": true,
-    "phoneNumber": "+48527686585"
-  },
-  {
-    "id": "dd2883b8-5420-4927-bc5a-e546ca329f67",
-    "email": "aurora.urbanski@medreserve.local",
-    "firstName": "Aurora",
-    "lastName": "Urbanski",
-    "isActive": true,
-    "phoneNumber": "+48880593940"
-  },
-  {
-    "id": "7a4f6ca6-4c6c-44e1-97bf-32d88e1f361e",
-    "email": "eugeniusz.wisniewski@medreserve.local",
-    "firstName": "Eugeniusz",
-    "lastName": "Wisniewski",
-    "isActive": true,
-    "phoneNumber": "+48877655176"
-  },
-  {
-    "id": "29e34bce-c581-43dc-a61d-42a0a55da449",
-    "email": "eryk.urbanski@medreserve.local",
-    "firstName": "Eryk",
-    "lastName": "Urbanski",
-    "isActive": true,
-    "phoneNumber": "+48809237428"
-  },
-  {
-    "id": "90e2839e-0240-4703-9352-0aedbc6935cc",
-    "email": "jozef.andrzejewski@medreserve.local",
-    "firstName": "Józef",
-    "lastName": "Andrzejewski",
-    "isActive": true,
-    "phoneNumber": "+48794554417"
-  },
-  {
-    "id": "11a53706-4598-4d2d-bcb1-cc291fa5e8e7",
-    "email": "jaroslaw.bogucki@medreserve.local",
-    "firstName": "Jarosław",
-    "lastName": "Bogucki",
-    "isActive": true,
-    "phoneNumber": "+48638106295"
-  },
-  {
-    "id": "fb46f3aa-ef40-4dfd-b526-3ff301fc04c7",
-    "email": "klemens.galewski@medreserve.local",
-    "firstName": "Klemens",
-    "lastName": "Galewski",
-    "isActive": true,
-    "phoneNumber": "+48568177912"
-  },
-  {
-    "id": "de5be5a9-f934-4d65-9b41-5b3272a5e3ac",
-    "email": "alina.galewska@medreserve.local",
-    "firstName": "Alina",
-    "lastName": "Galewska",
-    "isActive": true,
-    "phoneNumber": "+48493278276"
-  },
-  {
-    "id": "b71ba1c5-2114-4099-ae57-d115998906ae",
-    "email": "bernadetta.krawczyk@medreserve.local",
-    "firstName": "Bernadetta",
-    "lastName": "Krawczyk",
-    "isActive": true,
-    "phoneNumber": "+48831115546"
-  },
-  {
-    "id": "e2e5b788-7fd4-444f-b03e-ca11b9034360",
-    "email": "boguslawa.galdo@medreserve.local",
-    "firstName": "Bogusława",
-    "lastName": "Galdo",
-    "isActive": true,
-    "phoneNumber": "+48772625062"
-  },
-  {
-    "id": "4568dccc-9060-4d8c-b6ea-81f12c98a3ca",
-    "email": "bonita.dabrowski@medreserve.local",
-    "firstName": "Bonita",
-    "lastName": "Dabrowski",
-    "isActive": true,
-    "phoneNumber": "+48850050350"
-  },
-  {
-    "id": "9be7cc10-b4bc-49d8-9064-02743fda93ae",
-    "email": "demetriusz.andrzejewski@medreserve.local",
-    "firstName": "Demetriusz",
-    "lastName": "Andrzejewski",
-    "isActive": true,
-    "phoneNumber": "+48807798600"
-  },
-  {
-    "id": "ee9cfb1d-0c23-4411-8b81-8fe119ab83ac",
-    "email": "cezary.zajac@medreserve.local",
-    "firstName": "Cezary",
-    "lastName": "Zajac",
-    "isActive": true,
-    "phoneNumber": "+48491025561"
-  },
-  {
-    "id": "70b39671-78d3-4dae-acaa-c058b7c7b295",
-    "email": "bonita.zielinski@medreserve.local",
-    "firstName": "Bonita",
-    "lastName": "Zielinski",
-    "isActive": true,
-    "phoneNumber": "+48715524931"
-  },
-  {
-    "id": "21413ccc-519b-4f06-8b6e-b0f2bc23e333",
-    "email": "dawid.lewandowski@medreserve.local",
-    "firstName": "Dawid",
-    "lastName": "Lewandowski",
-    "isActive": true,
-    "phoneNumber": "+48433097587"
-  },
-  {
-    "id": "e119b947-6575-4090-ba22-166cce3dfcec",
-    "email": "bernata.galeziewski@medreserve.local",
-    "firstName": "Bernata",
-    "lastName": "Galeziewski",
-    "isActive": true,
-    "phoneNumber": "+48507797382"
-  },
-  {
-    "id": "8baefa89-88c3-4cea-b6d7-227abcaee4b8",
-    "email": "boruslava.wisniewski@medreserve.local",
-    "firstName": "Boruslava",
-    "lastName": "Wisniewski",
-    "isActive": true,
-    "phoneNumber": "+48525167044"
-  },
-  {
-    "id": "4b839c64-7def-46c0-ba71-3aba7eb50c12",
-    "email": "kamil.czajkowski@medreserve.local",
-    "firstName": "Kamil",
-    "lastName": "Czajkowski",
-    "isActive": true,
-    "phoneNumber": "+48666698570"
-  },
-  {
-    "id": "57264c21-b3bb-46d9-85b0-c4f193511650",
-    "email": "bernata.lewandowski@medreserve.local",
-    "firstName": "Bernata",
-    "lastName": "Lewandowski",
-    "isActive": true,
-    "phoneNumber": "+48518201684"
-  },
-  {
-    "id": "72d87ead-0e4c-4099-bf72-b6d5d38d18fe",
-    "email": "klemens.gajda@medreserve.local",
-    "firstName": "Klemens",
-    "lastName": "Gajda",
-    "isActive": true,
-    "phoneNumber": "+48554599127"
+    "gender": "Male",
+    "createdAt": "2026-05-14T10:00:00Z",
+    "updatedAt": "2026-05-14T10:00:00Z"
   }
 ]

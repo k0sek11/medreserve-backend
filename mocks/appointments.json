@@ -1,0 +1,12 @@
+﻿[
+  { "appointmentId": 1, "userId": "pat-1", "doctorId": 1, "appointmentTypeId": 1, "appointmentTypeDurationMinutes": 30, "timeSlotId": 101, "status": "Confirmed", "createdAt": "2026-06-01T08:00:00Z", "updatedAt": "2026-06-01T08:00:00Z" },
+  { "appointmentId": 2, "userId": "pat-2", "doctorId": 1, "appointmentTypeId": 2, "appointmentTypeDurationMinutes": 20, "timeSlotId": 102, "status": "Confirmed", "createdAt": "2026-06-01T09:00:00Z", "updatedAt": "2026-06-01T09:00:00Z" },
+  { "appointmentId": 3, "userId": "pat-3", "doctorId": 2, "appointmentTypeId": 1, "appointmentTypeDurationMinutes": 30, "timeSlotId": 103, "status": "Confirmed", "createdAt": "2026-06-02T10:00:00Z", "updatedAt": "2026-06-02T10:00:00Z" },
+  { "appointmentId": 4, "userId": "pat-4", "doctorId": 2, "appointmentTypeId": 3, "appointmentTypeDurationMinutes": 20, "timeSlotId": 104, "status": "Pending", "createdAt": "2026-06-02T11:00:00Z", "updatedAt": "2026-06-02T11:00:00Z" },
+  { "appointmentId": 5, "userId": "pat-5", "doctorId": 1, "appointmentTypeId": 1, "appointmentTypeDurationMinutes": 30, "timeSlotId": 105, "status": "Pending", "createdAt": "2026-06-03T08:00:00Z", "updatedAt": "2026-06-03T08:00:00Z" },
+  { "appointmentId": 6, "userId": "pat-1", "doctorId": 2, "appointmentTypeId": 2, "appointmentTypeDurationMinutes": 20, "timeSlotId": 106, "status": "Pending", "createdAt": "2026-06-03T09:00:00Z", "updatedAt": "2026-06-03T09:00:00Z" },
+  { "appointmentId": 7, "userId": "pat-2", "doctorId": 1, "appointmentTypeId": 3, "appointmentTypeDurationMinutes": 20, "timeSlotId": 107, "status": "Pending", "createdAt": "2026-06-04T12:00:00Z", "updatedAt": "2026-06-04T12:00:00Z" },
+  { "appointmentId": 8, "userId": "pat-3", "doctorId": 2, "appointmentTypeId": 1, "appointmentTypeDurationMinutes": 30, "timeSlotId": 108, "status": "Cancelled", "createdAt": "2026-06-04T13:00:00Z", "updatedAt": "2026-06-04T13:00:00Z" },
+  { "appointmentId": 9, "userId": "pat-4", "doctorId": 1, "appointmentTypeId": 2, "appointmentTypeDurationMinutes": 20, "timeSlotId": 109, "status": "Pending", "createdAt": "2026-06-05T14:00:00Z", "updatedAt": "2026-06-05T14:00:00Z" },
+  { "appointmentId": 10, "userId": "pat-5", "doctorId": 2, "appointmentTypeId": 1, "appointmentTypeDurationMinutes": 30, "timeSlotId": 110, "status": "Pending", "createdAt": "2026-06-05T15:00:00Z", "updatedAt": "2026-06-05T15:00:00Z" }
+]
