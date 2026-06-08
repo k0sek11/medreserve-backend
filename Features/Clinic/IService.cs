@@ -1,30 +1,25 @@
 ﻿namespace Medreserve.Features.Clinic;
-using Medreserve.Features.Clinic;
+
 public interface IClinicService
 {
-    Task<IReadOnlyList<Dto.ClinicDto>> GetAllClinicsAsync(CancellationToken cancellationToken);
-    Task<Dto.ClinicDto?> GetClinicByIdAsync(int id, CancellationToken cancellationToken);
-    Task<Dto.ClinicDto> CreateClinicAsync(Dto.CreateClinicRequest request, string currentUserId, CancellationToken cancellationToken);
-    Task<bool> DeleteClinicAsync(int id, CancellationToken cancellationToken);
-    Task<Dto.ClinicDto?> UpdateClinicAsync(int id, Dto.UpdateClinicRequest request, CancellationToken cancellationToken);
-    Task<IReadOnlyList<Dto.CityDto>> GetAllCitiesAsync(CancellationToken cancellationToken);
-    Task<IReadOnlyList<Dto.ClinicSpecializationDto>> GetSpecializationAsync(CancellationToken cancellationToken);
+    /// <summary>
+    /// Consolidated GET handler. Returns data depending on <paramref name="query"/>.View:
+    /// <c>cities</c>, <c>specializations</c>, or <c>clinics</c> (default – paginated).
+    /// </summary>
+    Task<object> GetAsync(Dto.ClinicListQuery query, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<Dto.ClinicSpecializationDto>?> GetSpecializationByCityAsync(int cityId,
-        CancellationToken cancellationToken);
+    /// <summary>
+    /// Merged /{id} and /{id}/details into a single endpoint.
+    /// </summary>
+    Task<Dto.ClinicDetailDto?> GetByIdAsync(int id, string? currentUserId, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<Dto.CityDto>?> GetCitiesBySpecializationAsync(int specializationId,
-        CancellationToken cancellationToken);
+    Task<Dto.ClinicDto> CreateAsync(Dto.CreateClinicRequest request, string currentUserId, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<Dto.ClinicDto>> GetClinicsByCityAsync(int cityId, CancellationToken cancellationToken);
+    Task<Dto.ClinicDto?> UpdateAsync(int id, Dto.UpdateClinicRequest request, CancellationToken cancellationToken);
 
-    Task<Dto.PagedResultDto<Dto.ClinicListItemDto>> SearchAsync(Dto.ClinicSearchQuery query, CancellationToken cancellationToken);
+    Task<bool> DeleteAsync(int id, CancellationToken cancellationToken);
 
-    Task<IReadOnlyList<Dto.ClinicListItemDto>>
-        GetMyClinicsAsync(string currentUserId, CancellationToken cancellationToken);
+    Task<IReadOnlyList<Dto.ClinicListItemDto>> GetMineAsync(string currentUserId, CancellationToken cancellationToken);
 
-    Task<Dto.ClinicDetailDto?> GetClinicDetailsAsync(int id, string? currentUserId, CancellationToken cancellationToken);
-
-    Task<string?> ReqestJoinAsync(int clinicId, Dto.CreateClinicJoinRequestDto request, string currentUserId,
-        CancellationToken cancellationToken);
-};
+    Task<string?> RequestJoinAsync(int clinicId, Dto.CreateClinicJoinRequestDto request, string currentUserId, CancellationToken cancellationToken);
+}
