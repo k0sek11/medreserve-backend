@@ -1,9 +1,7 @@
 using System.Security.Claims;
 using System.Text.Json;
-using Medreserve.Features.Appointment;
 using Medreserve.Features.Clinic;
 using Medreserve.Features.Doctor;
-using Medreserve.Features.Users;
 using Medreserve.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,24 +46,6 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
             .ToList();
 
         return Ok(result);
-    }
-
-    [HttpPost("appointments/{notificationId:int}/confirm")]
-    public async Task<IActionResult> ConfirmAppointment(
-        int notificationId,
-        CancellationToken cancellationToken
-    )
-    {
-        return await UpdateAppointmentStatusAsync(notificationId, "Confirmed", "Wizyta potwierdzona", cancellationToken);
-    }
-
-    [HttpPost("appointments/{notificationId:int}/cancel")]
-    public async Task<IActionResult> CancelAppointment(
-        int notificationId,
-        CancellationToken cancellationToken
-    )
-    {
-        return await UpdateAppointmentStatusAsync(notificationId, "Cancelled", "Wizyta anulowana", cancellationToken);
     }
 
     [HttpGet("clinic-join-requests")]
@@ -178,73 +158,6 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
         return Ok(new { message = $"Request {status.ToLowerInvariant()}." });
     }
 
-    private async Task<IActionResult> UpdateAppointmentStatusAsync(
-        int notificationId,
-        string appointmentStatus,
-        string notificationStatus,
-        CancellationToken cancellationToken
-    )
-    {
-        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (currentUserId is null)
-        {
-            return Unauthorized();
-        }
-
-        var notification = await dbContext.Notifications
-            .Include(x => x.Appointment)
-                .ThenInclude(x => x!.User)
-            .Include(x => x.Appointment)
-                .ThenInclude(x => x!.Doctor)
-                    .ThenInclude(x => x.User)
-            .Include(x => x.Appointment)
-                .ThenInclude(x => x!.AppointmentType)
-            .FirstOrDefaultAsync(
-                x => x.NotificationId == notificationId
-                     && x.UserId == currentUserId
-                     && x.Type == NotificationKinds.AppointmentBooked,
-                cancellationToken
-            );
-
-        if (notification is null || notification.Appointment is null)
-        {
-            return NotFound();
-        }
-
-        if (!string.Equals(notification.Appointment.Status, "Pending", StringComparison.OrdinalIgnoreCase)
-            && !string.Equals(notification.Appointment.Status, "Confirmed", StringComparison.OrdinalIgnoreCase))
-        {
-            return Conflict(new { message = "Wizyta została już rozliczona lub anulowana." });
-        }
-
-        notification.Appointment.Status = appointmentStatus;
-        notification.Appointment.UpdatedAt = DateTime.UtcNow;
-        notification.Status = notificationStatus;
-        notification.SentAt = DateTime.UtcNow;
-
-        dbContext.Notifications.Add(new NotificationEntity
-        {
-            UserId = notification.Appointment.UserId,
-            AppointmentId = notification.Appointment.AppointmentId,
-            Type = NotificationKinds.AppointmentStatusChanged,
-            Subject = appointmentStatus == "Confirmed" ? "Wizyta potwierdzona" : "Wizyta anulowana",
-            Content = JsonSerializer.Serialize(new
-            {
-                notification.Appointment.AppointmentId,
-                notification.Appointment.DoctorId,
-                DoctorName = $"{notification.Appointment.Doctor.User.FirstName} {notification.Appointment.Doctor.User.LastName}",
-                AppointmentType = notification.Appointment.AppointmentType?.Name ?? "Nieznane",
-                notification.Appointment.Status,
-            }),
-            Status = "Sent",
-            CreatedAt = DateTime.UtcNow,
-            SentAt = DateTime.UtcNow,
-        });
-
-        await dbContext.SaveChangesAsync(cancellationToken);
-        return Ok(new { message = $"Appointment {appointmentStatus.ToLowerInvariant()}." });
-    }
-
     private static ClinicJoinRequestNotificationDto? MapJoinRequestNotification(NotificationEntity notification)
     {
         var payload = DeserializePayload(notification);
@@ -268,12 +181,11 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
     private static AppointmentNotificationDto MapAppointmentNotification(NotificationEntity notification)
     {
         var appointment = notification.Appointment!;
-        var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
+        var (_, date, startTime) = Appointment.AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
         var endTime = startTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
 
-        
         var latestPayment = appointment.Payments?.OrderByDescending(p => p.CreatedAt).FirstOrDefault();
-        
+
         return new AppointmentNotificationDto(
             notification.NotificationId,
             appointment.AppointmentId,

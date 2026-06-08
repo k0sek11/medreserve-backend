@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Medreserve.Features.Specialization;
 
 [ApiController]
-[Route("api/specializations[controller]")]
+[Route("api/specializations")]
 public class SpecializationController(ISpecializationService _service) : ControllerBase
 {
     [HttpGet]

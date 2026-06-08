@@ -20,7 +20,10 @@ public sealed record BookAppointmentResultDto(
     string DoctorSpecialization
 );
 
-public class CompleteAppointmentRequest
-{
-    public string? Comment { get; set; }
-}
+public sealed record ConfirmAppointmentRequest(
+    bool IsOnline
+);
+
+public sealed record CompleteAppointmentRequest(
+    string? Comment
+);

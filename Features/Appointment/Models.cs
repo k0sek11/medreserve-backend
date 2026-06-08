@@ -6,6 +6,15 @@ using Medreserve.Features.Users;
 
 namespace Medreserve.Features.Appointment;
 
+public static class AppointmentStatus
+{
+    public const string PendingConfirmation = "PendingConfirmation";
+    public const string AwaitingPayment = "AwaitingPayment";
+    public const string Confirmed = "Confirmed";
+    public const string Completed = "Completed";
+    public const string Cancelled = "Cancelled";
+}
+
 public class Appointment
 {
     public int AppointmentId { get; set; }
@@ -40,7 +49,7 @@ public sealed record AppointmentSummaryDto(
     string StartTime,
     string EndTime,
     string Status,
-    
+
     int? PaymentId = null,
     string? PaymentStatus = null,
     string? PaymentMethod = null,
@@ -61,5 +70,6 @@ public sealed record AppointmentDetailDto(
 
     int? PaymentId = null,
     string? PaymentStatus = null,
-    string? PaymentMethod = null
+    string? PaymentMethod = null,
+    string? DoctorNotes = null
 );

@@ -41,16 +41,17 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
         return MapToResult(appointment, doctor, appointmentType, request.Date, startTime, requestedEnd);
     }
 
-    public async Task ConfirmAppointmentAsync(string userId, int appointmentId, CancellationToken cancellationToken)
+    public async Task ConfirmAppointmentAsync(string userId, int appointmentId, bool isOnline, CancellationToken cancellationToken)
     {
         var appointment = await GetAppointmentEntityAsync(appointmentId, cancellationToken);
 
         EnsureUserIsDoctorForAppointment(appointment, userId);
 
-        if (appointment.Status != "PendingConfirmation")
+        if (appointment.Status != AppointmentStatus.PendingConfirmation)
             throw new ArgumentException("Only pending appointments can be confirmed.");
 
-        appointment.Status = "AwaitingPayment";
+        appointment.Status = isOnline ? AppointmentStatus.AwaitingPayment : AppointmentStatus.Confirmed;
+        appointment.ConfirmedAt = DateTime.UtcNow;
         appointment.UpdatedAt = DateTime.UtcNow;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -62,25 +63,28 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
 
         EnsureUserCanModifyAppointment(appointment, userId);
 
-        if (appointment.Status == "Confirmed" || appointment.Status == "Completed")
+        if (!CanBeCancelled(appointment.Status))
             throw new ArgumentException("Cannot cancel a confirmed or completed appointment.");
 
-        appointment.Status = "Cancelled";
+        appointment.Status = AppointmentStatus.Cancelled;
+        appointment.CancelledAt = DateTime.UtcNow;
         appointment.UpdatedAt = DateTime.UtcNow;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task CompleteAppointmentAsync(string userId, int appointmentId, CompleteAppointmentRequest request, CancellationToken cancellationToken)
+    public async Task CompleteAppointmentAsync(string userId, int appointmentId, string? comment, CancellationToken cancellationToken)
     {
         var appointment = await GetAppointmentEntityAsync(appointmentId, cancellationToken);
 
         EnsureUserIsDoctorForAppointment(appointment, userId);
 
-        if (appointment.Status != "Confirmed")
+        if (appointment.Status != AppointmentStatus.Confirmed)
             throw new ArgumentException("Only confirmed appointments can be marked as completed.");
 
-        appointment.Status = "Completed";
+        appointment.Status = AppointmentStatus.Completed;
+        appointment.DoctorNotes = comment;
+        appointment.CompletedAt = DateTime.UtcNow;
         appointment.UpdatedAt = DateTime.UtcNow;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -115,6 +119,8 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
         return appointment is null ? null : MapDetail(appointment);
     }
 
+    // ───────────────────────────── Private Helpers ─────────────────────────────
+    // Each helper accepts only the primitive data it needs (Law of Demeter).
 
     private async Task EnsureUserExistsAsync(string userId, CancellationToken ct)
     {
@@ -136,7 +142,7 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
         return doctor;
     }
 
-    private AppointmentType.AppointmentType GetAppointmentTypeFromDoctor(Doctor.Doctor doctor, int typeId)
+    private static AppointmentType.AppointmentType GetAppointmentTypeFromDoctor(Doctor.Doctor doctor, int typeId)
     {
         var type = doctor.DoctorAppointmentTypes
             .Select(x => x.AppointmentType)
@@ -155,7 +161,7 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
         if (!matches) throw new ArgumentException("Selected clinic is not assigned to this doctor.");
     }
 
-    private void ValidateSchedule(Doctor.Doctor doctor, int clinicId, DateOnly requestDate, TimeOnly startTime, DateTime requestedEnd)
+    private static void ValidateSchedule(Doctor.Doctor doctor, int clinicId, DateOnly requestDate, TimeOnly startTime, DateTime requestedEnd)
     {
         var targetDayOfWeek = AppointmentSchedulingHelper.NormalizeDayOfWeek((int)requestDate.DayOfWeek);
 
@@ -172,7 +178,7 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
         if (!scheduleMatches) throw new ArgumentException("Selected time is outside of the doctor's schedule.");
     }
 
-    private void ValidateOverlaps(Doctor.Doctor doctor, DateOnly requestDate, DateTime requestedStart, DateTime requestedEnd)
+    private static void ValidateOverlaps(Doctor.Doctor doctor, DateOnly requestDate, DateTime requestedStart, DateTime requestedEnd)
     {
         var bookedAppointments = doctor.Appointments
             .Where(x => !IsCancelled(x.Status))
@@ -187,7 +193,7 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
         if (overlapsExisting) throw new ArgumentException("Selected time is already booked.");
     }
 
-    private Appointment CreateAppointmentEntity(string userId, int doctorId, int appointmentTypeId, int durationMinutes, DateOnly date, TimeOnly startTime)
+    private static Appointment CreateAppointmentEntity(string userId, int doctorId, int appointmentTypeId, int durationMinutes, DateOnly date, TimeOnly startTime)
     {
         return new Appointment
         {
@@ -196,7 +202,7 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
             AppointmentTypeId = appointmentTypeId,
             AppointmentTypeDurationMinutes = durationMinutes,
             TimeSlotId = AppointmentSchedulingHelper.BuildTimeSlotId(doctorId, date, startTime),
-            Status = "PendingConfirmation",
+            Status = AppointmentStatus.PendingConfirmation,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -251,13 +257,13 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
         return appointment;
     }
 
-    private void EnsureUserCanModifyAppointment(Appointment appointment, string userId)
+    private static void EnsureUserCanModifyAppointment(Appointment appointment, string userId)
     {
         if (appointment.UserId != userId && appointment.Doctor.UserId != userId)
             throw new UnauthorizedAccessException("You do not have permission to modify this appointment.");
     }
 
-    private void EnsureUserIsDoctorForAppointment(Appointment appointment, string userId)
+    private static void EnsureUserIsDoctorForAppointment(Appointment appointment, string userId)
     {
         if (appointment.Doctor.UserId != userId)
             throw new UnauthorizedAccessException("Only the assigned doctor can perform this action.");
@@ -265,9 +271,13 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
 
     private static bool IsCancelled(string status)
     {
-        return status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase)
-            || status.Equals("Canceled", StringComparison.OrdinalIgnoreCase)
-            || status.Equals("Rejected", StringComparison.OrdinalIgnoreCase);
+        return string.Equals(status, AppointmentStatus.Cancelled, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool CanBeCancelled(string status)
+    {
+        return !string.Equals(status, AppointmentStatus.Confirmed, StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(status, AppointmentStatus.Completed, StringComparison.OrdinalIgnoreCase);
     }
 
     private static (DateOnly Date, DateTime Start, DateTime End)? BuildBookedInterval(Appointment appointment)
@@ -285,7 +295,7 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
         }
     }
 
-    private BookAppointmentResultDto MapToResult(Appointment app, Doctor.Doctor doc, AppointmentType.AppointmentType type, DateOnly date, TimeOnly startTime, DateTime requestedEnd)
+    private static BookAppointmentResultDto MapToResult(Appointment app, Doctor.Doctor doc, AppointmentType.AppointmentType type, DateOnly date, TimeOnly startTime, DateTime requestedEnd)
     {
         var specialization = doc.DoctorSpecializations.Select(x => x.Specialization.Name).FirstOrDefault() ?? string.Empty;
 
@@ -344,7 +354,8 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
             appointment.CreatedAt,
             latestPayment?.PaymentId,
             latestPayment?.Status,
-            latestPayment?.Method
+            latestPayment?.Method,
+            appointment.DoctorNotes
         );
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi;
 using Medreserve.Features.Payment;
 using Medreserve.Features.Payment.PayU;
+using Medreserve.Features.Appointment;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +50,7 @@ builder.Services.AddScoped<IClinicService, ClinicService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IMockDataSeeder, JsonMockDataSeeder>();
 builder.Services.AddHttpClient<IPayUService, PayUService>()
     .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler

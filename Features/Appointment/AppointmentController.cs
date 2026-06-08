@@ -32,12 +32,13 @@ public class AppointmentsController(IAppointmentService appointmentService) : Co
     [HttpPost("{id:int}/confirm")]
     public async Task<IActionResult> ConfirmAppointment(
         int id,
+        [FromBody] ConfirmAppointmentRequest request,
         CancellationToken cancellationToken)
     {
         var currentUserId = GetCurrentUserId();
         if (string.IsNullOrEmpty(currentUserId)) return Unauthorized();
 
-        await _appointmentService.ConfirmAppointmentAsync(currentUserId, id, cancellationToken);
+        await _appointmentService.ConfirmAppointmentAsync(currentUserId, id, request.IsOnline, cancellationToken);
 
         return Ok(new { message = "Appointment confirmed successfully." });
     }
@@ -64,7 +65,7 @@ public class AppointmentsController(IAppointmentService appointmentService) : Co
         var currentUserId = GetCurrentUserId();
         if (string.IsNullOrEmpty(currentUserId)) return Unauthorized();
 
-        await _appointmentService.CompleteAppointmentAsync(currentUserId, id, request, cancellationToken);
+        await _appointmentService.CompleteAppointmentAsync(currentUserId, id, request.Comment, cancellationToken);
 
         return Ok(new { message = "Appointment marked as completed." });
     }
