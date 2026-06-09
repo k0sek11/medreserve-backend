@@ -13,6 +13,8 @@ public static class AppointmentStatus
     public const string Confirmed = "Confirmed";
     public const string Completed = "Completed";
     public const string Cancelled = "Cancelled";
+    public const string Unpaid = "Unpaid";
+    public const string AwaitingOnSitePayment = "AwaitingOnSitePayment";
 }
 
 public class Appointment
@@ -20,7 +22,8 @@ public class Appointment
     public int AppointmentId { get; set; }
     public string UserId { get; set; } = string.Empty;
     public int DoctorId { get; set; }
-    public int TimeSlotId { get; set; }
+    public DateOnly AppointmentDate { get; set; }
+    public TimeOnly StartTime { get; set; }
     public int? AppointmentTypeId { get; set; }
     public int AppointmentTypeDurationMinutes { get; set; }
     public string Status { get; set; } = string.Empty;
@@ -37,6 +40,12 @@ public class Appointment
     public AppointmentType.AppointmentType? AppointmentType { get; set; }
     public ICollection<Payment.Payment> Payments { get; set; } = new List<Payment.Payment>();
     public ICollection<Notification.Notification> Notifications { get; set; } = new List<Notification.Notification>();
+
+    public DateTime GetStartDateTime() =>
+        AppointmentSchedulingHelper.ToDateTime(AppointmentDate, StartTime);
+
+    public DateTime GetEndDateTime() =>
+        GetStartDateTime().AddMinutes(AppointmentTypeDurationMinutes);
 }
 
 public sealed record AppointmentSummaryDto(

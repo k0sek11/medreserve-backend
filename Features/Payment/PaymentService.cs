@@ -42,6 +42,9 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
             existingPayment.Amount = apt.AppointmentType.BasePrice;
             existingPayment.UpdatedAt = DateTime.UtcNow;
 
+            // Mark appointment as awaiting on-site payment
+            apt.Status = AppointmentStatus.AwaitingOnSitePayment;
+
             await _context.SaveChangesAsync();
             return true;
         }
@@ -58,6 +61,10 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
         };
 
         _context.Payments.Add(newPayment);
+
+        // Mark appointment as awaiting on-site payment
+        apt.Status = AppointmentStatus.AwaitingOnSitePayment;
+
         await _context.SaveChangesAsync();
         return true;
     }
@@ -71,11 +78,19 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
         if (payment == null) return false;
         if (payment.Status == "Paid") return true;
 
+        // Validate appointment is during its scheduled time
+        if (payment.Appointment != null)
+        {
+            var now = DateTime.UtcNow;
+            var start = payment.Appointment.GetStartDateTime();
+            if (start > now)
+                throw new InvalidOperationException("Nie można potwierdzić płatności przed rozpoczęciem wizyty.");
+        }
+
         payment.Status = "Paid";
         payment.UpdatedAt = DateTime.UtcNow;
         payment.PaidAt = DateTime.UtcNow;
 
-        // Mark the appointment as Confirmed since offline payment means instant confirmation
         if (payment.Appointment != null)
         {
             payment.Appointment.Status = AppointmentStatus.Confirmed;

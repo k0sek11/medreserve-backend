@@ -181,8 +181,7 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
     private static AppointmentNotificationDto MapAppointmentNotification(NotificationEntity notification)
     {
         var appointment = notification.Appointment!;
-        var (_, date, startTime) = Appointment.AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
-        var endTime = startTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
+        var endTime = appointment.StartTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
 
         var latestPayment = appointment.Payments?.OrderByDescending(p => p.CreatedAt).FirstOrDefault();
 
@@ -193,8 +192,8 @@ public class NotificationsController(DatabaseContext dbContext) : ControllerBase
             $"{appointment.Doctor.User.FirstName} {appointment.Doctor.User.LastName}",
             $"{appointment.User.FirstName} {appointment.User.LastName}",
             appointment.AppointmentType?.Name,
-            date,
-            startTime.ToString("HH:mm"),
+            appointment.AppointmentDate,
+            appointment.StartTime.ToString("HH:mm"),
             endTime.ToString("HH:mm"),
             appointment.Status,
             notification.Status,

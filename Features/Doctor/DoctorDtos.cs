@@ -85,7 +85,6 @@ public sealed record DoctorProfileDto(
 public sealed record DoctorAvailabilitySlotDto(
     string StartAt,
     string EndAt,
-    int TimeSlotId,
     bool IsBooked
 );
 

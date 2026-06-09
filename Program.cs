@@ -52,6 +52,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IMockDataSeeder, JsonMockDataSeeder>();
+builder.Services.AddHostedService<ExpireAwaitingPaymentService>();
 builder.Services.AddHttpClient<IPayUService, PayUService>()
     .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
     {

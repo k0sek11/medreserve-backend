@@ -217,7 +217,9 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
             entity.Property(x => x.CreatedAt).IsRequired();
             entity.Property(x => x.UpdatedAt).IsRequired();
             entity.Property(x => x.AppointmentTypeDurationMinutes).IsRequired();
-            entity.HasIndex(x => x.TimeSlotId).IsUnique();
+            entity.Property(x => x.AppointmentDate).IsRequired();
+            entity.Property(x => x.StartTime).IsRequired();
+            entity.HasIndex(x => new { x.DoctorId, x.AppointmentDate, x.StartTime }).IsUnique();
 
             entity
                 .HasOne(x => x.User)

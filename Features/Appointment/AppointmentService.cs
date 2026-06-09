@@ -120,7 +120,6 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
     }
 
     // ───────────────────────────── Private Helpers ─────────────────────────────
-    // Each helper accepts only the primitive data it needs (Law of Demeter).
 
     private async Task EnsureUserExistsAsync(string userId, CancellationToken ct)
     {
@@ -182,9 +181,8 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
     {
         var bookedAppointments = doctor.Appointments
             .Where(x => !IsCancelled(x.Status))
-            .Select(BuildBookedInterval)
-            .Where(x => x is not null && x!.Value.Date == requestDate)
-            .Select(x => x!.Value)
+            .Where(x => x.AppointmentDate == requestDate)
+            .Select(x => (Start: x.GetStartDateTime(), End: x.GetEndDateTime()))
             .ToList();
 
         var overlapsExisting = bookedAppointments.Any(booked =>
@@ -201,7 +199,8 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
             DoctorId = doctorId,
             AppointmentTypeId = appointmentTypeId,
             AppointmentTypeDurationMinutes = durationMinutes,
-            TimeSlotId = AppointmentSchedulingHelper.BuildTimeSlotId(doctorId, date, startTime),
+            AppointmentDate = date,
+            StartTime = startTime,
             Status = AppointmentStatus.PendingConfirmation,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
@@ -216,8 +215,6 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
             .Select(x => x.FirstName + " " + x.LastName)
             .FirstAsync(ct);
 
-        var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
-
         var notificationPayload = new AppointmentBookingPayload(
             appointment.AppointmentId,
             appointment.DoctorId,
@@ -226,8 +223,8 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
             appointment.UserId,
             patientName,
             type.Name,
-            date,
-            startTime.ToString("HH:mm"),
+            appointment.AppointmentDate,
+            appointment.StartTime.ToString("HH:mm"),
             TimeOnly.FromDateTime(requestedEnd).ToString("HH:mm")
         );
 
@@ -277,22 +274,8 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
     private static bool CanBeCancelled(string status)
     {
         return !string.Equals(status, AppointmentStatus.Confirmed, StringComparison.OrdinalIgnoreCase)
-            && !string.Equals(status, AppointmentStatus.Completed, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static (DateOnly Date, DateTime Start, DateTime End)? BuildBookedInterval(Appointment appointment)
-    {
-        try
-        {
-            var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
-            var start = AppointmentSchedulingHelper.ToDateTime(date, startTime);
-            var end = start.AddMinutes(appointment.AppointmentTypeDurationMinutes);
-            return (date, start, end);
-        }
-        catch
-        {
-            return null;
-        }
+            && !string.Equals(status, AppointmentStatus.Completed, StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(status, AppointmentStatus.Unpaid, StringComparison.OrdinalIgnoreCase);
     }
 
     private static BookAppointmentResultDto MapToResult(Appointment app, Doctor.Doctor doc, AppointmentType.AppointmentType type, DateOnly date, TimeOnly startTime, DateTime requestedEnd)
@@ -314,8 +297,7 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
 
     private static AppointmentSummaryDto MapSummary(Appointment appointment)
     {
-        var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
-        var endTime = startTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
+        var endTime = appointment.StartTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
         var latestPayment = appointment.Payments.OrderByDescending(p => p.CreatedAt).FirstOrDefault();
 
         return new AppointmentSummaryDto(
@@ -324,8 +306,8 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
             $"{appointment.Doctor.User.FirstName} {appointment.Doctor.User.LastName}",
             appointment.Doctor.DoctorSpecializations.Select(x => x.Specialization.Name).FirstOrDefault() ?? string.Empty,
             appointment.AppointmentType?.Name,
-            date,
-            startTime.ToString("HH:mm"),
+            appointment.AppointmentDate,
+            appointment.StartTime.ToString("HH:mm"),
             endTime.ToString("HH:mm"),
             appointment.Status,
             latestPayment?.PaymentId,
@@ -337,8 +319,7 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
 
     private static AppointmentDetailDto MapDetail(Appointment appointment)
     {
-        var (_, date, startTime) = AppointmentSchedulingHelper.DecodeTimeSlotId(appointment.TimeSlotId);
-        var endTime = startTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
+        var endTime = appointment.StartTime.AddMinutes(appointment.AppointmentTypeDurationMinutes);
         var latestPayment = appointment.Payments.OrderByDescending(p => p.CreatedAt).FirstOrDefault();
 
         return new AppointmentDetailDto(
@@ -347,8 +328,8 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
             $"{appointment.Doctor.User.FirstName} {appointment.Doctor.User.LastName}",
             appointment.Doctor.DoctorSpecializations.Select(x => x.Specialization.Name).FirstOrDefault() ?? string.Empty,
             appointment.AppointmentType?.Name,
-            date,
-            startTime.ToString("HH:mm"),
+            appointment.AppointmentDate,
+            appointment.StartTime.ToString("HH:mm"),
             endTime.ToString("HH:mm"),
             appointment.Status,
             appointment.CreatedAt,
