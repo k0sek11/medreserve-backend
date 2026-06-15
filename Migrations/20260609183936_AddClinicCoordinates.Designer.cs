@@ -3,6 +3,7 @@ using System;
 using Medreserve.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Medreserve.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260609183936_AddClinicCoordinates")]
+    partial class AddClinicCoordinates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,10 +239,6 @@ namespace Medreserve.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("license_number");
-
-                    b.Property<string>("ProfileImageUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("profile_image_url");
 
                     b.Property<string>("UserId")
                         .IsRequired()

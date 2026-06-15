@@ -13,11 +13,13 @@ public class DoctorService : IDoctorService
 {
     private readonly DatabaseContext _dbContext;
     private readonly UserManager<User> _userManager;
+    private readonly IFileStorageService _fileStorage;
 
-    public DoctorService(DatabaseContext dbContext, UserManager<User> userManager)
+    public DoctorService(DatabaseContext dbContext, UserManager<User> userManager, IFileStorageService fileStorage)
     {
         _dbContext = dbContext;
         _userManager = userManager;
+        _fileStorage = fileStorage;
     }
 
     public async Task<bool> CreateProfileAsync(string userId, CreateDoctorProfileDto request)
@@ -113,6 +115,24 @@ public class DoctorService : IDoctorService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         return true;
+    }
+
+    public async Task<string?> UploadPhotoAsync(string userId, IFormFile file, CancellationToken cancellationToken)
+    {
+        var doctor = await _dbContext.Doctors
+            .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+        if (doctor is null) return null;
+
+        var oldUrl = doctor.ProfileImageUrl;
+        var newUrl = await _fileStorage.SaveProfileImageAsync(file, cancellationToken);
+
+        doctor.ProfileImageUrl = newUrl;
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        if (!string.IsNullOrWhiteSpace(oldUrl))
+            _fileStorage.DeleteFile(oldUrl);
+
+        return newUrl;
     }
 
     public async Task<DoctorAppointmentTypeDto?> CreateMyAppointmentTypeAsync(
@@ -288,7 +308,7 @@ public class DoctorService : IDoctorService
         if (appointmentType is null) return null;
 
         var bookedIntervals = doctor.Appointments
-            .Where(x => !IsCancelled(x.Status) && x.AppointmentDate == date)
+            .Where(x => !DoesNotBlockSlot(x.Status) && x.AppointmentDate == date)
             .Select(x => (Start: x.GetStartDateTime(), End: x.GetEndDateTime()))
             .ToList();
 
@@ -313,7 +333,7 @@ public class DoctorService : IDoctorService
         var availableDates = new List<DateOnly>();
         var daysInMonth = DateTime.DaysInMonth(year, month);
         var bookedIntervals = doctor.Appointments
-            .Where(x => !IsCancelled(x.Status))
+            .Where(x => !DoesNotBlockSlot(x.Status))
             .Select(x => (x.AppointmentDate, Start: x.GetStartDateTime(), End: x.GetEndDateTime()))
             .ToList();
 
@@ -384,10 +404,13 @@ public class DoctorService : IDoctorService
                 var overlapsBookedSlot = bookedIntervals.Any(booked =>
                     AppointmentSchedulingHelper.IsOverlapping(startDateTime, endDateTime, booked.Start, booked.End));
 
-                slots.Add(new DoctorAvailabilitySlotDto(
-                    startDateTime.ToString("s"),
-                    endDateTime.ToString("s"),
-                    overlapsBookedSlot));
+                if (startDateTime > DateTime.Now)
+                {
+                    slots.Add(new DoctorAvailabilitySlotDto(
+                        startDateTime.ToString("s"),
+                        endDateTime.ToString("s"),
+                        overlapsBookedSlot));
+                }
 
                 currentStart = currentStart.AddMinutes(AppointmentSchedulingHelper.SlotStepMinutes);
             }
@@ -404,7 +427,7 @@ public class DoctorService : IDoctorService
             .Include(x => x.DoctorSchedules).ThenInclude(x => x.Clinic)
             .Include(x => x.DoctorSpecializations).ThenInclude(x => x.Specialization)
             .Include(x => x.DoctorAppointmentTypes).ThenInclude(x => x.AppointmentType)
-            .Include(x => x.ClinicDoctors).ThenInclude(x => x.Clinic).ThenInclude(x => x.City)
+            .Include(x => x.ClinicDoctors).ThenInclude(x => x.Clinic)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(userId))
@@ -429,9 +452,9 @@ public class DoctorService : IDoctorService
             doctor.LicenseNumber,
             doctor.Bio,
             doctor.User.PhoneNumber,
-            clinic?.Clinic.City.Name,
+            clinic?.Clinic.City,
             clinic?.Clinic.StreetAddress,
-            null,
+            doctor.ProfileImageUrl,
             doctor.DoctorSpecializations.Select(x => x.Specialization.Name).Distinct().OrderBy(x => x).ToList(),
             doctor.DoctorAppointmentTypes.Select(x => MapAppointmentType(x.AppointmentType)).OrderBy(x => x.BasePrice).ThenBy(x => x.Name).ToList(),
             doctor.DoctorSchedules.OrderBy(x => x.DayOfWeek).ThenBy(x => x.StartTime).Select(MapSchedule).ToList(),
@@ -451,16 +474,16 @@ public class DoctorService : IDoctorService
             doctor.LicenseNumber,
             doctor.Bio,
             doctor.User.PhoneNumber,
-            clinic?.Clinic.City.Name,
+            clinic?.Clinic.City,
             clinic?.Clinic.StreetAddress,
-            null,
+            doctor.ProfileImageUrl,
             doctor.DoctorSpecializations.Select(x => x.Specialization.Name).Distinct().OrderBy(x => x).ToList(),
             doctor.DoctorAppointmentTypes.Select(x => MapAppointmentType(x.AppointmentType)).OrderBy(x => x.BasePrice).ThenBy(x => x.Name).ToList(),
             doctor.ClinicDoctors.OrderByDescending(x => x.IsOwner).ThenBy(x => x.ClinicId).Select(MapClinic).ToList());
     }
 
     private static DoctorClinicDto MapClinic(ClinicDoctor clinicDoctor) =>
-        new(clinicDoctor.ClinicId, clinicDoctor.Clinic.Name, clinicDoctor.Clinic.City.Name, clinicDoctor.Clinic.StreetAddress);
+        new(clinicDoctor.ClinicId, clinicDoctor.Clinic.Name, clinicDoctor.Clinic.City, clinicDoctor.Clinic.StreetAddress);
 
     private static DoctorScheduleDto MapSchedule(DoctorSchedule schedule) =>
         new(schedule.ScheduleId, schedule.ClinicId, schedule.Clinic?.Name,
@@ -474,6 +497,8 @@ public class DoctorService : IDoctorService
         new(appointmentType.AppointmentTypeId, appointmentType.Name, appointmentType.Description,
             appointmentType.BasePrice, appointmentType.DurationMinutes);
 
-    private static bool IsCancelled(string status) =>
-        string.Equals(status, AppointmentStatus.Cancelled, StringComparison.OrdinalIgnoreCase);
+    private static bool DoesNotBlockSlot(string status) =>
+        string.Equals(status, AppointmentStatus.Cancelled, StringComparison.OrdinalIgnoreCase)
+        || string.Equals(status, AppointmentStatus.Completed, StringComparison.OrdinalIgnoreCase)
+        || string.Equals(status, AppointmentStatus.Unpaid, StringComparison.OrdinalIgnoreCase);
 }

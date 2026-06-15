@@ -40,6 +40,9 @@ builder.Services.AddCors(options =>
 });
 
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IFileStorageService, FileStorageService>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthorization();

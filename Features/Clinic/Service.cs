@@ -9,19 +9,14 @@ namespace Medreserve.Features.Clinic;
 
 public class ClinicService(DatabaseContext _context) : IClinicService
 {
-    // ────────────────────────── Consolidated GET ──────────────────────────
-
     public async Task<object> GetAsync(Dto.ClinicListQuery query, CancellationToken ct)
     {
         return query.View?.Trim().ToLowerInvariant() switch
         {
-            "cities" => await ListCitiesAsync(query.SpecializationId, ct),
-            "specializations" => await ListSpecializationsAsync(query.CityId, ct),
+            "specializations" => await ListSpecializationsAsync(query.Location, ct),
             _ => await ListClinicsAsync(query, ct),
         };
     }
-
-    // ──────────────────────── GET /{id} (merged) ──────────────────────────
 
     public async Task<Dto.ClinicDetailDto?> GetByIdAsync(int id, string? currentUserId, CancellationToken ct)
     {
@@ -39,13 +34,11 @@ public class ClinicService(DatabaseContext _context) : IClinicService
                 x.Description,
                 x.StreetAddress,
                 x.OpeningHours,
-                x.MapLocation,
+                x.Latitude,
+                x.Longitude,
                 x.PhoneNumber,
                 x.Email,
-                x.CityId,
-                City = x.City.Name,
-                District = x.City.District,
-                Voivodeship = x.City.Voivodeship,
+                x.City,
                 x.IsActive,
             })
             .FirstOrDefaultAsync(ct);
@@ -74,20 +67,15 @@ public class ClinicService(DatabaseContext _context) : IClinicService
 
         return new Dto.ClinicDetailDto(
             clinic.ClinicId, clinic.Name, clinic.Description, clinic.StreetAddress,
-            clinic.OpeningHours, clinic.MapLocation, clinic.PhoneNumber, clinic.Email,
-            clinic.CityId, clinic.City, clinic.District, clinic.Voivodeship,
+            clinic.OpeningHours, clinic.Latitude, clinic.Longitude,
+            clinic.PhoneNumber, clinic.Email, clinic.City,
             clinic.IsActive, doctors.Count, specializations, doctors, isMember, isOwner);
     }
-
-    // ──────────────────────────── CRUD ────────────────────────────────────
 
     public async Task<Dto.ClinicDto> CreateAsync(Dto.CreateClinicRequest request, string currentUserId, CancellationToken ct)
     {
         var doctor = await _context.Doctors.FirstOrDefaultAsync(x => x.UserId == currentUserId, ct)
             ?? throw new InvalidOperationException("Tylko lekarz może zarejestrować przychodnię.");
-
-        var cityExists = await _context.Cities.AnyAsync(x => x.CityId == request.CityId, ct);
-        if (!cityExists) throw new InvalidOperationException("Nie znaleziono miasta.");
 
         var clinic = new Clinic
         {
@@ -95,8 +83,9 @@ public class ClinicService(DatabaseContext _context) : IClinicService
             Description = TrimToNull(request.Description),
             StreetAddress = request.StreetAddress.Trim(),
             OpeningHours = TrimToNull(request.OpeningHours),
-            MapLocation = TrimToNull(request.MapLocation),
-            CityId = request.CityId,
+            Latitude = request.Latitude,
+            Longitude = request.Longitude,
+            City = request.City.Trim(),
             PhoneNumber = TrimToNull(request.PhoneNumber),
             Email = TrimToNull(request.Email),
             IsActive = true,
@@ -107,7 +96,8 @@ public class ClinicService(DatabaseContext _context) : IClinicService
         await _context.SaveChangesAsync(ct);
 
         return new Dto.ClinicDto(clinic.ClinicId, clinic.Name, clinic.Description, clinic.StreetAddress,
-            clinic.OpeningHours, clinic.MapLocation, clinic.PhoneNumber, clinic.Email, clinic.IsActive);
+            clinic.OpeningHours, clinic.Latitude, clinic.Longitude,
+            clinic.PhoneNumber, clinic.Email, clinic.IsActive);
     }
 
     public async Task<Dto.ClinicDto?> UpdateAsync(int id, Dto.UpdateClinicRequest request, CancellationToken ct)
@@ -115,11 +105,13 @@ public class ClinicService(DatabaseContext _context) : IClinicService
         var clinic = await _context.Clinics.FirstOrDefaultAsync(x => x.ClinicId == id, ct);
         if (clinic is null) return null;
 
+        if (request.Name is not null) clinic.Name = request.Name;
         if (request.StreetAddress is not null) clinic.StreetAddress = request.StreetAddress;
         if (request.Description is not null) clinic.Description = TrimToNull(request.Description);
         if (request.OpeningHours is not null) clinic.OpeningHours = TrimToNull(request.OpeningHours);
-        if (request.MapLocation is not null) clinic.MapLocation = TrimToNull(request.MapLocation);
-        if (request.CityId.HasValue) clinic.CityId = request.CityId.Value;
+        if (request.Latitude is not null) clinic.Latitude = request.Latitude;
+        if (request.Longitude is not null) clinic.Longitude = request.Longitude;
+        if (request.City is not null) clinic.City = request.City.Trim();
         if (request.PhoneNumber is not null) clinic.PhoneNumber = TrimToNull(request.PhoneNumber);
         if (request.Email is not null) clinic.Email = TrimToNull(request.Email);
         if (request.IsActive.HasValue) clinic.IsActive = request.IsActive.Value;
@@ -127,7 +119,8 @@ public class ClinicService(DatabaseContext _context) : IClinicService
         await _context.SaveChangesAsync(ct);
 
         return new Dto.ClinicDto(clinic.ClinicId, clinic.Name, clinic.Description, clinic.StreetAddress,
-            clinic.OpeningHours, clinic.MapLocation, clinic.PhoneNumber, clinic.Email, clinic.IsActive);
+            clinic.OpeningHours, clinic.Latitude, clinic.Longitude,
+            clinic.PhoneNumber, clinic.Email, clinic.IsActive);
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken ct)
@@ -139,8 +132,6 @@ public class ClinicService(DatabaseContext _context) : IClinicService
         return true;
     }
 
-    // ───────────────────────────── Mine ───────────────────────────────────
-
     public async Task<IReadOnlyList<Dto.ClinicListItemDto>> GetMineAsync(string currentUserId, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(currentUserId)) return [];
@@ -151,7 +142,7 @@ public class ClinicService(DatabaseContext _context) : IClinicService
         var clinicRows = await _context.ClinicDoctors
             .AsNoTracking()
             .Where(cd => cd.DoctorId == doctorId.Value)
-            .Select(cd => new { cd.ClinicId, cd.Clinic.Name, cd.Clinic.StreetAddress, City = cd.Clinic.City.Name, cd.Clinic.IsActive, cd.IsOwner, DoctorCount = cd.Clinic.ClinicDoctors.Select(x => x.DoctorId).Distinct().Count() })
+            .Select(cd => new { cd.ClinicId, cd.Clinic.Name, cd.Clinic.StreetAddress, cd.Clinic.City, cd.Clinic.IsActive, cd.IsOwner, DoctorCount = cd.Clinic.ClinicDoctors.Select(x => x.DoctorId).Distinct().Count() })
             .OrderByDescending(x => x.IsOwner).ThenBy(x => x.Name)
             .ToListAsync(ct);
 
@@ -161,8 +152,6 @@ public class ClinicService(DatabaseContext _context) : IClinicService
             x.ClinicId, x.Name, x.StreetAddress, x.City, x.DoctorCount,
             specializationLookup.GetValueOrDefault(x.ClinicId, []), x.IsActive, x.IsOwner)).ToList();
     }
-
-    // ────────────────────────── Join Request ──────────────────────────────
 
     public async Task<string?> RequestJoinAsync(int clinicId, Dto.CreateClinicJoinRequestDto request, string currentUserId, CancellationToken ct)
     {
@@ -218,31 +207,17 @@ public class ClinicService(DatabaseContext _context) : IClinicService
 
     // ─────────────────────────── Private Helpers ──────────────────────────
 
-    private async Task<IReadOnlyList<Dto.CityDto>> ListCitiesAsync(int? specializationId, CancellationToken ct)
-    {
-        IQueryable<Geography.City> query = _context.Cities.AsNoTracking();
-
-        if (specializationId.HasValue)
-        {
-            query = query.Where(c => c.Clinics.Any(cl =>
-                cl.ClinicDoctors.Any(cd =>
-                    cd.Doctor.DoctorSpecializations.Any(ds => ds.SpecializationId == specializationId.Value))));
-        }
-
-        return await query
-            .OrderBy(c => c.Voivodeship).ThenBy(c => c.District).ThenBy(c => c.Name)
-            .Select(c => new Dto.CityDto(c.CityId, c.Name, c.District, c.Voivodeship))
-            .ToListAsync(ct);
-    }
-
-    private async Task<IReadOnlyList<Dto.ClinicSpecializationDto>> ListSpecializationsAsync(int? cityId, CancellationToken ct)
+    private async Task<IReadOnlyList<Dto.ClinicSpecializationDto>> ListSpecializationsAsync(string? location, CancellationToken ct)
     {
         IQueryable<Specialization.Specialization> query = _context.Specializations.AsNoTracking();
 
-        if (cityId.HasValue)
+        if (!string.IsNullOrWhiteSpace(location))
         {
+            var loc = location.Trim();
             query = query.Where(s => s.DoctorSpecializations.Any(ds =>
-                ds.Doctor.ClinicDoctors.Any(cd => cd.Clinic.CityId == cityId.Value)));
+                ds.Doctor.ClinicDoctors.Any(cd =>
+                    EF.Functions.ILike(cd.Clinic.City, $"%{loc}%") ||
+                    EF.Functions.ILike(cd.Clinic.StreetAddress, $"%{loc}%"))));
         }
 
         return await query
@@ -261,8 +236,7 @@ public class ClinicService(DatabaseContext _context) : IClinicService
             clinicsQuery = clinicsQuery.Where(x =>
                 EF.Functions.ILike(x.Name, $"%{name}%") ||
                 EF.Functions.ILike(x.StreetAddress, $"%{name}%") ||
-                EF.Functions.ILike(x.City.Name, $"%{name}%") ||
-                EF.Functions.ILike(x.City.District, $"%{name}%"));
+                EF.Functions.ILike(x.City, $"%{name}%"));
         }
 
         if (!string.IsNullOrWhiteSpace(query.Location))
@@ -270,12 +244,8 @@ public class ClinicService(DatabaseContext _context) : IClinicService
             var location = query.Location.Trim();
             clinicsQuery = clinicsQuery.Where(x =>
                 EF.Functions.ILike(x.StreetAddress, $"%{location}%") ||
-                EF.Functions.ILike(x.City.Name, $"%{location}%") ||
-                EF.Functions.ILike(x.City.District, $"%{location}%"));
+                EF.Functions.ILike(x.City, $"%{location}%"));
         }
-
-        if (query.CityId.HasValue)
-            clinicsQuery = clinicsQuery.Where(x => x.CityId == query.CityId.Value);
 
         if (query.SpecializationId.HasValue)
             clinicsQuery = clinicsQuery.Where(x =>
@@ -283,7 +253,7 @@ public class ClinicService(DatabaseContext _context) : IClinicService
                     cd.Doctor.DoctorSpecializations.Any(ds => ds.SpecializationId == query.SpecializationId.Value)));
 
         var clinicRows = await clinicsQuery
-            .Select(x => new { x.ClinicId, x.Name, x.StreetAddress, City = x.City.Name, x.IsActive, DoctorCount = x.ClinicDoctors.Select(cd => cd.DoctorId).Distinct().Count() })
+            .Select(x => new { x.ClinicId, x.Name, x.StreetAddress, x.City, x.IsActive, DoctorCount = x.ClinicDoctors.Select(cd => cd.DoctorId).Distinct().Count() })
             .ToListAsync(ct);
 
         var sortedRows = query.Sort?.Trim().ToLowerInvariant() switch
@@ -312,7 +282,7 @@ public class ClinicService(DatabaseContext _context) : IClinicService
 
     private async Task<Dictionary<int, string[]>> BuildSpecializationLookupAsync(int[] clinicIds, CancellationToken ct)
     {
-        if (clinicIds.Length == 0) return new Dictionary<int, string[]>();
+        if (clinicIds.Length == 0) return [];
 
         var rows = await _context.ClinicDoctors
             .AsNoTracking()

@@ -3,6 +3,7 @@ using System;
 using Medreserve.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Medreserve.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260609124327_FixAppointmentUniqueIndex")]
+    partial class FixAppointmentUniqueIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,10 +150,9 @@ namespace Medreserve.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ClinicId"));
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("city");
+                    b.Property<int>("CityId")
+                        .HasColumnType("integer")
+                        .HasColumnName("city_id");
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
@@ -164,13 +166,9 @@ namespace Medreserve.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
 
-                    b.Property<double?>("Latitude")
-                        .HasColumnType("double precision")
-                        .HasColumnName("latitude");
-
-                    b.Property<double?>("Longitude")
-                        .HasColumnType("double precision")
-                        .HasColumnName("longitude");
+                    b.Property<string>("MapLocation")
+                        .HasColumnType("text")
+                        .HasColumnName("map_location");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -192,6 +190,9 @@ namespace Medreserve.Migrations
 
                     b.HasKey("ClinicId")
                         .HasName("pk_clinics");
+
+                    b.HasIndex("CityId")
+                        .HasDatabaseName("ix_clinics_city_id");
 
                     b.ToTable("clinics", (string)null);
                 });
@@ -236,10 +237,6 @@ namespace Medreserve.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("license_number");
-
-                    b.Property<string>("ProfileImageUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("profile_image_url");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -351,6 +348,77 @@ namespace Medreserve.Migrations
                         .HasDatabaseName("ix_doctor_specializations_specialization_id");
 
                     b.ToTable("doctor_specializations", (string)null);
+                });
+
+            modelBuilder.Entity("Medreserve.Features.Geography.City", b =>
+                {
+                    b.Property<int>("CityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("city_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CityId"));
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("district");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Voivodeship")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("voivodeship");
+
+                    b.HasKey("CityId")
+                        .HasName("pk_cities");
+
+                    b.HasIndex("Name", "District", "Voivodeship")
+                        .IsUnique()
+                        .HasDatabaseName("ix_cities_name_district_voivodeship");
+
+                    b.ToTable("cities", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            CityId = 1,
+                            District = "Śródmieście",
+                            Name = "Warszawa",
+                            Voivodeship = "Mazowieckie"
+                        },
+                        new
+                        {
+                            CityId = 2,
+                            District = "Stare Miasto",
+                            Name = "Kraków",
+                            Voivodeship = "Małopolskie"
+                        },
+                        new
+                        {
+                            CityId = 3,
+                            District = "Śródmieście",
+                            Name = "Łódź",
+                            Voivodeship = "Łódzkie"
+                        },
+                        new
+                        {
+                            CityId = 4,
+                            District = "Stare Miasto",
+                            Name = "Wrocław",
+                            Voivodeship = "Dolnośląskie"
+                        },
+                        new
+                        {
+                            CityId = 5,
+                            District = "Stare Miasto",
+                            Name = "Poznań",
+                            Voivodeship = "Wielkopolskie"
+                        });
                 });
 
             modelBuilder.Entity("Medreserve.Features.Notification.Notification", b =>
@@ -973,6 +1041,18 @@ namespace Medreserve.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Medreserve.Features.Clinic.Clinic", b =>
+                {
+                    b.HasOne("Medreserve.Features.Geography.City", "City")
+                        .WithMany("Clinics")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_clinics_cities_city_id");
+
+                    b.Navigation("City");
+                });
+
             modelBuilder.Entity("Medreserve.Features.Doctor.ClinicDoctor", b =>
                 {
                     b.HasOne("Medreserve.Features.Clinic.Clinic", "Clinic")
@@ -1208,6 +1288,11 @@ namespace Medreserve.Migrations
                     b.Navigation("DoctorSchedules");
 
                     b.Navigation("DoctorSpecializations");
+                });
+
+            modelBuilder.Entity("Medreserve.Features.Geography.City", b =>
+                {
+                    b.Navigation("Clinics");
                 });
 
             modelBuilder.Entity("Medreserve.Features.Payment.Payment", b =>

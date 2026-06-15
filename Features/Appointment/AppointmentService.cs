@@ -21,6 +21,9 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
         var requestedStart = AppointmentSchedulingHelper.ToDateTime(request.Date, startTime);
         var requestedEnd = requestedStart.AddMinutes(appointmentType.DurationMinutes);
 
+        if (requestedStart <= DateTime.Now)
+            throw new ArgumentException("Nie można umówić wizyty na przeszłą godzinę.");
+
         ValidateSchedule(doctor, request.ClinicId, request.Date, startTime, requestedEnd);
         ValidateOverlaps(doctor, request.Date, requestedStart, requestedEnd);
 
@@ -180,7 +183,7 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
     private static void ValidateOverlaps(Doctor.Doctor doctor, DateOnly requestDate, DateTime requestedStart, DateTime requestedEnd)
     {
         var bookedAppointments = doctor.Appointments
-            .Where(x => !IsCancelled(x.Status))
+            .Where(x => !DoesNotBlockSlot(x.Status))
             .Where(x => x.AppointmentDate == requestDate)
             .Select(x => (Start: x.GetStartDateTime(), End: x.GetEndDateTime()))
             .ToList();
@@ -266,9 +269,11 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
             throw new UnauthorizedAccessException("Only the assigned doctor can perform this action.");
     }
 
-    private static bool IsCancelled(string status)
+    private static bool DoesNotBlockSlot(string status)
     {
-        return string.Equals(status, AppointmentStatus.Cancelled, StringComparison.OrdinalIgnoreCase);
+        return string.Equals(status, AppointmentStatus.Cancelled, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, AppointmentStatus.Completed, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, AppointmentStatus.Unpaid, StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool CanBeCancelled(string status)

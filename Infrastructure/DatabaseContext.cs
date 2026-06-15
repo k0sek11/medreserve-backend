@@ -2,7 +2,6 @@ using Medreserve.Features.Appointment;
 using Medreserve.Features.AppointmentType;
 using Medreserve.Features.Clinic;
 using Medreserve.Features.Doctor;
-using Medreserve.Features.Geography;
 using Medreserve.Features.Notification;
 using Medreserve.Features.Payment;
 using Medreserve.Features.Specialization;
@@ -18,7 +17,6 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
     public DbSet<Doctor> Doctors => Set<Doctor>();
     public DbSet<Clinic> Clinics => Set<Clinic>();
     public DbSet<ClinicDoctor> ClinicDoctors => Set<ClinicDoctor>();
-    public DbSet<City> Cities => Set<City>();
     public DbSet<Specialization> Specializations => Set<Specialization>();
     public DbSet<DoctorSpecialization> DoctorSpecializations => Set<DoctorSpecialization>();
     public DbSet<DoctorSchedule> DoctorSchedules => Set<DoctorSchedule>();
@@ -45,17 +43,6 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<City>(entity =>
-        {
-            entity.HasData(
-                new City { CityId = 1, Name = "Warszawa", District = "Śródmieście", Voivodeship = "Mazowieckie" },
-                new City { CityId = 2, Name = "Kraków", District = "Stare Miasto", Voivodeship = "Małopolskie" },
-                new City { CityId = 3, Name = "Łódź", District = "Śródmieście", Voivodeship = "Łódzkie" },
-                new City { CityId = 4, Name = "Wrocław", District = "Stare Miasto", Voivodeship = "Dolnośląskie" },
-                new City { CityId = 5, Name = "Poznań", District = "Stare Miasto", Voivodeship = "Wielkopolskie" }
-             );
-        });
-
         modelBuilder.Entity<User>(entity =>
         {
             entity.Property(x => x.FirstName).IsRequired();
@@ -79,6 +66,8 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
                 .WithOne(x => x.DoctorProfile)
                 .HasForeignKey<Doctor>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.Property(x => x.ProfileImageUrl);
         });
 
         modelBuilder.Entity<Clinic>(entity =>
@@ -86,14 +75,8 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
             entity.HasKey(x => x.ClinicId);
             entity.Property(x => x.Name).IsRequired();
             entity.Property(x => x.StreetAddress).IsRequired();
+            entity.Property(x => x.City).IsRequired();
             entity.Property(x => x.IsActive).IsRequired();
-            entity.Property(x => x.CityId).IsRequired();
-
-            entity
-                .HasOne(x => x.City)
-                .WithMany(x => x.Clinics)
-                .HasForeignKey(x => x.CityId)
-                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<ClinicDoctor>(entity =>
@@ -219,7 +202,8 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
             entity.Property(x => x.AppointmentTypeDurationMinutes).IsRequired();
             entity.Property(x => x.AppointmentDate).IsRequired();
             entity.Property(x => x.StartTime).IsRequired();
-            entity.HasIndex(x => new { x.DoctorId, x.AppointmentDate, x.StartTime }).IsUnique();
+            entity.HasIndex(x => new { x.DoctorId, x.AppointmentDate, x.StartTime }).IsUnique()
+                .HasFilter("status NOT IN ('Cancelled', 'Completed', 'Unpaid')");
 
             entity
                 .HasOne(x => x.User)
@@ -309,15 +293,6 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
                 new IdentityRole { Id = "2", Name = "Doctor", NormalizedName = "DOCTOR", ConcurrencyStamp = "sdfsdfsfdfg" },
                 new IdentityRole { Id = "3", Name = "Patient", NormalizedName = "PATIENT", ConcurrencyStamp = "sdanjkdfsfdfg" }
              );
-        });
-
-        modelBuilder.Entity<City>(entity =>
-        {
-            entity.HasKey(x => x.CityId);
-            entity.Property(x => x.Name).IsRequired();
-            entity.Property(x => x.District).IsRequired();
-            entity.Property(x => x.Voivodeship).IsRequired();
-            entity.HasIndex(x => new { x.Name, x.District, x.Voivodeship }).IsUnique();
         });
     }
 }

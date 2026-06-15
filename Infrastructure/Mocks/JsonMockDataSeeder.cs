@@ -2,7 +2,6 @@ using System.Text.Json;
 using Medreserve.Features.AppointmentType;
 using Medreserve.Features.Clinic;
 using Medreserve.Features.Doctor;
-using Medreserve.Features.Geography;
 using Medreserve.Features.Specialization;
 using Medreserve.Features.Users;
 using Microsoft.AspNetCore.Identity;
@@ -30,7 +29,6 @@ public sealed class JsonMockDataSeeder(
         logger.LogInformation("Mock seeding from {MocksDir} (reset: {Reset})", mocksDir, reset);
 
         var users = await ReadListAsync<UserMock>(mocksDir, "users.json", cancellationToken);
-        var cities = await ReadListAsync<CityMock>(mocksDir, "cities.json", cancellationToken);
         var clinics = await ReadListAsync<ClinicMock>(mocksDir, "clinics.json", cancellationToken);
         var specializations = await ReadListAsync<SpecializationMock>(mocksDir, "specializations.json", cancellationToken);
         var appointmentTypes = await ReadListAsync<AppointmentTypeMock>(mocksDir, "appointment_types.json", cancellationToken);
@@ -46,14 +44,6 @@ public sealed class JsonMockDataSeeder(
         }
 
         await UpsertUsersAsync(users, cancellationToken);
-
-        dbContext.Cities.AddRange(cities.Select(x => new City
-        {
-            CityId = x.CityId,
-            Name = x.Name,
-            District = x.District,
-            Voivodeship = x.Voivodeship,
-        }));
 
         dbContext.Specializations.AddRange(specializations.Select(x => new Features.Specialization.Specialization
         {
@@ -79,7 +69,7 @@ public sealed class JsonMockDataSeeder(
             PhoneNumber = x.PhoneNumber,
             Email = x.Email,
             IsActive = x.IsActive,
-            CityId = x.CityId,
+            City = x.City,
         }));
 
         dbContext.Doctors.AddRange(doctors.Select(x => new Doctor
@@ -122,7 +112,6 @@ public sealed class JsonMockDataSeeder(
         }));
 
         await dbContext.SaveChangesAsync(cancellationToken);
-        await SyncIdentitySequenceAsync("cities", "city_id", cancellationToken);
         await SyncIdentitySequenceAsync("specializations", "specialization_id", cancellationToken);
         await SyncIdentitySequenceAsync("appointment_types", "appointment_type_id", cancellationToken);
         await SyncIdentitySequenceAsync("clinics", "clinic_id", cancellationToken);
@@ -130,8 +119,7 @@ public sealed class JsonMockDataSeeder(
         await SyncIdentitySequenceAsync("doctor_schedules", "schedule_id", cancellationToken);
 
         logger.LogInformation(
-            "Mock seeding complete. cities={Cities}, clinics={Clinics}, specs={Specs}, doctors={Doctors}, users={Users}",
-            cities.Count,
+            "Mock seeding complete. clinics={Clinics}, specs={Specs}, doctors={Doctors}, users={Users}",
             clinics.Count,
             specializations.Count,
             doctors.Count,
@@ -149,7 +137,6 @@ public sealed class JsonMockDataSeeder(
         await dbContext.Clinics.ExecuteDeleteAsync(cancellationToken);
         await dbContext.AppointmentTypes.ExecuteDeleteAsync(cancellationToken);
         await dbContext.Specializations.ExecuteDeleteAsync(cancellationToken);
-        await dbContext.Cities.ExecuteDeleteAsync(cancellationToken);
     }
 
     private async Task UpsertUsersAsync(IEnumerable<UserMock> users, CancellationToken cancellationToken)
@@ -269,8 +256,6 @@ public sealed class JsonMockDataSeeder(
         string? PhoneNumber
     );
 
-    private sealed record CityMock(int CityId, string Name, string District, string Voivodeship);
-
     private sealed record ClinicMock(
         int ClinicId,
         string Name,
@@ -278,7 +263,7 @@ public sealed class JsonMockDataSeeder(
         string? PhoneNumber,
         string? Email,
         bool IsActive,
-        int CityId
+        string City
     );
 
     private sealed record SpecializationMock(int SpecializationId, string Name, string? Description);

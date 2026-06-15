@@ -8,7 +8,8 @@ public static class Dto
         string? Description,
         string StreetAddress,
         string? OpeningHours,
-        string? MapLocation,
+        double? Latitude,
+        double? Longitude,
         string? PhoneNumber,
         string? Email,
         bool IsActive
@@ -19,8 +20,9 @@ public static class Dto
         string? Description,
         string StreetAddress,
         string? OpeningHours,
-        string? MapLocation,
-        int CityId,
+        double? Latitude,
+        double? Longitude,
+        string City,
         string? PhoneNumber,
         string? Email,
         bool IsActive
@@ -31,18 +33,12 @@ public static class Dto
         string? Description,
         string? StreetAddress,
         string? OpeningHours,
-        string? MapLocation,
-        int? CityId,
+        double? Latitude,
+        double? Longitude,
+        string? City,
         string? PhoneNumber,
         string? Email,
         bool? IsActive
-    );
-
-    public sealed record CityDto(
-        int CityId,
-        string Name,
-        string District,
-        string Voivodeship
     );
 
     public sealed record ClinicSpecializationDto(
@@ -59,20 +55,10 @@ public static class Dto
         int TotalPages
     );
 
-    /// <summary>
-    /// Consolidated query for GET /api/clinics.
-    /// Supports three views via the <c>View</c> parameter:
-    /// <list type="bullet">
-    ///   <item><c>clinics</c> (default) – paginated list of clinics with filters.</item>
-    ///   <item><c>cities</c> – flat list of cities (optionally filtered by specializationId).</item>
-    ///   <item><c>specializations</c> – flat list of specializations (optionally filtered by cityId).</item>
-    /// </list>
-    /// </summary>
     public sealed record ClinicListQuery
     {
         public string? Name { get; init; }
         public string? Location { get; init; }
-        public int? CityId { get; init; }
         public int? SpecializationId { get; init; }
         public string? Sort { get; init; }
         public int Page { get; init; } = 1;
@@ -97,13 +83,11 @@ public static class Dto
         string? Description,
         string StreetAddress,
         string? OpeningHours,
-        string? MapLocation,
+        double? Latitude,
+        double? Longitude,
         string? PhoneNumber,
         string? Email,
-        int CityId,
         string City,
-        string District,
-        string Voivodeship,
         bool IsActive,
         int DoctorCount,
         IReadOnlyList<string> Specializations,

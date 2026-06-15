@@ -61,7 +61,7 @@ public sealed record DoctorPublicProfileDto(
     string? PhoneNumber,
     string? City,
     string? StreetAddress,
-    double? Rating,
+    string? ProfileImageUrl,
     IReadOnlyList<string> Specializations,
     IReadOnlyList<DoctorAppointmentTypeDto> AppointmentTypes,
     IReadOnlyList<DoctorClinicDto> Clinics
@@ -75,7 +75,7 @@ public sealed record DoctorProfileDto(
     string? PhoneNumber,
     string? City,
     string? StreetAddress,
-    double? Rating,
+    string? ProfileImageUrl,
     IReadOnlyList<string> Specializations,
     IReadOnlyList<DoctorAppointmentTypeDto> AppointmentTypes,
     IReadOnlyList<DoctorScheduleDto> Schedules,
@@ -108,7 +108,7 @@ public sealed record DoctorAvailabilityCalendarDto(
 );
 
 public sealed record DoctorSearchQueryDto(
-    int? CityId,
+    string? Location,
     int? SpecializationId,
     DateOnly? Date,
     decimal? PriceMax,
@@ -122,8 +122,7 @@ public sealed record DoctorSearchItemDto(
     string FullName,
     string City,
     string Specialization,
-    decimal LowestPrice,
-    double? Rating
+    decimal LowestPrice
 );
 
 public sealed record PagedResultDto<T>(

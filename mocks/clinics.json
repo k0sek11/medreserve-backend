@@ -1,74 +1,74 @@
 [
-  {
-    "clinicId": 1,
-    "name": "Centrum Medyczne Mokotów",
-    "streetAddress": "ul. Marszałkowska 11",
-    "phoneNumber": "+48492494869",
-    "email": "kontakt@centrummedycznemokotów.pl",
-    "isActive": true,
-    "cityId": 1
-  },
-  {
-    "clinicId": 2,
-    "name": "Klinika Zdrowie Kraków",
-    "streetAddress": "ul. Nowy Świat 161",
-    "phoneNumber": "+48434143071",
-    "email": "kontakt@klinikazdrowiekraków.pl",
-    "isActive": true,
-    "cityId": 2
-  },
-  {
-    "clinicId": 3,
-    "name": "Dolnośląskie Centrum Medyczne",
-    "streetAddress": "ul. Puławska 121",
-    "phoneNumber": "+48715854268",
-    "email": "kontakt@dolnośląskiecentrummedyczne.pl",
-    "isActive": true,
-    "cityId": 3
-  },
-  {
-    "clinicId": 4,
-    "name": "Poznańskie Centrum Zdrowia",
-    "streetAddress": "ul. Akademicka 66",
-    "phoneNumber": "+48610190646",
-    "email": "kontakt@poznańskiecentrumzdrowia.pl",
-    "isActive": true,
-    "cityId": 4
-  },
-  {
-    "clinicId": 5,
-    "name": "Gdańskie Kliniki Medyczne",
-    "streetAddress": "Aleje Jerozolimskie 31",
-    "phoneNumber": "+48558738511",
-    "email": "kontakt@gdańskieklinikimedyczne.pl",
-    "isActive": true,
-    "cityId": 5
-  },
-  {
-    "clinicId": 6,
-    "name": "Szczecińskie Centrum Zdravia",
-    "streetAddress": "ul. Akademicka 6",
-    "phoneNumber": "+48783933537",
-    "email": "kontakt@szczecińskiecentrumzdravia.pl",
-    "isActive": true,
-    "cityId": 6
-  },
-  {
-    "clinicId": 7,
-    "name": "Łódzkie Centrum Medyczne",
-    "streetAddress": "ul. Legnicka 131",
-    "phoneNumber": "+48748790734",
-    "email": "kontakt@łódzkiecentrummedyczne.pl",
-    "isActive": true,
-    "cityId": 7
-  },
-  {
-    "clinicId": 8,
-    "name": "Warszawskie Kliniki Specjalistyczne",
-    "streetAddress": "ul. Mokotowska 166",
-    "phoneNumber": "+48619114660",
-    "email": "kontakt@warszawskieklinikispecjalistyczne.pl",
-    "isActive": true,
-    "cityId": 8
-  }
+    {
+        "clinicId": 1,
+        "name": "Centrum Medyczne Mokotów",
+        "streetAddress": "ul. Marszałkowska 11",
+        "phoneNumber": "+48492494869",
+        "email": "kontakt@centrummedycznemokotów.pl",
+        "isActive": true,
+        "city": "Warszawa"
+    },
+    {
+        "clinicId": 2,
+        "name": "Klinika Zdrowie Kraków",
+        "streetAddress": "ul. Nowy Świat 161",
+        "phoneNumber": "+48434143071",
+        "email": "kontakt@klinikazdrowiekraków.pl",
+        "isActive": true,
+        "city": "Kraków"
+    },
+    {
+        "clinicId": 3,
+        "name": "Dolnośląskie Centrum Medyczne",
+        "streetAddress": "ul. Puławska 121",
+        "phoneNumber": "+48715854268",
+        "email": "kontakt@dolnośląskiecentrummedyczne.pl",
+        "isActive": true,
+        "city": "Wrocław"
+    },
+    {
+        "clinicId": 4,
+        "name": "Poznańskie Centrum Zdrowia",
+        "streetAddress": "ul. Akademicka 66",
+        "phoneNumber": "+48610190646",
+        "email": "kontakt@poznańskiecentrumzdrowia.pl",
+        "isActive": true,
+        "city": "Poznań"
+    },
+    {
+        "clinicId": 5,
+        "name": "Gdańskie Kliniki Medyczne",
+        "streetAddress": "Aleje Jerozolimskie 31",
+        "phoneNumber": "+48558738511",
+        "email": "kontakt@gdańskieklinikimedyczne.pl",
+        "isActive": true,
+        "city": "Gdańsk"
+    },
+    {
+        "clinicId": 6,
+        "name": "Szczecińskie Centrum Zdravia",
+        "streetAddress": "ul. Akademicka 6",
+        "phoneNumber": "+48783933537",
+        "email": "kontakt@szczecińskiecentrumzdravia.pl",
+        "isActive": true,
+        "city": "Szczecin"
+    },
+    {
+        "clinicId": 7,
+        "name": "Łódzkie Centrum Medyczne",
+        "streetAddress": "ul. Legnicka 131",
+        "phoneNumber": "+48748790734",
+        "email": "kontakt@łódzkiecentrummedyczne.pl",
+        "isActive": true,
+        "city": "Łódź"
+    },
+    {
+        "clinicId": 8,
+        "name": "Warszawskie Kliniki Specjalistyczne",
+        "streetAddress": "ul. Mokotowska 166",
+        "phoneNumber": "+48619114660",
+        "email": "kontakt@warszawskieklinikispecjalistyczne.pl",
+        "isActive": true,
+        "city": "Warszawa"
+    }
 ]

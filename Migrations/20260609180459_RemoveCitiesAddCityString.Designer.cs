@@ -3,6 +3,7 @@ using System;
 using Medreserve.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Medreserve.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260609180459_RemoveCitiesAddCityString")]
+    partial class RemoveCitiesAddCityString
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,13 +167,9 @@ namespace Medreserve.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
 
-                    b.Property<double?>("Latitude")
-                        .HasColumnType("double precision")
-                        .HasColumnName("latitude");
-
-                    b.Property<double?>("Longitude")
-                        .HasColumnType("double precision")
-                        .HasColumnName("longitude");
+                    b.Property<string>("MapLocation")
+                        .HasColumnType("text")
+                        .HasColumnName("map_location");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -236,10 +235,6 @@ namespace Medreserve.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("license_number");
-
-                    b.Property<string>("ProfileImageUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("profile_image_url");
 
                     b.Property<string>("UserId")
                         .IsRequired()

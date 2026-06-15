@@ -46,6 +46,28 @@ public class DoctorsController : ControllerBase
         return success ? Ok(new { message = "Doctor profile updated successfully." }) : NotFound();
     }
 
+    [HttpPost("me/photo")]
+    [Authorize]
+    public async Task<IActionResult> UploadProfilePhoto(IFormFile file, CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+            return Unauthorized();
+
+        if (file is null || file.Length == 0)
+            return BadRequest(new { message = "No file provided." });
+
+        try
+        {
+            var url = await _doctorService.UploadPhotoAsync(currentUserId, file, cancellationToken);
+            return url is null ? NotFound() : Ok(new { profileImageUrl = url });
+        }
+        catch (ArgumentException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
+    }
+
     [HttpPost("me/appointment-types")]
     public async Task<ActionResult<DoctorAppointmentTypeDto>> CreateMyAppointmentType(
         [FromBody] CreateDoctorAppointmentTypeDto request,
@@ -284,10 +306,13 @@ public class DoctorsController : ControllerBase
             .Where(x => x.User.IsActive)
             .AsQueryable();
 
-        if (query.CityId.HasValue)
+        if (!string.IsNullOrWhiteSpace(query.Location))
         {
+            var loc = query.Location.Trim();
             doctorsQuery = doctorsQuery.Where(x =>
-                x.ClinicDoctors.Any(cd => cd.Clinic.CityId == query.CityId.Value)
+                x.ClinicDoctors.Any(cd =>
+                    EF.Functions.ILike(cd.Clinic.City, $"%{loc}%") ||
+                    EF.Functions.ILike(cd.Clinic.StreetAddress, $"%{loc}%"))
             );
         }
 
@@ -328,8 +353,7 @@ public class DoctorsController : ControllerBase
             x.DoctorId,
             FullName = x.User.FirstName + " " + x.User.LastName,
             City = x.ClinicDoctors
-                .Where(cd => !query.CityId.HasValue || cd.Clinic.CityId == query.CityId.Value)
-                .Select(cd => cd.Clinic.City.Name)
+                .Select(cd => cd.Clinic.City)
                 .FirstOrDefault() ?? string.Empty,
             Specialization = x.DoctorSpecializations
                 .Where(ds => !query.SpecializationId.HasValue || ds.SpecializationId == query.SpecializationId.Value)
@@ -357,8 +381,7 @@ public class DoctorsController : ControllerBase
                 x.FullName,
                 x.City,
                 x.Specialization,
-                x.LowestPrice,
-                null
+                x.LowestPrice
             ))
             .ToListAsync(cancellationToken);
 

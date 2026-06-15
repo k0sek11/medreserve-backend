@@ -12,6 +12,7 @@ public class Doctor
     public string UserId { get; set; } = string.Empty;
     public string LicenseNumber { get; set; } = string.Empty;
     public string? Bio { get; set; }
+    public string? ProfileImageUrl { get; set; }
 
     public Medreserve.Features.Users.User User { get; set; } = null!;
     public ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
