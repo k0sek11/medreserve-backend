@@ -70,10 +70,19 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
         if (payment.Appointment != null)
         {
             var now = DateTime.UtcNow;
-            var start = payment.Appointment.GetStartDateTime();
-            if (start > now)
+            var localStart = payment.Appointment.GetStartDateTime();
+            
+            var polishTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Warsaw");
+            
+            var startUtc = TimeZoneInfo.ConvertTimeToUtc(localStart, polishTimeZone);
+
+            if (startUtc > now)
+            {
                 throw new InvalidOperationException("Nie można potwierdzić płatności przed rozpoczęciem wizyty.");
+            }
         }
+
+        
 
         payment.Status = "Paid";
         payment.UpdatedAt = DateTime.UtcNow;
