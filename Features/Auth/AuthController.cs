@@ -47,7 +47,7 @@ public class AuthController : ControllerBase
     
         if (!success)
         {
-            return Unauthorized("Nieprawidłowy token Google lub błąd po stronie serwera.");
+            return Unauthorized(new { message = "Invalid Google token or server error." });
         }
 
         return Ok();
@@ -68,7 +68,7 @@ public class AuthController : ControllerBase
 
         if (!success)
         {
-            return BadRequest(new { message = "Nie udało się zapisać profilu." });
+            return BadRequest(new { message = "Failed to complete profile." });
         }
 
         return Ok(new { message = "Profile completed successfully." });

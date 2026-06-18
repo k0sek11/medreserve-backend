@@ -11,15 +11,18 @@ public class AuthService : IAuthService
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly IDoctorService _doctorService;
+    private readonly IConfiguration _configuration;
 
     public AuthService(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
-        IDoctorService doctorService)
+        IDoctorService doctorService,
+        IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _doctorService = doctorService;
+        _configuration = configuration;
     }
 
     public async Task<bool> RegisterAsync(RegisterDto request)
@@ -82,9 +85,17 @@ public class AuthService : IAuthService
 {
     try
     {
+        var googleClientId = _configuration["Authentication:Google:ClientId"];
+
+                    if (string.IsNullOrEmpty(googleClientId))
+                    {
+                        Console.WriteLine("[Google OAuth Error] Brak ClientId w konfiguracji!");
+                        return false;
+                    }
+
         var settings = new GoogleJsonWebSignature.ValidationSettings()
         {
-            Audience = new List<string>() { "140484954108-teas0lbcuvqb9a83upfejs6qad1t51e3.apps.googleusercontent.com" } 
+            Audience = new List<string>() { googleClientId }
         };
 
         var payload = await GoogleJsonWebSignature.ValidateAsync(googleToken, settings);
@@ -102,8 +113,8 @@ public class AuthService : IAuthService
                 {
                     UserName = payload.Email,
                     Email = payload.Email,
-                    FirstName = payload.GivenName,
-                    LastName = payload.FamilyName,
+                    FirstName = payload.GivenName ?? "", 
+                    LastName = payload.FamilyName ?? "",
                     IsActive = false 
                 };
 
@@ -119,12 +130,14 @@ public class AuthService : IAuthService
         
         return true;
     }
-    catch (InvalidJwtException)
+    catch (InvalidJwtException ex)
     {
+        Console.WriteLine($"[Google OAuth Error] JWT jest nieprawidłowy: {ex.Message}");
         return false;
     }
-    catch (Exception)
+    catch (Exception ex)
     {
+        Console.WriteLine($"[Google OAuth Error] Inny błąd: {ex.Message}");
         return false;
     }
 }
