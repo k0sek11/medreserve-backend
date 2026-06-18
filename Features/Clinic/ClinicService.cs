@@ -86,7 +86,7 @@ public class ClinicService(DatabaseContext _context) : IClinicService
             Latitude = request.Latitude,
             Longitude = request.Longitude,
             City = request.City.Trim(),
-            PhoneNumber = TrimToNull(request.PhoneNumber),
+            PhoneNumber = TrimToNull(request.PhoneNumber) is { } p ? PhoneValidator.ToE164(p) : null,
             Email = TrimToNull(request.Email),
             IsActive = true,
         };
@@ -112,7 +112,7 @@ public class ClinicService(DatabaseContext _context) : IClinicService
         if (request.Latitude is not null) clinic.Latitude = request.Latitude;
         if (request.Longitude is not null) clinic.Longitude = request.Longitude;
         if (request.City is not null) clinic.City = request.City.Trim();
-        if (request.PhoneNumber is not null) clinic.PhoneNumber = TrimToNull(request.PhoneNumber);
+        if (request.PhoneNumber is not null) clinic.PhoneNumber = TrimToNull(request.PhoneNumber) is { } p ? PhoneValidator.ToE164(p) : null;
         if (request.Email is not null) clinic.Email = TrimToNull(request.Email);
         if (request.IsActive.HasValue) clinic.IsActive = request.IsActive.Value;
 

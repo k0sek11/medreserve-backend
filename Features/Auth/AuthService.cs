@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Medreserve.Features.Doctor;
 using Medreserve.Features.Users;
+using Medreserve.Infrastructure;
 
 namespace Medreserve.Features.Auth;
 
@@ -81,65 +82,65 @@ public class AuthService : IAuthService
     }
 
     public async Task<bool> LoginWithGoogleAsync(string googleToken)
-{
-    try
     {
-        var googleClientId = _configuration["Authentication:Google:ClientId"];
-
-                    if (string.IsNullOrEmpty(googleClientId))
-                    {
-                        Console.WriteLine("[Google OAuth Error] Brak ClientId w konfiguracji!");
-                        return false;
-                    }
-
-        var settings = new GoogleJsonWebSignature.ValidationSettings()
+        try
         {
-            Audience = new List<string>() { googleClientId }
-        };
+            var googleClientId = _configuration["Authentication:Google:ClientId"];
 
-        var payload = await GoogleJsonWebSignature.ValidateAsync(googleToken, settings);
+            if (string.IsNullOrEmpty(googleClientId))
+            {
+                Console.WriteLine("[Google OAuth Error] Brak ClientId w konfiguracji!");
+                return false;
+            }
 
-        var info = new UserLoginInfo("Google", payload.Subject, "Google");
-        var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string>() { googleClientId }
+            };
 
-        if (user == null)
-        {
-            user = await _userManager.FindByEmailAsync(payload.Email);
+            var payload = await GoogleJsonWebSignature.ValidateAsync(googleToken, settings);
+
+            var info = new UserLoginInfo("Google", payload.Subject, "Google");
+            var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
             if (user == null)
             {
-                user = new User
-                {
-                    UserName = payload.Email,
-                    Email = payload.Email,
-                    FirstName = payload.GivenName ?? "", 
-                    LastName = payload.FamilyName ?? "",
-                    IsActive = false 
-                };
+                user = await _userManager.FindByEmailAsync(payload.Email);
 
-                var createResult = await _userManager.CreateAsync(user);
-                if (!createResult.Succeeded) return false;
+                if (user == null)
+                {
+                    user = new User
+                    {
+                        UserName = payload.Email,
+                        Email = payload.Email,
+                        FirstName = payload.GivenName ?? "",
+                        LastName = payload.FamilyName ?? "",
+                        IsActive = false
+                    };
+
+                    var createResult = await _userManager.CreateAsync(user);
+                    if (!createResult.Succeeded) return false;
+                }
+
+                var addLoginResult = await _userManager.AddLoginAsync(user, info);
+                if (!addLoginResult.Succeeded) return false;
             }
 
-            var addLoginResult = await _userManager.AddLoginAsync(user, info);
-            if (!addLoginResult.Succeeded) return false;
-        }
+            await _signInManager.SignInAsync(user, isPersistent: true);
 
-        await _signInManager.SignInAsync(user, isPersistent: true);
-        
-        return true;
+            return true;
+        }
+        catch (InvalidJwtException ex)
+        {
+            Console.WriteLine($"[Google OAuth Error] JWT jest nieprawidłowy: {ex.Message}");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Google OAuth Error] Inny błąd: {ex.Message}");
+            return false;
+        }
     }
-    catch (InvalidJwtException ex)
-    {
-        Console.WriteLine($"[Google OAuth Error] JWT jest nieprawidłowy: {ex.Message}");
-        return false;
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"[Google OAuth Error] Inny błąd: {ex.Message}");
-        return false;
-    }
-}
 
     public async Task<bool> CompleteProfileAsync(string userId, CompleteProfileDto request)
     {
@@ -155,9 +156,14 @@ public class AuthService : IAuthService
             return false;
         }
 
+        if (string.IsNullOrWhiteSpace(request.PhoneNumber) || !PhoneValidator.IsValidPolishPhone(request.PhoneNumber))
+        {
+            return false;
+        }
+
         user.FirstName = request.FirstName.Trim();
         user.LastName = request.LastName.Trim();
-        user.PhoneNumber = request.PhoneNumber.Trim();
+        user.PhoneNumber = PhoneValidator.ToE164(request.PhoneNumber);
         user.BirthDate = request.BirthDate;
         user.Gender = request.Gender.Trim();
         user.UpdatedAt = DateTime.UtcNow;

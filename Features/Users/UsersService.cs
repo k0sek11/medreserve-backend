@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Medreserve.Infrastructure;
 
 namespace Medreserve.Features.Users;
 
@@ -38,7 +39,7 @@ public class UsersService : IUsersService
         user.FirstName = request.FirstName.Trim();
         user.LastName = request.LastName.Trim();
         if (request.PhoneNumber is not null)
-            user.PhoneNumber = request.PhoneNumber.Trim();
+            user.PhoneNumber = PhoneValidator.ToE164(request.PhoneNumber);
         if (request.BirthDate is not null)
             user.BirthDate = request.BirthDate;
         if (request.Gender is not null)

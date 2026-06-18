@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""
-MedReserve Mock Data Generator
-Generuje pliki .json dla wszystkich modeli w api/mocks/
-Uruchom: python3 generate_mock_data.py
-"""
+
 
 import json
 import random
@@ -11,14 +7,14 @@ import os
 from datetime import date, datetime, timedelta, time
 from pathlib import Path
 
-random.seed(42)  # deterministyczne dane
+random.seed(42)
 
 OUTPUT_DIR = Path(__file__).parent / "mocks"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-# ══════════════════════════════════════════════════════════════════════
-# DANE BAZOWE
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 FIRST_NAMES_MALE = [
     "Jan", "Adam", "Piotr", "Michał", "Tomasz", "Krzysztof", "Marcin", "Łukasz",
@@ -115,9 +111,9 @@ NOTIFICATION_TYPES = ["AppointmentReminder", "PaymentConfirmation", "Appointment
                        "NewAppointment", "DoctorMessage", "SystemNotification"]
 NOTIFICATION_STATUSES = ["Sent", "Pending", "Failed"]
 
-# ══════════════════════════════════════════════════════════════════════
-# GENERATORY
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def random_date(start: date, end: date) -> date:
     delta = (end - start).days
@@ -136,9 +132,9 @@ def generate_phone() -> str:
 def generate_email(first: str, last: str, domain: str = "example.com") -> str:
     return f"{first.lower()}.{last.lower()}@{domain}"
 
-# ══════════════════════════════════════════════════════════════════════
-# 1. USERS
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_users(num_doctors: int = 15, num_patients: int = 35, num_admins: int = 2):
     users = []
@@ -160,7 +156,7 @@ def generate_users(num_doctors: int = 15, num_patients: int = 35, num_admins: in
             "role": role,
         }
 
-    # Doctors
+
     for i in range(num_doctors):
         uid = f"doc-{i+1}"
         first = random.choice(FIRST_NAMES_MALE if random.random() > 0.4 else FIRST_NAMES_FEMALE)
@@ -173,7 +169,7 @@ def generate_users(num_doctors: int = 15, num_patients: int = 35, num_admins: in
         used.add(key)
         users.append(make_user(uid, first, last, "Doctor"))
 
-    # Patients
+
     for i in range(num_patients):
         uid = f"pat-{i+1}"
         first = random.choice(FIRST_NAMES_MALE if random.random() > 0.5 else FIRST_NAMES_FEMALE)
@@ -186,7 +182,7 @@ def generate_users(num_doctors: int = 15, num_patients: int = 35, num_admins: in
         used.add(key)
         users.append(make_user(uid, first, last, "Patient"))
 
-    # Admins
+
     for i in range(num_admins):
         uid = f"adm-{i+1}"
         first = random.choice(FIRST_NAMES_MALE)
@@ -196,9 +192,9 @@ def generate_users(num_doctors: int = 15, num_patients: int = 35, num_admins: in
     return users
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 2. CLINICS
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_clinics(num: int = 15):
     clinics = []
@@ -225,9 +221,9 @@ def generate_clinics(num: int = 15):
     return clinics
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 3. SPECIALIZATIONS
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_specializations():
     return [
@@ -236,9 +232,9 @@ def generate_specializations():
     ]
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 4. APPOINTMENT TYPES
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_appointment_types():
     return [
@@ -253,9 +249,9 @@ def generate_appointment_types():
     ]
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 5. DOCTORS
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_doctors(num: int = 15):
     doctors = []
@@ -283,14 +279,14 @@ def generate_doctors(num: int = 15):
     return doctors
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 6. CLINIC DOCTORS
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_clinic_doctors(num_clinics: int, num_doctors: int):
     items = []
     seen = set()
-    # Each doctor works in 1-3 clinics
+
     for doc_id in range(1, num_doctors + 1):
         n = random.randint(1, 3)
         clinic_ids = random.sample(range(1, num_clinics + 1), min(n, num_clinics))
@@ -307,9 +303,9 @@ def generate_clinic_doctors(num_clinics: int, num_doctors: int):
     return items
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 7. DOCTOR SPECIALIZATIONS
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_doctor_specializations(num_doctors: int):
     items = []
@@ -326,9 +322,9 @@ def generate_doctor_specializations(num_doctors: int):
     return items
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 8. DOCTOR APPOINTMENT TYPES
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_doctor_appointment_types(num_doctors: int):
     items = []
@@ -345,16 +341,16 @@ def generate_doctor_appointment_types(num_doctors: int):
     return items
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 9. DOCTOR SCHEDULES
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_doctor_schedules(num_doctors: int, clinic_doctors: list):
     items = []
     schedule_id = 1
     start_date = datetime(2026, 1, 1, tzinfo=None)
 
-    # Build doctor -> clinics mapping
+
     doc_clinics = {}
     for cd in clinic_doctors:
         doc_clinics.setdefault(cd["doctorId"], []).append(cd["clinicId"])
@@ -372,7 +368,7 @@ def generate_doctor_schedules(num_doctors: int, clinic_doctors: list):
 
     for doc_id in range(1, num_doctors + 1):
         for clinic_id in doc_clinics.get(doc_id, []):
-            workdays = random.sample(range(1, 6), random.randint(3, 5))  # Mon-Fri
+            workdays = random.sample(range(1, 6), random.randint(3, 5))
             for day in sorted(workdays):
                 start_t, end_t = random.choice(time_options)
                 items.append({
@@ -390,9 +386,9 @@ def generate_doctor_schedules(num_doctors: int, clinic_doctors: list):
     return items
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 10. APPOINTMENTS
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_appointments(num: int, num_patients: int, num_doctors: int,
                           doctor_appt_types: list, doctor_schedules: list):
@@ -401,12 +397,12 @@ def generate_appointments(num: int, num_patients: int, num_doctors: int,
     base = datetime(2026, 5, 1, tzinfo=None)
     end = datetime(2026, 8, 31, tzinfo=None)
 
-    # Build lookup: doctor -> list of appt types
+
     doc_types = {}
     for dt in doctor_appt_types:
         doc_types.setdefault(dt["doctorId"], []).append(dt["appointmentTypeId"])
 
-    # Build lookup: schedule -> duration from appt type
+
     type_duration = {t["id"]: t["duration"] for t in APPOINTMENT_TYPES}
 
     schedule_lookup = {}
@@ -420,18 +416,18 @@ def generate_appointments(num: int, num_patients: int, num_doctors: int,
         doctor_id = random.randint(1, num_doctors)
         patient_id = random.randint(1, num_patients)
 
-        # Pick appointment type for this doctor
+
         available_types = doc_types.get(doctor_id, [1])
         type_id = random.choice(available_types)
 
-        # Duration of the appointment
+
         duration = type_duration.get(type_id, 30)
 
-        # Generate appointment date
+
         created = random_datetime(base, min(now, end))
         appt_date = created.date() + timedelta(days=random.randint(0, 14))
 
-        # Find valid schedule for this doctor/day
+
         day_of_week = appt_date.isoweekday()
         schedules_for_day = schedule_lookup.get((doctor_id, day_of_week), [])
 
@@ -442,7 +438,7 @@ def generate_appointments(num: int, num_patients: int, num_doctors: int,
         start_h, start_m = map(int, schedule["startTime"].split(":"))
         end_h, end_m = map(int, schedule["endTime"].split(":"))
 
-        # Generate a random start time within the schedule that fits the duration
+
         max_start_min = (end_h * 60 + end_m) - duration
         min_start_min = start_h * 60 + start_m
         if max_start_min <= min_start_min:
@@ -451,10 +447,10 @@ def generate_appointments(num: int, num_patients: int, num_doctors: int,
         slot_min = random.randrange(min_start_min, max_start_min, 15)
         start_time = time(slot_min // 60, slot_min % 60)
 
-        # Status
+
         status = random.choice(APPT_STATUSES)
 
-        # Timestamps
+
         confirmed_at = None
         completed_at = None
         cancelled_at = None
@@ -487,9 +483,9 @@ def generate_appointments(num: int, num_patients: int, num_doctors: int,
     return items
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 11. PAYMENTS
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_payments(appointments: list):
     items = []
@@ -510,7 +506,7 @@ def generate_payments(appointments: list):
         if status == "Paid":
             paid_at = (created + timedelta(minutes=random.randint(5, 60))).isoformat() + "Z"
 
-        # Find price from appointment type
+
         apt_price = next((t["price"] for t in APPOINTMENT_TYPES if t["id"] == appt["appointmentTypeId"]), 220.0)
 
         items.append({
@@ -528,9 +524,9 @@ def generate_payments(appointments: list):
     return items
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 12. NOTIFICATIONS
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 NOTIFICATION_TEMPLATES = [
     ("AppointmentReminder", "Przypomnienie o wizycie", "Przypominamy o jutrzejszej wizycie. Prosimy o punktualne przybycie."),
@@ -546,7 +542,7 @@ def generate_notifications(appointments: list, users: list, num_extra: int = 50)
     n_id = 1
     valid_appt_ids = [a["appointmentId"] for a in appointments]
 
-    # One notification per appointment (minimal)
+
     for appt in appointments:
         tpl = random.choice(NOTIFICATION_TEMPLATES)
         created = datetime.fromisoformat(appt["createdAt"].replace("Z", ""))
@@ -565,7 +561,7 @@ def generate_notifications(appointments: list, users: list, num_extra: int = 50)
         })
         n_id += 1
 
-    # Extra notifications for patients — use valid appointment IDs only
+
     for _ in range(num_extra):
         tpl = random.choice(NOTIFICATION_TEMPLATES)
         patient_id = random.randint(1, 35)
@@ -589,9 +585,9 @@ def generate_notifications(appointments: list, users: list, num_extra: int = 50)
     return items
 
 
-# ══════════════════════════════════════════════════════════════════════
-# 13. OFFLINE PAYMENT APPROVALS
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def generate_offline_approvals(payments: list, num_admins: int = 2):
     items = []
@@ -612,9 +608,9 @@ def generate_offline_approvals(payments: list, num_admins: int = 2):
     return items
 
 
-# ══════════════════════════════════════════════════════════════════════
-# MAIN
-# ══════════════════════════════════════════════════════════════════════
+
+
+
 
 def write_json(filename: str, data: list):
     path = OUTPUT_DIR / filename
@@ -632,7 +628,7 @@ def main():
     NUM_CLINICS = 15
     NUM_APPOINTMENTS = 200
 
-    # Generate in order (respecting dependencies)
+
     users = generate_users(NUM_DOCTORS, NUM_PATIENTS, NUM_ADMINS)
     write_json("users.json", users)
 
