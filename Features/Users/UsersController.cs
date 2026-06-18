@@ -49,9 +49,9 @@ public class UsersController : ControllerBase
 
         user.FirstName = request.FirstName.Trim();
         user.LastName = request.LastName.Trim();
-        user.PhoneNumber = request.PhoneNumber.Trim();
-        user.BirthDate = request.BirthDate;
-        user.Gender = request.Gender.Trim();
+        if (request.PhoneNumber is not null) user.PhoneNumber = request.PhoneNumber.Trim();
+        if (request.BirthDate is not null) user.BirthDate = request.BirthDate;
+        if (request.Gender is not null) user.Gender = request.Gender.Trim();
         user.UpdatedAt = DateTime.UtcNow;
 
         var result = await _userManager.UpdateAsync(user);

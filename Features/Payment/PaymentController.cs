@@ -1,24 +1,24 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Medreserve.Features.Payment.PayU; 
+using Medreserve.Features.Payment.PayU;
 
 namespace Medreserve.Features.Payment;
 
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize] 
-public class PaymentsController(IPaymentService service) : ControllerBase 
+[Authorize]
+public class PaymentsController(IPaymentService service) : ControllerBase
 {
 
     [HttpPost("init-offline")]
     public async Task<IActionResult> InitOffline([FromBody] InitPaymentDto request)
     {
         var success = await service.CreateOfflinePaymentIntentAsync(request.AppointmentId);
-        
+
         if (!success) return BadRequest("Nie można zainicjować płatności dla tej wizyty.");
-        
+
         return Ok(new { message = "Pomyślnie wybrano płatność w placówce." });
     }
 
@@ -41,33 +41,33 @@ public class PaymentsController(IPaymentService service) : ControllerBase
 
         return Ok(new { message = "Płatność offline została pomyślnie zatwierdzona." });
     }
-        
-    
+
+
     [HttpPost("init-payu")]
     public async Task<IActionResult> InitPayu([FromBody] InitPaymentDto request)
     {
         var redirectUri = await service.InitPayuPaymentAsync(request.AppointmentId);
-        
+
         return Ok(new { redirectUri = redirectUri });
     }
-        
+
     [HttpPost("check-status/{appointmentId}")]
     public async Task<IActionResult> CheckStatus(int appointmentId)
     {
         var payuStatus = await service.CheckPayuStatusAsync(appointmentId);
-        
+
         var isPaid = await service.UpdateStatusAsync(appointmentId, payuStatus);
-        
-        return Ok(new { isPaid });
+
+        return Ok(new { isPaid, payuStatus });
     }
-        
-    
+
+
     [HttpPost("payu-notify")]
     [AllowAnonymous]
     public async Task<IActionResult> PayUNotify([FromBody] PayUNotificationRequest request)
     {
         await service.ProcessPayUNotificationAsync(request);
-        
+
         return Ok();
     }
 }

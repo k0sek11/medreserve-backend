@@ -3,9 +3,9 @@ namespace Medreserve.Features.Users;
 public sealed record UpdatePatientProfileDto(
     string FirstName,
     string LastName,
-    string PhoneNumber,
-    DateOnly BirthDate,
-    string Gender
+    string? PhoneNumber,
+    DateOnly? BirthDate,
+    string? Gender
 );
 
 public sealed record PatientProfileDto(

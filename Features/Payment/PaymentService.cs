@@ -71,9 +71,9 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
         {
             var now = DateTime.UtcNow;
             var localStart = payment.Appointment.GetStartDateTime();
-            
+
             var polishTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Warsaw");
-            
+
             var startUtc = TimeZoneInfo.ConvertTimeToUtc(localStart, polishTimeZone);
 
             if (startUtc > now)
@@ -82,7 +82,7 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
             }
         }
 
-        
+
 
         payment.Status = "Paid";
         payment.UpdatedAt = DateTime.UtcNow;
@@ -184,11 +184,6 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
         else if (payuStatus == "CANCELED" || payuStatus == "REJECTED")
         {
             payment.Status = "Failed";
-
-            if (payment.Appointment != null && payment.Appointment.Status != AppointmentStatus.Cancelled)
-            {
-                payment.Appointment.Status = AppointmentStatus.PendingConfirmation;
-            }
         }
 
         payment.UpdatedAt = DateTime.UtcNow;
@@ -220,10 +215,6 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
         else if (status == "CANCELED" || status == "REJECTED")
         {
             payment.Status = "Failed";
-            if (payment.Appointment != null && payment.Appointment.Status != AppointmentStatus.Cancelled)
-            {
-                payment.Appointment.Status = AppointmentStatus.PendingConfirmation;
-            }
         }
 
         payment.UpdatedAt = DateTime.UtcNow;
