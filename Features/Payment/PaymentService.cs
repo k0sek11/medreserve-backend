@@ -8,19 +8,10 @@ namespace Medreserve.Features.Payment;
 
 using PaymentEntity = Medreserve.Features.Payment.Payment;
 
-/// <summary>
-/// Główny serwis obsługujący logikę biznesową płatności.
-/// Odpowiada za operacje na bazie danych, ale nie wychodzi do internetu (od tego jest IPayUService).
-/// </summary>
 public class PaymentService(DatabaseContext _context, IPayUService _payUService) : IPaymentService
 {
-    // Słownik in-memory, który w środowisku testowym (localhost) pamięta przypisanie 
-    // naszego lokalnego PaymentId do OrderId nadanego przez system PayU.
     private static readonly ConcurrentDictionary<int, string> _payuOrders = new();
 
-    // =========================================================================
-    // 1. GOTÓWKA (W PLACÓWCE)
-    // =========================================================================
 
     public async Task<bool> CreateOfflinePaymentIntentAsync(int appointmentId)
     {
@@ -42,7 +33,6 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
             existingPayment.Amount = apt.AppointmentType.BasePrice;
             existingPayment.UpdatedAt = DateTime.UtcNow;
 
-            // Mark appointment as awaiting on-site payment
             apt.Status = AppointmentStatus.AwaitingOnSitePayment;
 
             await _context.SaveChangesAsync();
@@ -62,7 +52,6 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
 
         _context.Payments.Add(newPayment);
 
-        // Mark appointment as awaiting on-site payment
         apt.Status = AppointmentStatus.AwaitingOnSitePayment;
 
         await _context.SaveChangesAsync();
@@ -78,7 +67,6 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
         if (payment == null) return false;
         if (payment.Status == "Paid") return true;
 
-        // Validate appointment is during its scheduled time
         if (payment.Appointment != null)
         {
             var now = DateTime.UtcNow;
@@ -109,10 +97,6 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
         await _context.SaveChangesAsync();
         return true;
     }
-
-    // =========================================================================
-    // 2. PAYU (ONLINE)
-    // =========================================================================
 
     public async Task<string> InitPayuPaymentAsync(int appointmentId)
     {
@@ -203,10 +187,6 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
 
         return payment.Status == "Paid";
     }
-
-    // =========================================================================
-    // 3. WEBHOOK (POWIADOMIENIA Z PRODUKCJI)
-    // =========================================================================
 
     public async Task<bool> ProcessPayUNotificationAsync(PayUNotificationRequest request)
     {
