@@ -12,7 +12,6 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
 {
     private static readonly ConcurrentDictionary<int, string> _payuOrders = new();
 
-
     public async Task<bool> CreateOfflinePaymentIntentAsync(int appointmentId)
     {
         var apt = await _context.Appointments
@@ -81,8 +80,6 @@ public class PaymentService(DatabaseContext _context, IPayUService _payUService)
                 throw new InvalidOperationException("Nie można potwierdzić płatności przed rozpoczęciem wizyty.");
             }
         }
-
-
 
         payment.Status = "Paid";
         payment.UpdatedAt = DateTime.UtcNow;

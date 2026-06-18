@@ -122,8 +122,6 @@ public class AppointmentService(DatabaseContext dbContext) : IAppointmentService
         return appointment is null ? null : MapDetail(appointment);
     }
 
-    // ───────────────────────────── Private Helpers ─────────────────────────────
-
     private async Task EnsureUserExistsAsync(string userId, CancellationToken ct)
     {
         var exists = await _dbContext.Users.AsNoTracking().AnyAsync(u => u.Id == userId, ct);

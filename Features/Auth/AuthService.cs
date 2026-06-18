@@ -36,7 +36,6 @@ public class AuthService : IAuthService
 
         var result = await _userManager.CreateAsync(user, request.Password);
 
-
         if (!result.Succeeded)
         {
             return false;

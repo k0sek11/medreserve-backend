@@ -12,8 +12,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Medreserve.Infrastructure;
 
-public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<User>
+public class DatabaseContext : IdentityDbContext<User>
 {
+    public DatabaseContext(IConfiguration configuration) : this(configuration, null) { }
+
+    internal DatabaseContext(IConfiguration configuration, DbContextOptions<DatabaseContext>? options)
+        : base(options ?? new DbContextOptions<DatabaseContext>())
+    {
+        _configuration = configuration;
+    }
+
+    private readonly IConfiguration _configuration;
+
     public DbSet<Doctor> Doctors => Set<Doctor>();
     public DbSet<Clinic> Clinics => Set<Clinic>();
     public DbSet<ClinicDoctor> ClinicDoctors => Set<ClinicDoctor>();
@@ -29,10 +39,9 @@ public class DatabaseContext(IConfiguration configuration) : IdentityDbContext<U
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-
         if (!options.IsConfigured)
         {
-            var connectionString = configuration.GetConnectionString("Default");
+            var connectionString = _configuration.GetConnectionString("Default");
             options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
         }
         options.EnableSensitiveDataLogging();

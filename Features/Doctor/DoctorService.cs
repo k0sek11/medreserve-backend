@@ -13,13 +13,11 @@ public class DoctorService : IDoctorService
 {
     private readonly DatabaseContext _dbContext;
     private readonly UserManager<User> _userManager;
-    private readonly IFileStorageService _fileStorage;
 
-    public DoctorService(DatabaseContext dbContext, UserManager<User> userManager, IFileStorageService fileStorage)
+    public DoctorService(DatabaseContext dbContext, UserManager<User> userManager)
     {
         _dbContext = dbContext;
         _userManager = userManager;
-        _fileStorage = fileStorage;
     }
 
     public async Task<bool> CreateProfileAsync(string userId, CreateDoctorProfileDto request)
@@ -115,24 +113,6 @@ public class DoctorService : IDoctorService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         return true;
-    }
-
-    public async Task<string?> UploadPhotoAsync(string userId, IFormFile file, CancellationToken cancellationToken)
-    {
-        var doctor = await _dbContext.Doctors
-            .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
-        if (doctor is null) return null;
-
-        var oldUrl = doctor.ProfileImageUrl;
-        var newUrl = await _fileStorage.SaveProfileImageAsync(file, cancellationToken);
-
-        doctor.ProfileImageUrl = newUrl;
-        await _dbContext.SaveChangesAsync(cancellationToken);
-
-        if (!string.IsNullOrWhiteSpace(oldUrl))
-            _fileStorage.DeleteFile(oldUrl);
-
-        return newUrl;
     }
 
     public async Task<DoctorAppointmentTypeDto?> CreateMyAppointmentTypeAsync(
@@ -352,7 +332,122 @@ public class DoctorService : IDoctorService
         return new DoctorAvailabilityCalendarDto(doctorId, year, month, appointmentTypeId, clinicId, availableDates);
     }
 
-    // ──────────────────────────── Private Helpers ────────────────────────────
+    public async Task<IReadOnlyList<DoctorDto>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Set<Doctor>()
+            .AsNoTracking()
+            .OrderBy(x => x.DoctorId)
+            .Select(x => new DoctorDto(x.DoctorId, x.UserId, x.LicenseNumber, x.Bio))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<DoctorDto?> GetByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Set<Doctor>()
+            .AsNoTracking()
+            .Where(x => x.DoctorId == id)
+            .Select(x => new DoctorDto(x.DoctorId, x.UserId, x.LicenseNumber, x.Bio))
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<PagedResultDto<DoctorSearchItemDto>> SearchDoctorsAsync(DoctorSearchQueryDto query, CancellationToken cancellationToken)
+    {
+        var page = query.Page < 1 ? 1 : query.Page;
+        var pageSize = query.PageSize switch
+        {
+            < 1 => 8,
+            > 50 => 50,
+            _ => query.PageSize
+        };
+
+        var doctorsQuery = _dbContext
+            .Doctors
+            .AsNoTracking()
+            .Where(x => x.User.IsActive)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(query.Location))
+        {
+            var loc = query.Location.Trim();
+            doctorsQuery = doctorsQuery.Where(x =>
+                x.ClinicDoctors.Any(cd =>
+                    EF.Functions.ILike(cd.Clinic.City, $"%{loc}%") ||
+                    EF.Functions.ILike(cd.Clinic.StreetAddress, $"%{loc}%"))
+            );
+        }
+
+        if (query.SpecializationId.HasValue)
+        {
+            doctorsQuery = doctorsQuery.Where(x =>
+                x.DoctorSpecializations.Any(ds => ds.SpecializationId == query.SpecializationId.Value)
+            );
+        }
+
+        if (query.PriceMax.HasValue)
+        {
+            doctorsQuery = doctorsQuery.Where(x =>
+                x.DoctorAppointmentTypes.Any(dat => dat.AppointmentType.BasePrice <= query.PriceMax.Value)
+            );
+        }
+
+        if (query.Date.HasValue)
+        {
+            var dateValue = query.Date.Value.ToDateTime(TimeOnly.MinValue);
+            var dayOfWeek = (int)query.Date.Value.DayOfWeek;
+            var isoDayOfWeek = dayOfWeek == 0 ? 7 : dayOfWeek;
+
+            doctorsQuery = doctorsQuery.Where(x =>
+                x.DoctorSchedules.Any(ds =>
+                    ds.IsActive
+                    && (ds.DayOfWeek == dayOfWeek || ds.DayOfWeek == isoDayOfWeek)
+                    && ds.ValidFrom <= dateValue
+                    && (ds.ValidTo == null || ds.ValidTo >= dateValue)
+                )
+            );
+        }
+
+        var totalCount = await doctorsQuery.CountAsync(cancellationToken);
+
+        var projectedQuery = doctorsQuery.Select(x => new
+        {
+            x.DoctorId,
+            FullName = x.User.FirstName + " " + x.User.LastName,
+            City = x.ClinicDoctors
+                .Select(cd => cd.Clinic.City)
+                .FirstOrDefault() ?? string.Empty,
+            Specialization = x.DoctorSpecializations
+                .Where(ds => !query.SpecializationId.HasValue || ds.SpecializationId == query.SpecializationId.Value)
+                .Select(ds => ds.Specialization.Name)
+                .FirstOrDefault() ?? string.Empty,
+            LowestPrice = x.DoctorAppointmentTypes
+                .Select(dat => (decimal?)dat.AppointmentType.BasePrice)
+                .Min() ?? 0m,
+        });
+
+        var sort = query.Sort?.Trim().ToLowerInvariant() ?? "priceasc";
+        projectedQuery = sort switch
+        {
+            "pricedesc" => projectedQuery.OrderByDescending(x => x.LowestPrice).ThenBy(x => x.FullName),
+            "nameasc" => projectedQuery.OrderBy(x => x.FullName),
+            "namedesc" => projectedQuery.OrderByDescending(x => x.FullName),
+            _ => projectedQuery.OrderBy(x => x.LowestPrice).ThenBy(x => x.FullName)
+        };
+
+        var items = await projectedQuery
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(x => new DoctorSearchItemDto(
+                x.DoctorId,
+                x.FullName,
+                x.City,
+                x.Specialization,
+                x.LowestPrice
+            ))
+            .ToListAsync(cancellationToken);
+
+        var totalPages = totalCount == 0 ? 1 : (int)Math.Ceiling(totalCount / (double)pageSize);
+        return new PagedResultDto<DoctorSearchItemDto>(items, page, pageSize, totalCount, totalPages);
+    }
 
     private async Task<Doctor?> LoadAvailabilityDoctorAsync(int doctorId, int? clinicId, CancellationToken ct)
     {

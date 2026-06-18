@@ -1,0 +1,242 @@
+[
+  {
+    "approvalId": 1,
+    "paymentId": 2,
+    "approvedByUserId": "adm-2",
+    "decision": "Approved",
+    "decisionDate": "2026-05-04T17:39:24Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 2,
+    "paymentId": 6,
+    "approvedByUserId": "adm-2",
+    "decision": "Rejected",
+    "decisionDate": "2026-05-07T02:16:57Z",
+    "comment": null
+  },
+  {
+    "approvalId": 3,
+    "paymentId": 8,
+    "approvedByUserId": "adm-2",
+    "decision": "Approved",
+    "decisionDate": "2026-06-14T13:23:07Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 4,
+    "paymentId": 13,
+    "approvedByUserId": "adm-1",
+    "decision": "AwaitingReview",
+    "decisionDate": "2026-05-10T22:43:45Z",
+    "comment": null
+  },
+  {
+    "approvalId": 5,
+    "paymentId": 16,
+    "approvedByUserId": "adm-2",
+    "decision": "Rejected",
+    "decisionDate": "2026-06-10T12:52:25Z",
+    "comment": null
+  },
+  {
+    "approvalId": 6,
+    "paymentId": 17,
+    "approvedByUserId": "adm-1",
+    "decision": "Rejected",
+    "decisionDate": "2026-06-07T13:24:54Z",
+    "comment": null
+  },
+  {
+    "approvalId": 7,
+    "paymentId": 19,
+    "approvedByUserId": "adm-2",
+    "decision": "Approved",
+    "decisionDate": "2026-05-27T21:06:49Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 8,
+    "paymentId": 20,
+    "approvedByUserId": "adm-1",
+    "decision": "Approved",
+    "decisionDate": "2026-06-11T14:05:38Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 9,
+    "paymentId": 24,
+    "approvedByUserId": "adm-1",
+    "decision": "AwaitingReview",
+    "decisionDate": "2026-05-05T09:37:58Z",
+    "comment": null
+  },
+  {
+    "approvalId": 10,
+    "paymentId": 26,
+    "approvedByUserId": "adm-1",
+    "decision": "Approved",
+    "decisionDate": "2026-05-23T09:52:42Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 11,
+    "paymentId": 27,
+    "approvedByUserId": "adm-2",
+    "decision": "Rejected",
+    "decisionDate": "2026-06-02T22:45:26Z",
+    "comment": null
+  },
+  {
+    "approvalId": 12,
+    "paymentId": 28,
+    "approvedByUserId": "adm-1",
+    "decision": "Approved",
+    "decisionDate": "2026-05-13T05:38:07Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 13,
+    "paymentId": 29,
+    "approvedByUserId": "adm-2",
+    "decision": "Approved",
+    "decisionDate": "2026-05-15T09:34:58Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 14,
+    "paymentId": 34,
+    "approvedByUserId": "adm-1",
+    "decision": "Rejected",
+    "decisionDate": "2026-06-05T04:51:25Z",
+    "comment": null
+  },
+  {
+    "approvalId": 15,
+    "paymentId": 37,
+    "approvedByUserId": "adm-2",
+    "decision": "AwaitingReview",
+    "decisionDate": "2026-05-11T18:47:41Z",
+    "comment": null
+  },
+  {
+    "approvalId": 16,
+    "paymentId": 38,
+    "approvedByUserId": "adm-2",
+    "decision": "Approved",
+    "decisionDate": "2026-05-06T16:45:14Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 17,
+    "paymentId": 41,
+    "approvedByUserId": "adm-1",
+    "decision": "AwaitingReview",
+    "decisionDate": "2026-05-02T15:00:02Z",
+    "comment": null
+  },
+  {
+    "approvalId": 18,
+    "paymentId": 44,
+    "approvedByUserId": "adm-1",
+    "decision": "Approved",
+    "decisionDate": "2026-06-10T07:49:28Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 19,
+    "paymentId": 50,
+    "approvedByUserId": "adm-2",
+    "decision": "Approved",
+    "decisionDate": "2026-05-20T14:02:04Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 20,
+    "paymentId": 51,
+    "approvedByUserId": "adm-2",
+    "decision": "Rejected",
+    "decisionDate": "2026-05-30T13:37:04Z",
+    "comment": null
+  },
+  {
+    "approvalId": 21,
+    "paymentId": 55,
+    "approvedByUserId": "adm-2",
+    "decision": "Approved",
+    "decisionDate": "2026-05-03T22:27:58Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 22,
+    "paymentId": 62,
+    "approvedByUserId": "adm-1",
+    "decision": "Rejected",
+    "decisionDate": "2026-05-05T00:10:57Z",
+    "comment": null
+  },
+  {
+    "approvalId": 23,
+    "paymentId": 63,
+    "approvedByUserId": "adm-2",
+    "decision": "AwaitingReview",
+    "decisionDate": "2026-05-06T14:35:25Z",
+    "comment": null
+  },
+  {
+    "approvalId": 24,
+    "paymentId": 65,
+    "approvedByUserId": "adm-1",
+    "decision": "AwaitingReview",
+    "decisionDate": "2026-05-15T02:38:49Z",
+    "comment": null
+  },
+  {
+    "approvalId": 25,
+    "paymentId": 67,
+    "approvedByUserId": "adm-2",
+    "decision": "Rejected",
+    "decisionDate": "2026-05-28T22:00:32Z",
+    "comment": null
+  },
+  {
+    "approvalId": 26,
+    "paymentId": 68,
+    "approvedByUserId": "adm-1",
+    "decision": "Approved",
+    "decisionDate": "2026-05-23T08:56:06Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 27,
+    "paymentId": 69,
+    "approvedByUserId": "adm-2",
+    "decision": "Approved",
+    "decisionDate": "2026-05-17T11:53:41Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 28,
+    "paymentId": 71,
+    "approvedByUserId": "adm-2",
+    "decision": "Approved",
+    "decisionDate": "2026-05-06T01:34:33Z",
+    "comment": "Opłacono w recepcji."
+  },
+  {
+    "approvalId": 29,
+    "paymentId": 73,
+    "approvedByUserId": "adm-1",
+    "decision": "AwaitingReview",
+    "decisionDate": "2026-05-04T08:32:33Z",
+    "comment": null
+  },
+  {
+    "approvalId": 30,
+    "paymentId": 81,
+    "approvedByUserId": "adm-2",
+    "decision": "Approved",
+    "decisionDate": "2026-06-04T12:13:05Z",
+    "comment": "Opłacono w recepcji."
+  }
+]

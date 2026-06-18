@@ -5,7 +5,6 @@ using Medreserve.Features.Payment.PayU;
 
 namespace Medreserve.Features.Payment;
 
-
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -42,7 +41,6 @@ public class PaymentsController(IPaymentService service) : ControllerBase
         return Ok(new { message = "Płatność offline została pomyślnie zatwierdzona." });
     }
 
-
     [HttpPost("init-payu")]
     public async Task<IActionResult> InitPayu([FromBody] InitPaymentDto request)
     {
@@ -60,7 +58,6 @@ public class PaymentsController(IPaymentService service) : ControllerBase
 
         return Ok(new { isPaid, payuStatus });
     }
-
 
     [HttpPost("payu-notify")]
     [AllowAnonymous]

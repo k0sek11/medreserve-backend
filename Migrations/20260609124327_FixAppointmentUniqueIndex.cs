@@ -4,10 +4,8 @@
 
 namespace Medreserve.Migrations
 {
-    /// <inheritdoc />
     public partial class FixAppointmentUniqueIndex : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropIndex(
@@ -21,8 +19,6 @@ namespace Medreserve.Migrations
                 unique: true,
                 filter: "status NOT IN ('Cancelled', 'Completed', 'Unpaid')");
         }
-
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropIndex(

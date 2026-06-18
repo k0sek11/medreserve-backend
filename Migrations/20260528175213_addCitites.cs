@@ -2,14 +2,11 @@
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
+#pragma warning disable CA1814 
 namespace Medreserve.Migrations
 {
-    /// <inheritdoc />
     public partial class addCitites : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.InsertData(
@@ -24,8 +21,6 @@ namespace Medreserve.Migrations
                     { 5, "Stare Miasto", "Poznań", "Wielkopolskie" }
                 });
         }
-
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DeleteData(

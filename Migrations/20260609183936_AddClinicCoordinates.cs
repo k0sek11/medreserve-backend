@@ -4,10 +4,8 @@
 
 namespace Medreserve.Migrations
 {
-    /// <inheritdoc />
     public partial class AddClinicCoordinates : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
@@ -27,7 +25,6 @@ namespace Medreserve.Migrations
                 nullable: true);
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(

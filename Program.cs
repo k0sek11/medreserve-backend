@@ -3,6 +3,7 @@ using Medreserve.Features.Clinic;
 using Medreserve.Features.Specialization;
 using Medreserve.Features.Doctor;
 using Medreserve.Features.Users;
+using Medreserve.Features.Images;
 using Medreserve.Infrastructure;
 using Medreserve.Infrastructure.Mocks;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +11,8 @@ using Microsoft.OpenApi;
 using Medreserve.Features.Payment;
 using Medreserve.Features.Payment.PayU;
 using Medreserve.Features.Appointment;
-
+using Medreserve.Features.AppointmentType;
+using Medreserve.Features.Notification;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,6 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
-
 
 builder.Services.AddCors(options =>
 {
@@ -39,10 +40,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton<IFileStorageService, FileStorageService>();
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthorization();
@@ -53,13 +50,17 @@ builder.Services.AddScoped<IClinicService, ClinicService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IImagesService, ImagesService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IAppointmentTypeService, AppointmentTypeService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IMockDataSeeder, JsonMockDataSeeder>();
 builder.Services.AddHostedService<ExpireAwaitingPaymentService>();
 builder.Services.AddHttpClient<IPayUService, PayUService>()
     .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
     {
-        AllowAutoRedirect = false // <-- KAŻEMY MU SIĘ ZATRZYMAĆ NA PRZEKIEROWANIU
+        AllowAutoRedirect = false
     });
 
 builder

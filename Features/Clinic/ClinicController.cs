@@ -12,8 +12,6 @@ public class ClinicsController(IClinicService service) : ControllerBase
     private string? GetCurrentUserId() =>
         User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-    // ────────────────── GET /api/clinics (consolidated) ───────────────────
-
     [HttpGet]
     public async Task<IActionResult> GetClinics(
         [FromQuery] Dto.ClinicListQuery query,
@@ -22,8 +20,6 @@ public class ClinicsController(IClinicService service) : ControllerBase
         var result = await service.GetAsync(query, cancellationToken);
         return Ok(result);
     }
-
-    // ──────────────────── GET /api/clinics/{id} (merged) ──────────────────
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Dto.ClinicDetailDto>> GetById(
@@ -35,8 +31,6 @@ public class ClinicsController(IClinicService service) : ControllerBase
         if (result is null) return NotFound();
         return Ok(result);
     }
-
-    // ───────────────────────────── POST /api/clinics ──────────────────────
 
     [HttpPost]
     public async Task<ActionResult<Dto.ClinicDto>> Create(
@@ -57,8 +51,6 @@ public class ClinicsController(IClinicService service) : ControllerBase
         }
     }
 
-    // ───────────────────────── PUT /api/clinics/{id} ──────────────────────
-
     [HttpPut("{id:int}")]
     public async Task<ActionResult<Dto.ClinicDto>> Update(
         int id,
@@ -70,8 +62,6 @@ public class ClinicsController(IClinicService service) : ControllerBase
         return Ok(result);
     }
 
-    // ─────────────────────── DELETE /api/clinics/{id} ─────────────────────
-
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
@@ -79,8 +69,6 @@ public class ClinicsController(IClinicService service) : ControllerBase
         if (!deleted) return NotFound();
         return Ok(new { message = "Poprawnie usunieto klinike" });
     }
-
-    // ────────────────────── GET /api/clinics/mine ─────────────────────────
 
     [HttpGet("mine")]
     public async Task<ActionResult<IReadOnlyList<Dto.ClinicListItemDto>>> GetMine(
@@ -92,8 +80,6 @@ public class ClinicsController(IClinicService service) : ControllerBase
         var result = await service.GetMineAsync(currentUserId, cancellationToken);
         return Ok(result);
     }
-
-    // ──────────────── POST /api/clinics/{id}/join-request ─────────────────
 
     [HttpPost("{id:int}/join-request")]
     public async Task<IActionResult> RequestJoin(

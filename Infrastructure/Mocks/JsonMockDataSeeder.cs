@@ -1,7 +1,10 @@
 using System.Text.Json;
+using Medreserve.Features.Appointment;
 using Medreserve.Features.AppointmentType;
 using Medreserve.Features.Clinic;
 using Medreserve.Features.Doctor;
+using Medreserve.Features.Notification;
+using Medreserve.Features.Payment;
 using Medreserve.Features.Specialization;
 using Medreserve.Features.Users;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +15,8 @@ namespace Medreserve.Infrastructure.Mocks;
 public sealed class JsonMockDataSeeder(
     DatabaseContext dbContext,
     ILogger<JsonMockDataSeeder> logger,
-    UserManager<User> userManager
+    UserManager<User> userManager,
+    IPasswordHasher<User> passwordHasher
 )
     : IMockDataSeeder
 {
@@ -37,6 +41,10 @@ public sealed class JsonMockDataSeeder(
         var doctorSpecializations = await ReadListAsync<DoctorSpecializationMock>(mocksDir, "doctor_specializations.json", cancellationToken);
         var doctorAppointmentTypes = await ReadListAsync<DoctorAppointmentTypeMock>(mocksDir, "doctor_appointment_types.json", cancellationToken);
         var doctorSchedules = await ReadListAsync<DoctorScheduleMock>(mocksDir, "doctor_schedules.json", cancellationToken);
+        var appointments = await ReadListAsync<AppointmentMock>(mocksDir, "appointments.json", cancellationToken);
+        var payments = await ReadListAsync<PaymentMock>(mocksDir, "payments.json", cancellationToken);
+        var notifications = await ReadListAsync<NotificationMock>(mocksDir, "notifications.json", cancellationToken);
+        var offlineApprovals = await ReadListAsync<OfflinePaymentApprovalMock>(mocksDir, "offline_payment_approvals.json", cancellationToken);
 
         if (reset)
         {
@@ -44,13 +52,23 @@ public sealed class JsonMockDataSeeder(
         }
 
         await UpsertUsersAsync(users, cancellationToken);
+        await AssignRolesAsync(users, cancellationToken);
 
-        dbContext.Specializations.AddRange(specializations.Select(x => new Features.Specialization.Specialization
-        {
-            SpecializationId = x.SpecializationId,
-            Name = x.Name,
-            Description = x.Description,
-        }));
+        var existingSpecIds = await dbContext.Specializations
+.Select(x => x.SpecializationId)
+.ToListAsync(cancellationToken);
+        var existingSpecIdSet = new HashSet<int>(existingSpecIds);
+        var newSpecs = specializations
+            .Where(x => !existingSpecIdSet.Contains(x.SpecializationId))
+            .Select(x => new Specialization
+            {
+                SpecializationId = x.SpecializationId,
+                Name = x.Name,
+                Description = x.Description,
+            })
+            .ToList();
+        if (newSpecs.Count > 0)
+            dbContext.Specializations.AddRange(newSpecs);
 
         dbContext.AppointmentTypes.AddRange(appointmentTypes.Select(x => new AppointmentType
         {
@@ -70,6 +88,10 @@ public sealed class JsonMockDataSeeder(
             Email = x.Email,
             IsActive = x.IsActive,
             City = x.City,
+            Description = x.Description,
+            OpeningHours = x.OpeningHours,
+            Latitude = x.Latitude,
+            Longitude = x.Longitude,
         }));
 
         dbContext.Doctors.AddRange(doctors.Select(x => new Doctor
@@ -78,7 +100,10 @@ public sealed class JsonMockDataSeeder(
             UserId = x.UserId,
             LicenseNumber = x.LicenseNumber,
             Bio = x.Bio,
+            ProfileImageUrl = x.ProfileImageUrl,
         }));
+
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         dbContext.ClinicDoctors.AddRange(clinicDoctors.Select(x => new ClinicDoctor
         {
@@ -103,6 +128,7 @@ public sealed class JsonMockDataSeeder(
         {
             ScheduleId = x.ScheduleId,
             DoctorId = x.DoctorId,
+            ClinicId = x.ClinicId,
             DayOfWeek = x.DayOfWeek,
             StartTime = x.StartTime,
             EndTime = x.EndTime,
@@ -111,24 +137,93 @@ public sealed class JsonMockDataSeeder(
             IsActive = x.IsActive,
         }));
 
+        dbContext.Appointments.AddRange(appointments.Select(x => new Appointment
+        {
+            AppointmentId = x.AppointmentId,
+            UserId = x.UserId,
+            DoctorId = x.DoctorId,
+            AppointmentDate = x.AppointmentDate,
+            StartTime = x.StartTime,
+            AppointmentTypeId = x.AppointmentTypeId,
+            AppointmentTypeDurationMinutes = x.AppointmentTypeDurationMinutes,
+            Status = x.Status,
+            DoctorNotes = x.DoctorNotes,
+            CancellationReason = x.CancellationReason,
+            CreatedAt = x.CreatedAt,
+            UpdatedAt = x.UpdatedAt,
+            ConfirmedAt = x.ConfirmedAt,
+            CompletedAt = x.CompletedAt,
+            CancelledAt = x.CancelledAt,
+        }));
+
+        dbContext.Payments.AddRange(payments.Select(x => new Payment
+        {
+            PaymentId = x.PaymentId,
+            AppointmentId = x.AppointmentId,
+            Amount = x.Amount,
+            Currency = x.Currency,
+            Method = x.Method,
+            Status = x.Status,
+            CreatedAt = x.CreatedAt,
+            UpdatedAt = x.UpdatedAt,
+            PaidAt = x.PaidAt,
+        }));
+
+        dbContext.Notifications.AddRange(notifications.Select(x => new Notification
+        {
+            NotificationId = x.NotificationId,
+            UserId = x.UserId,
+            AppointmentId = x.AppointmentId,
+            Type = x.Type,
+            Subject = x.Subject,
+            Content = x.Content,
+            Status = x.Status,
+            CreatedAt = x.CreatedAt,
+            SentAt = x.SentAt,
+            FailureReason = x.FailureReason,
+        }));
+
+        dbContext.OfflinePaymentApprovals.AddRange(offlineApprovals.Select(x => new OfflinePaymentApproval
+        {
+            ApprovalId = x.ApprovalId,
+            PaymentId = x.PaymentId,
+            ApprovedByUserId = x.ApprovedByUserId,
+            Decision = x.Decision,
+            DecisionDate = x.DecisionDate,
+            Comment = x.Comment,
+        }));
+
         await dbContext.SaveChangesAsync(cancellationToken);
+
         await SyncIdentitySequenceAsync("specializations", "specialization_id", cancellationToken);
         await SyncIdentitySequenceAsync("appointment_types", "appointment_type_id", cancellationToken);
         await SyncIdentitySequenceAsync("clinics", "clinic_id", cancellationToken);
         await SyncIdentitySequenceAsync("doctors", "doctor_id", cancellationToken);
         await SyncIdentitySequenceAsync("doctor_schedules", "schedule_id", cancellationToken);
+        await SyncIdentitySequenceAsync("appointments", "appointment_id", cancellationToken);
+        await SyncIdentitySequenceAsync("payments", "payment_id", cancellationToken);
+        await SyncIdentitySequenceAsync("notifications", "notification_id", cancellationToken);
+        await SyncIdentitySequenceAsync("offline_payment_approvals", "approval_id", cancellationToken);
 
         logger.LogInformation(
-            "Mock seeding complete. clinics={Clinics}, specs={Specs}, doctors={Doctors}, users={Users}",
+            "Mock seeding complete. users={Users}, clinics={Clinics}, specs={Specs}, doctors={Doctors}, "
+            + "appointments={Appointments}, payments={Payments}, notifications={Notifications}",
+            users.Count,
             clinics.Count,
             specializations.Count,
             doctors.Count,
-            users.Count
+            appointments.Count,
+            payments.Count,
+            notifications.Count
         );
     }
 
     private async Task ClearMockedTablesAsync(CancellationToken cancellationToken)
     {
+        await dbContext.OfflinePaymentApprovals.ExecuteDeleteAsync(cancellationToken);
+        await dbContext.Payments.ExecuteDeleteAsync(cancellationToken);
+        await dbContext.Notifications.ExecuteDeleteAsync(cancellationToken);
+        await dbContext.Appointments.ExecuteDeleteAsync(cancellationToken);
         await dbContext.DoctorSchedules.ExecuteDeleteAsync(cancellationToken);
         await dbContext.DoctorAppointmentTypes.ExecuteDeleteAsync(cancellationToken);
         await dbContext.DoctorSpecializations.ExecuteDeleteAsync(cancellationToken);
@@ -141,7 +236,7 @@ public sealed class JsonMockDataSeeder(
 
     private async Task UpsertUsersAsync(IEnumerable<UserMock> users, CancellationToken cancellationToken)
     {
-        const string DefaultPassword = "medreserve";
+        const string DefaultPassword = "Q1w2e3!";
         var userIds = users.Select(x => x.Id).Distinct().ToArray();
         if (userIds.Length == 0)
         {
@@ -165,7 +260,11 @@ public sealed class JsonMockDataSeeder(
                 existing.LastName = user.LastName;
                 existing.IsActive = user.IsActive;
                 existing.PhoneNumber = user.PhoneNumber;
+                existing.BirthDate = user.BirthDate;
+                existing.Gender = user.Gender;
                 existing.UpdatedAt = DateTime.UtcNow;
+                existing.PasswordHash = passwordHasher.HashPassword(existing, DefaultPassword);
+                existing.SecurityStamp = Guid.NewGuid().ToString("N");
                 continue;
             }
 
@@ -182,21 +281,32 @@ public sealed class JsonMockDataSeeder(
                 LastName = user.LastName,
                 IsActive = user.IsActive,
                 PhoneNumber = user.PhoneNumber,
+                BirthDate = user.BirthDate,
+                Gender = user.Gender,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
             };
 
+            newUser.PasswordHash = passwordHasher.HashPassword(newUser, DefaultPassword);
             dbContext.Users.Add(newUser);
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
+    }
 
-        // Set passwords for all users
-        var allUsers = await dbContext.Users.Where(x => userIds.Contains(x.Id)).ToListAsync(cancellationToken);
-        foreach (var user in allUsers)
+    private async Task AssignRolesAsync(IEnumerable<UserMock> users, CancellationToken cancellationToken)
+    {
+        foreach (var user in users)
         {
-            var token = await userManager.GeneratePasswordResetTokenAsync(user);
-            await userManager.ResetPasswordAsync(user, token, DefaultPassword);
+            if (string.IsNullOrWhiteSpace(user.Role)) continue;
+
+            var identityUser = await userManager.FindByIdAsync(user.Id);
+            if (identityUser is null) continue;
+
+            var currentRoles = await userManager.GetRolesAsync(identityUser);
+            if (currentRoles.Count > 0) continue;
+
+            await userManager.AddToRoleAsync(identityUser, user.Role);
         }
     }
 
@@ -253,7 +363,10 @@ public sealed class JsonMockDataSeeder(
         string FirstName,
         string LastName,
         bool IsActive,
-        string? PhoneNumber
+        string? PhoneNumber,
+        DateOnly? BirthDate,
+        string? Gender,
+        string? Role
     );
 
     private sealed record ClinicMock(
@@ -263,7 +376,11 @@ public sealed class JsonMockDataSeeder(
         string? PhoneNumber,
         string? Email,
         bool IsActive,
-        string City
+        string City,
+        string? Description,
+        string? OpeningHours,
+        double? Latitude,
+        double? Longitude
     );
 
     private sealed record SpecializationMock(int SpecializationId, string Name, string? Description);
@@ -276,7 +393,7 @@ public sealed class JsonMockDataSeeder(
         int DurationMinutes
     );
 
-    private sealed record DoctorMock(int DoctorId, string UserId, string LicenseNumber, string? Bio);
+    private sealed record DoctorMock(int DoctorId, string UserId, string LicenseNumber, string? Bio, string? ProfileImageUrl);
 
     private sealed record ClinicDoctorMock(int ClinicId, int DoctorId, bool IsOwner);
 
@@ -287,11 +404,64 @@ public sealed class JsonMockDataSeeder(
     private sealed record DoctorScheduleMock(
         int ScheduleId,
         int DoctorId,
+        int? ClinicId,
         int DayOfWeek,
         string StartTime,
         string EndTime,
         DateTime ValidFrom,
         DateTime? ValidTo,
         bool IsActive
+    );
+
+    private sealed record AppointmentMock(
+        int AppointmentId,
+        string UserId,
+        int DoctorId,
+        DateOnly AppointmentDate,
+        TimeOnly StartTime,
+        int? AppointmentTypeId,
+        int AppointmentTypeDurationMinutes,
+        string Status,
+        string? DoctorNotes,
+        string? CancellationReason,
+        DateTime CreatedAt,
+        DateTime UpdatedAt,
+        DateTime? ConfirmedAt,
+        DateTime? CompletedAt,
+        DateTime? CancelledAt
+    );
+
+    private sealed record PaymentMock(
+        int PaymentId,
+        int AppointmentId,
+        decimal Amount,
+        string Currency,
+        string Method,
+        string Status,
+        DateTime CreatedAt,
+        DateTime UpdatedAt,
+        DateTime? PaidAt
+    );
+
+    private sealed record NotificationMock(
+        int NotificationId,
+        string UserId,
+        int? AppointmentId,
+        string Type,
+        string Subject,
+        string Content,
+        string Status,
+        DateTime CreatedAt,
+        DateTime? SentAt,
+        string? FailureReason
+    );
+
+    private sealed record OfflinePaymentApprovalMock(
+        int ApprovalId,
+        int PaymentId,
+        string ApprovedByUserId,
+        string Decision,
+        DateTime DecisionDate,
+        string? Comment
     );
 }

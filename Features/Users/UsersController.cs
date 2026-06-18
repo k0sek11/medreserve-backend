@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -10,11 +9,11 @@ namespace Medreserve.Features.Users;
 [Authorize]
 public class UsersController : ControllerBase
 {
-    private readonly UserManager<User> _userManager;
+    private readonly IUsersService _service;
 
-    public UsersController(UserManager<User> userManager)
+    public UsersController(IUsersService service)
     {
-        _userManager = userManager;
+        _service = service;
     }
 
     [HttpGet("me")]
@@ -23,19 +22,8 @@ public class UsersController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId is null) return Unauthorized();
 
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user is null) return NotFound();
-
-        return Ok(new PatientProfileDto(
-            user.Id,
-            user.Email!,
-            user.FirstName,
-            user.LastName,
-            user.PhoneNumber ?? "",
-            user.BirthDate,
-            user.Gender,
-            user.IsActive
-        ));
+        var profile = await _service.GetMyProfileAsync(userId);
+        return profile is null ? NotFound() : Ok(profile);
     }
 
     [HttpPut("me")]
@@ -44,17 +32,9 @@ public class UsersController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userId is null) return Unauthorized();
 
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user is null) return NotFound();
-
-        user.FirstName = request.FirstName.Trim();
-        user.LastName = request.LastName.Trim();
-        if (request.PhoneNumber is not null) user.PhoneNumber = request.PhoneNumber.Trim();
-        if (request.BirthDate is not null) user.BirthDate = request.BirthDate;
-        if (request.Gender is not null) user.Gender = request.Gender.Trim();
-        user.UpdatedAt = DateTime.UtcNow;
-
-        var result = await _userManager.UpdateAsync(user);
-        return result.Succeeded ? Ok(new { message = "Profile updated successfully." }) : BadRequest(new { message = "Failed to update profile." });
+        var success = await _service.UpdateMyProfileAsync(userId, request);
+        return success
+            ? Ok(new { message = "Profile updated successfully." })
+            : BadRequest(new { message = "Failed to update profile." });
     }
 }

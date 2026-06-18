@@ -2,7 +2,6 @@
 
 namespace Medreserve.Features.Payment.PayU;
 
-// 1. Konfiguracja z appsettings.json
 public class PayUOptions
 {
     public string BaseUrl { get; set; } = string.Empty;
@@ -11,7 +10,6 @@ public class PayUOptions
     public string ClientSecret { get; set; } = string.Empty;
 }
 
-// 2. Modele do odbioru powiadomień (Webhook) używane w PaymentsController
 public class PayUNotificationRequest
 {
     [JsonPropertyName("order")]

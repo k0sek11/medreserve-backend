@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,34 +9,43 @@ namespace Medreserve.Features.Images;
 [Authorize]
 public class ImagesController : ControllerBase
 {
-    private readonly IWebHostEnvironment _environment;
+    private readonly IImagesService _imagesService;
 
-    public ImagesController(IWebHostEnvironment environment)
+    public ImagesController(IImagesService imagesService)
     {
-        _environment = environment;
+        _imagesService = imagesService;
     }
 
     [HttpGet("profiles/{fileName}")]
     public IActionResult GetProfileImage(string fileName)
     {
-        if (string.IsNullOrWhiteSpace(fileName))
-            return BadRequest();
+        var info = _imagesService.ResolveProfileImage(fileName);
+        return info is null ? NotFound() : PhysicalFile(info.FilePath, info.ContentType);
+    }
 
-        var webRoot = _environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot");
-        var filePath = Path.Combine(webRoot, "images", "profiles", fileName);
+    [HttpPost("profiles")]
+    [Authorize]
+    public async Task<IActionResult> UploadProfilePhoto(IFormFile file, CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+            return Unauthorized();
 
-        if (!System.IO.File.Exists(filePath))
-            return NotFound();
+        if (file is null || file.Length == 0)
+            return BadRequest(new { message = "No file provided." });
 
-        var extension = Path.GetExtension(fileName).ToLowerInvariant();
-        var contentType = extension switch
+        try
         {
-            ".jpg" or ".jpeg" => "image/jpeg",
-            ".png" => "image/png",
-            ".webp" => "image/webp",
-            _ => "application/octet-stream"
-        };
-
-        return PhysicalFile(filePath, contentType);
+            var url = await _imagesService.UploadProfilePhotoAsync(currentUserId, file, cancellationToken);
+            return Ok(new { profileImageUrl = url });
+        }
+        catch (ArgumentException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
+        catch (InvalidOperationException exception)
+        {
+            return NotFound(new { message = exception.Message });
+        }
     }
 }

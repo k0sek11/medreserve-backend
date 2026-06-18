@@ -9,7 +9,6 @@ public class PayUService(HttpClient _httpClient, IOptions<PayUOptions> _options)
 {
     private readonly PayUOptions _payu = _options.Value;
 
-
     private async Task<string> GetTokenAsync()
     {
         var dict = new Dictionary<string, string> 
@@ -52,8 +51,7 @@ public class PayUService(HttpClient _httpClient, IOptions<PayUOptions> _options)
             description = desc, 
             currencyCode = "PLN", 
             totalAmount = totalAmountGrosze, 
-            extOrderId = $"{paymentId}_{Guid.NewGuid():N}", // Zabezpieczenie PayU przed duplikatem ID
-            buyer = new 
+            extOrderId = $"{paymentId}_{Guid.NewGuid():N}",             buyer = new 
             { 
                 email = email, 
                 firstName = firstName, 

@@ -205,8 +205,6 @@ public class ClinicService(DatabaseContext _context) : IClinicService
         return null;
     }
 
-    // ─────────────────────────── Private Helpers ──────────────────────────
-
     private async Task<IReadOnlyList<Dto.ClinicSpecializationDto>> ListSpecializationsAsync(string? location, CancellationToken ct)
     {
         IQueryable<Specialization.Specialization> query = _context.Specializations.AsNoTracking();

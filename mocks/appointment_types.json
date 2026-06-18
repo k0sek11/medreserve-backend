@@ -9,7 +9,7 @@
   {
     "appointmentTypeId": 2,
     "name": "Wizyta kontrolna",
-    "description": "Wizyta kontrolna",
+    "description": "Wizyta kontrolna po leczeniu",
     "basePrice": 170.0,
     "durationMinutes": 20
   },
@@ -22,22 +22,22 @@
   },
   {
     "appointmentTypeId": 4,
-    "name": "Badanie ultrasonograficzne",
-    "description": "Badanie USG",
+    "name": "Badanie USG",
+    "description": "Badanie ultrasonograficzne",
     "basePrice": 300.0,
     "durationMinutes": 40
   },
   {
     "appointmentTypeId": 5,
     "name": "Zabieg diagnostyczny",
-    "description": "Zabiegi diagnostyczne",
+    "description": "Drobne zabiegi diagnostyczne",
     "basePrice": 400.0,
     "durationMinutes": 60
   },
   {
     "appointmentTypeId": 6,
     "name": "Wizyta krótka",
-    "description": "Krótka konsultacja",
+    "description": "Ekspresowa konsultacja",
     "basePrice": 100.0,
     "durationMinutes": 15
   },
@@ -50,8 +50,8 @@
   },
   {
     "appointmentTypeId": 8,
-    "name": "Konsultacja długa",
-    "description": "Rozszerzona konsultacja",
+    "name": "Konsultacja rozszerzona",
+    "description": "Szczegółowa diagnostyka",
     "basePrice": 350.0,
     "durationMinutes": 45
   }

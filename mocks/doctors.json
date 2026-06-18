@@ -1,14 +1,107 @@
 [
-  {
-    "doctorId": 1,
-    "userId": "doc-1",
-    "licenseNumber": "1122334",
-    "bio": "Specjalista kardiologii z 15-letnim stażem."
-  },
-  {
-    "doctorId": 2,
-    "userId": "doc-2",
-    "licenseNumber": "9988776",
-    "bio": "Ceniony pediatra i alergolog."
-  }
+    {
+        "doctorId": 1,
+        "userId": "doc-1",
+        "licenseNumber": "2677407",
+        "bio": "Absolwent Warszawskiego Uniwersytetu Medycznego. Staż kliniczny w Berlinie.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 2,
+        "userId": "doc-2",
+        "licenseNumber": "9487336",
+        "bio": "Specjalizuje się w nowoczesnych metodach leczenia. Prowadzi badania naukowe.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 3,
+        "userId": "doc-3",
+        "licenseNumber": "6855396",
+        "bio": "Absolwent Warszawskiego Uniwersytetu Medycznego. Staż kliniczny w Berlinie.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 4,
+        "userId": "doc-4",
+        "licenseNumber": "7199635",
+        "bio": "Specjalizuje się w nowoczesnych metodach leczenia. Prowadzi badania naukowe.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 5,
+        "userId": "doc-5",
+        "licenseNumber": "6075395",
+        "bio": "Pasjonat nowoczesnych technologii medycznych i telemedycyny.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 6,
+        "userId": "doc-6",
+        "licenseNumber": "9874152",
+        "bio": "Specjalista z wieloletnim doświadczeniem w diagnostyce i leczeniu.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 7,
+        "userId": "doc-7",
+        "licenseNumber": "6022741",
+        "bio": "Absolwent Warszawskiego Uniwersytetu Medycznego. Staż kliniczny w Berlinie.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 8,
+        "userId": "doc-8",
+        "licenseNumber": "3253031",
+        "bio": "Specjalizuje się w nowoczesnych metodach leczenia. Prowadzi badania naukowe.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 9,
+        "userId": "doc-9",
+        "licenseNumber": "2795765",
+        "bio": "Specjalista z certyfikatem europejskim. Przyjmuje pacjentów w języku angielskim.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 10,
+        "userId": "doc-10",
+        "licenseNumber": "5727085",
+        "bio": "Pasjonat nowoczesnych technologii medycznych i telemedycyny.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 11,
+        "userId": "doc-11",
+        "licenseNumber": "6752576",
+        "bio": "Laureat nagrody za wybitne osiągnięcia w dziedzinie medycyny.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 12,
+        "userId": "doc-12",
+        "licenseNumber": "5428914",
+        "bio": "Specjalista z certyfikatem europejskim. Przyjmuje pacjentów w języku angielskim.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 13,
+        "userId": "doc-13",
+        "licenseNumber": "1852264",
+        "bio": "Absolwent Warszawskiego Uniwersytetu Medycznego. Staż kliniczny w Berlinie.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 14,
+        "userId": "doc-14",
+        "licenseNumber": "5641923",
+        "bio": "Specjalista z wieloletnim doświadczeniem w diagnostyce i leczeniu.",
+        "profileImageUrl": null
+    },
+    {
+        "doctorId": 15,
+        "userId": "doc-15",
+        "licenseNumber": "3194789",
+        "bio": "Specjalizuje się w nowoczesnych metodach leczenia. Prowadzi badania naukowe.",
+        "profileImageUrl": null
+    }
 ]

@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Medreserve.Infrastructure;
 
 namespace Medreserve.Features.Doctor;
 
@@ -12,12 +10,10 @@ namespace Medreserve.Features.Doctor;
 public class DoctorsController : ControllerBase
 {
     private readonly IDoctorService _doctorService;
-    private readonly DatabaseContext _dbContext;
 
-    public DoctorsController(IDoctorService doctorService, DatabaseContext dbContext)
+    public DoctorsController(IDoctorService doctorService)
     {
         _doctorService = doctorService;
-        _dbContext = dbContext;
     }
 
     [HttpGet("me/profile")]
@@ -44,28 +40,6 @@ public class DoctorsController : ControllerBase
 
         var success = await _doctorService.UpdateMyProfileAsync(currentUserId, request, cancellationToken);
         return success ? Ok(new { message = "Doctor profile updated successfully." }) : NotFound();
-    }
-
-    [HttpPost("me/photo")]
-    [Authorize]
-    public async Task<IActionResult> UploadProfilePhoto(IFormFile file, CancellationToken cancellationToken)
-    {
-        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (currentUserId is null)
-            return Unauthorized();
-
-        if (file is null || file.Length == 0)
-            return BadRequest(new { message = "No file provided." });
-
-        try
-        {
-            var url = await _doctorService.UploadPhotoAsync(currentUserId, file, cancellationToken);
-            return url is null ? NotFound() : Ok(new { profileImageUrl = url });
-        }
-        catch (ArgumentException exception)
-        {
-            return BadRequest(new { message = exception.Message });
-        }
     }
 
     [HttpPost("me/appointment-types")]
@@ -211,12 +185,7 @@ public class DoctorsController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<IReadOnlyList<DoctorDto>>> GetAll(CancellationToken cancellationToken)
     {
-        var doctors = await _dbContext.Set<Doctor>()
-            .AsNoTracking()
-            .OrderBy(x => x.DoctorId)
-            .Select(x => new DoctorDto(x.DoctorId, x.UserId, x.LicenseNumber, x.Bio))
-            .ToListAsync(cancellationToken);
-
+        var doctors = await _doctorService.GetAllAsync(cancellationToken);
         return Ok(doctors);
     }
 
@@ -224,12 +193,7 @@ public class DoctorsController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<DoctorDto>> GetById(int id, CancellationToken cancellationToken)
     {
-        var doctor = await _dbContext.Set<Doctor>()
-            .AsNoTracking()
-            .Where(x => x.DoctorId == id)
-            .Select(x => new DoctorDto(x.DoctorId, x.UserId, x.LicenseNumber, x.Bio))
-            .FirstOrDefaultAsync(cancellationToken);
-
+        var doctor = await _doctorService.GetByIdAsync(id, cancellationToken);
         return doctor is null ? NotFound() : Ok(doctor);
     }
 
@@ -292,101 +256,8 @@ public class DoctorsController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var page = query.Page < 1 ? 1 : query.Page;
-        var pageSize = query.PageSize switch
-        {
-            < 1 => 8,
-            > 50 => 50,
-            _ => query.PageSize
-        };
-
-        var doctorsQuery = _dbContext
-            .Doctors
-            .AsNoTracking()
-            .Where(x => x.User.IsActive)
-            .AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(query.Location))
-        {
-            var loc = query.Location.Trim();
-            doctorsQuery = doctorsQuery.Where(x =>
-                x.ClinicDoctors.Any(cd =>
-                    EF.Functions.ILike(cd.Clinic.City, $"%{loc}%") ||
-                    EF.Functions.ILike(cd.Clinic.StreetAddress, $"%{loc}%"))
-            );
-        }
-
-        if (query.SpecializationId.HasValue)
-        {
-            doctorsQuery = doctorsQuery.Where(x =>
-                x.DoctorSpecializations.Any(ds => ds.SpecializationId == query.SpecializationId.Value)
-            );
-        }
-
-        if (query.PriceMax.HasValue)
-        {
-            doctorsQuery = doctorsQuery.Where(x =>
-                x.DoctorAppointmentTypes.Any(dat => dat.AppointmentType.BasePrice <= query.PriceMax.Value)
-            );
-        }
-
-        if (query.Date.HasValue)
-        {
-            var dateValue = query.Date.Value.ToDateTime(TimeOnly.MinValue);
-            var dayOfWeek = (int)query.Date.Value.DayOfWeek;
-            var isoDayOfWeek = dayOfWeek == 0 ? 7 : dayOfWeek;
-
-            doctorsQuery = doctorsQuery.Where(x =>
-                x.DoctorSchedules.Any(ds =>
-                    ds.IsActive
-                    && (ds.DayOfWeek == dayOfWeek || ds.DayOfWeek == isoDayOfWeek)
-                    && ds.ValidFrom <= dateValue
-                    && (ds.ValidTo == null || ds.ValidTo >= dateValue)
-                )
-            );
-        }
-
-        var totalCount = await doctorsQuery.CountAsync(cancellationToken);
-
-        var projectedQuery = doctorsQuery.Select(x => new
-        {
-            x.DoctorId,
-            FullName = x.User.FirstName + " " + x.User.LastName,
-            City = x.ClinicDoctors
-                .Select(cd => cd.Clinic.City)
-                .FirstOrDefault() ?? string.Empty,
-            Specialization = x.DoctorSpecializations
-                .Where(ds => !query.SpecializationId.HasValue || ds.SpecializationId == query.SpecializationId.Value)
-                .Select(ds => ds.Specialization.Name)
-                .FirstOrDefault() ?? string.Empty,
-            LowestPrice = x.DoctorAppointmentTypes
-                .Select(dat => (decimal?)dat.AppointmentType.BasePrice)
-                .Min() ?? 0m,
-        });
-
-        var sort = query.Sort?.Trim().ToLowerInvariant() ?? "priceasc";
-        projectedQuery = sort switch
-        {
-            "pricedesc" => projectedQuery.OrderByDescending(x => x.LowestPrice).ThenBy(x => x.FullName),
-            "nameasc" => projectedQuery.OrderBy(x => x.FullName),
-            "namedesc" => projectedQuery.OrderByDescending(x => x.FullName),
-            _ => projectedQuery.OrderBy(x => x.LowestPrice).ThenBy(x => x.FullName)
-        };
-
-        var items = await projectedQuery
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(x => new DoctorSearchItemDto(
-                x.DoctorId,
-                x.FullName,
-                x.City,
-                x.Specialization,
-                x.LowestPrice
-            ))
-            .ToListAsync(cancellationToken);
-
-        var totalPages = totalCount == 0 ? 1 : (int)Math.Ceiling(totalCount / (double)pageSize);
-        return Ok(new PagedResultDto<DoctorSearchItemDto>(items, page, pageSize, totalCount, totalPages));
+        var result = await _doctorService.SearchDoctorsAsync(query, cancellationToken);
+        return Ok(result);
     }
 
 }
